@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Login</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #fff;
+    }
+
+    .login-container {
+      max-width: 400px;
+      width: 100%;
+      padding: 1px;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 100px;
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      border: 2px solid #ced4da;
+      border-radius: 5px;
+      height: 46px;
+    }
+
+    .btn-primary {
+      background-color: #000;
+      border-color: #000;
+      height: 46px;
+      color: #fff;
+      /* Set text color to white */
+    }
+
+    .btn-primary:hover {
+      background-color: #000;
+      /* No hover effect */
+      border-color: #000;
+    }
+
+    /* Remove underline from <a> tag */
+    a {
+      text-decoration: none;
+      color: #000;
+      /* Set link color to black */
+    }
+
+    h2 {
+      font-weight: bolder;
+      font-size: 32px;
+    }
+
+    label.form-label {
+      font-size: 14px;
+    }
+
+    .signup-message {
+      margin-top: 20px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h2 class="text-center mb-4">Login</h2>
+    
+        <form action="/user/login" method="post">
+            <!-- Email input -->
+            <div class="form-group">
+                <input type="email" name="email" id="emailInput" class="form-control" placeholder="Enter your email"
+                    autocomplete="off">
+                <small id="email-error" style="color: red; display: none;">Invalid email format</small>
+            </div>
+    
+            <!-- Password input -->
+            <div class="form-group">
+                <input type="password" name="password" id="passwordInput" class="form-control" id="passwordInput"
+                    placeholder="Enter your password">
+                <small id="password-error" style="color: red; display: none;">Invalid password format</small>
+            </div>
+    
+            <!-- Display the error message if it exists -->
+            <% if (passError !== " ") { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= passError %>
+                </div>
+            <% } %>
+    
+            <br>
+    
+            <button type="button" class="btn btn-primary btn-block" onclick="validateAndSubmit()">Login</button>
+    
+            <!-- "Login with Google" button -->
+            <a href="/auth/google" class="btn btn-danger btn-block mt-3">Login with Google</a>
+    
+        </form>
+    
+        <div class="signup-message">
+            <p>If you are a new user, please <a href="/signup" class="text-primary ">sign up</a> first.</p>
+        </div>
+    
+    </div>
+    
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get the form data
+        const formData = new FormData(this);
+
+        // Submit the form data via AJAX
+        fetch('/user/login', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the response data, e.g., show a success message or redirect to another page
+            console.log(data);
+        })
+        .catch(error => {
+            // Handle any errors
+            console.error('There was an error!', error);
+        });
+    });
+
+    function validateAndSubmit() {
+      var emailInput = document.getElementById('emailInput')
+      var passwordInput = document.getElementById('passwordInput')
+
+      var emailError = document.getElementById('email-error')
+      var passwordError = document.getElementById('password-error')
+
+      var isvalidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)
+      var isvalidPassword = passwordInput.value.length >= 6
+
+      if (!isvalidEmail) {
+        emailError.style.display = "block"
+      } else {
+        emailError.style.display = "none"
+      }
+
+      if (!isvalidPassword) {
+        passwordError.style.display = "block"
+      } else {
+        passwordError.style.display = "none"
+      }
+
+      if (isvalidEmail && isvalidPassword) {
+        document.forms[0].submit()
+      }
+    }
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
