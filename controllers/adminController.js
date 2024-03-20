@@ -1,5 +1,6 @@
 const Admin=require('../models/admin')
 const User=require('../models/users')
+const Products=require('../models/products')
 const jwt=require('jsonwebtoken')
 
 let adminLogin=async(req,res)=>{
@@ -72,7 +73,7 @@ let userBlock=async(req,res)=>{
         if(user){
             user.blocked=!user.blocked
             await user.save()
-            console.log("block stts :",user.blocked);
+            console.log("block status :",user.blocked);
         }
         res.redirect('/admin/user')
     }catch(error){
@@ -81,12 +82,13 @@ let userBlock=async(req,res)=>{
 }
 
 let categoryListPage=async(req,res)=>{
-    let admin=await Admin.findOne()
-    if(!admin){
+    let products=await Products.findOne()
+    // console.log(products);
+    if(!products){
        return res.status(400).send('user not found')
     }
-    let category=admin.category.map(category=>category)
-     res.render('admin/categorylist',{category})
+    let category=products.category.map(category=>category)
+    res.render('admin/categorylist',{category})
 }
 
 let addCategoryPage=async(req,res)=>{
@@ -97,18 +99,22 @@ let addCategoryPostPage=async(req,res)=>{
 
     try {
         let {categoryName}=req.body
+        // console.log(categoryName);
         if(!categoryName){
             return res.status(400).send('category name required')
         }
-        let admin=await Admin.findOne()
-        if(!admin){
+        let products=await Products.findOne()
+        if(!products){
            return res.status(400).send('admin not found')
         }
-        admin.category.push({categoryName})
-       await admin.save()
+        
+        products.category.push({categoryName})
+       await products.save()
+
+       
        return res.redirect('/admin/categorylist')
     } catch (error) {
-        console.log(error);
+        // console.log(error);
        return res.status(500).send('internal server error')
     }
 }
@@ -116,38 +122,56 @@ let addCategoryPostPage=async(req,res)=>{
 let deleteCategory=async(req,res)=>{
         let categoryId=req.params.id
         try{
-            let admin=await Admin.findOne()
-        if(!admin){
+            let products=await Products.findOne()
+        if(!products){
             return res.status(400).send('admin not found')
         }
-        admin.category=admin.category.filter(cat=>cat.id !=categoryId)
-        admin.save()
+        products.category=products.category.filter(cat=>cat.id !=categoryId)
+        products.save()
             res.redirect('/admin/categorylist')
         }catch(error){
-            console.log('not deleting the category');
+            // console.log('not deleting the category');
             res.status(500).send('internal server error')
         }
 }
 let editCategoryGetPage=async(req,res)=>{
-    let categoryId=req.params.id
-    // console.log(categoryId );
-    if(!categoryId){
-        res.status(400).send('category id not found')
-    }
-    let admin=await Admin.findOne()
-    // console.log(admin);
-    if(!admin){
-        res.status(400).send('admin not found')
-    }
-    let editCategory=admin.categoryId.find()
-
-    res.render('admin/editcategory')
+   try{
+        let categoryId=req.params.id
+        // console.log(categoryId);
+        let products=await Products.findOne({'category._id':categoryId})
+        // console.log(products);
+        
+        let category=products.category.id(categoryId)
+        // console.log(category);
+        res.render('admin/editcategory',{category})
+   }catch(error){
+       console.log('category dont get for editing');
+       res.status(400).send('category id not defined')
+   }
 }
 
 let editCategoryPostPage=async(req,res)=>{
-   
-}
+   try{
+    let categoryId=req.params.id
+    console.log(categoryId);
+    let products=await Products.findOne({'category._id':categoryId})
+    console.log(products);
+   let category= products.category.id(categoryId)
+    // console.log(category);
+   let newName=req.body.editCategoryName
+   console.log(newName);
+   category.categoryName=newName
+   await products.save()
 
+   res.redirect('/admin/categorylist')
+   } catch(error){
+    console.log('something went wrong in the post request');
+    res.status(400).send('edit not updated')
+   }
+}
+let addProductsGetPage=async(req,res)=>{
+    res.render('admin/addproduct')
+}
 module.exports={
     adminLogin,
     adminPostLogin,
@@ -161,6 +185,7 @@ module.exports={
     addCategoryPostPage,
     deleteCategory,
     editCategoryGetPage,
-    editCategoryPostPage
+    editCategoryPostPage,
+    addProductsGetPage
     
 }
