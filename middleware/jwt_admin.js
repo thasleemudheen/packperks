@@ -6,6 +6,7 @@ const adminAuth=(req,res,next)=>{
     if(token){
         jwt.verify(token,process.env.JWT_SECRET, (err,decodedToken)=>{
             if(err){
+                
                 res.redirect('/admin/login')
             }else{
                 req.admin=decodedToken

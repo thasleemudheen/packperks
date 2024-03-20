@@ -6,12 +6,22 @@ const cookieparser=require('cookie-parser')
 require('dotenv').config()
 
 
-// app.use(express.json())
-
-
-
 let homePage=(req,res)=>{
-    res.render('user/index')
+     try{
+        let isAuthenticated
+        
+       if(req.cookies.user_jwt){
+        isAuthenticated = req.cookies.user_jwt
+        res.render('user/index',{isAuthenticated})
+       }
+       res.render('user/index',{isAuthenticated})
+       
+     
+       
+     }catch(error){
+        console.log('home page is not found');
+        res.status(400).send('home page not found')
+     } 
 }
 
 // profile page
@@ -33,14 +43,11 @@ let logout= async (req,res) => {
 // user signup page
 
 let signUpPage=(req,res)=>{
-    res.render('user/signUp')
+    res.render('user/signUp',{passError:''})
 }
 
 let loginPage = (req, res) => {
-    // Check if the user is already logged in
-    // if (req.cookies.user_jwt) {
-    //     return res.redirect('/');
-    // }
+    
     res.render('user/login',{passError:" "});
 }
 
@@ -58,13 +65,9 @@ let loginPostPage = async (req, res) => {
         try {
             // Find the user by email
             const user = await User.findOne({ email });
-            console.log(user,'user not found');
+            // console.log(user,'user not found');
 
-            // If user is not found, redirect to signup page
-            // if (!user) {
-            //     // return res.redirect('/signup');
             
-            // }
 
             if (!user) {
                 return res.render('user/login', { passError: 'user not found' });
@@ -120,18 +123,16 @@ let signupPostpage = async (req, res) => {
     try {
         const userExist = await User.findOne({ email: email });
         if (userExist) {
-            return res.status(400).render('user/signUp', { errMsg: 'User exists with this email' });
+            return res.status(400).render('user/signUp', { passError: 'User exists with this email' });
         }
         if (!password) {
             res.status(400).send('Password is empty');
         }
-        // if (password !== confirmpassword) {
-        //     res.status(400).send('Passwords do not match');
-        // }
+        
         const hashPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, email, phonenumber, password: hashPassword });
         await newUser.save();
-        console.log(newUser);
+        // console.log(newUser);
 
         // Generate JWT token
         const token = jwt.sign({ userId: newUser._id }, 'Pack_perks', { expiresIn: '24h' });
@@ -141,7 +142,7 @@ let signupPostpage = async (req, res) => {
         // Set the token in a cookie
         res.cookie('token', token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) });
 
-        res.redirect('/');
+        res.redirect('/login');
     } catch (error) {
         res.status(500).send('Internal server error');
     }

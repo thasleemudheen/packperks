@@ -31,8 +31,6 @@ const userSchema=new mongoose.Schema({
     },
 });
 
-// collection part
-
 const user=mongoose.model('user',userSchema);
 
 

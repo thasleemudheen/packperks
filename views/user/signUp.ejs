@@ -101,7 +101,13 @@
         <input type="email" name="email" id="emailInput" class="form-control" placeholder="Enter your email"
           autocomplete="off">
         <!-- <label class="form-label" for="emailInput"></label> -->
-        <small id="email-error" style="color: red; display: none;">Invalid email format</small>
+        <small id="email-error" style="color: red; display: none;" >Invalid email format</small>
+        <% if (passError) { %>
+          <div class="alert alert-danger" role="alert">
+              <%= passError %>
+          </div>
+      <% } %>
+      
       </div>
 
       <!-- Phone number input -->
@@ -133,7 +139,9 @@
       <button type="button" class="btn btn-primary btn-block" onclick="validateAndSubmit()">signup</button>
 
     </form>
+    <h6>if you are an existing user you just <a href="/login" class="text-primary">login</a></h6>
   </div>
+   
 
   <script>
     function validateAndSubmit() {

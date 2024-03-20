@@ -1,12 +1,9 @@
 const Admin=require('../models/admin')
-const user = require('../models/users')
 const User=require('../models/users')
 const jwt=require('jsonwebtoken')
 
 let adminLogin=async(req,res)=>{
-    // if(req.cookie.admin_jwt){
-    //     res.redirect('/dashboard')
-    // }
+   
     res.render('admin/signin')
 }
 
@@ -48,7 +45,11 @@ let adminPostLogin=async(req,res)=>{
      }
 }
 
+let adminLogoutpage=async(req,res)=>{
+    res.clearCookie('admin_jwt')
+    res.redirect('/admin/login')
 
+}
 
 let adminDashBoard=(req,res)=>{
     res.render('admin/index')
@@ -59,9 +60,7 @@ let productsGetPage=async(req,res)=>{
 }
 
 let UserGetPage=async(req,res)=>{
-    // let users=[]
     let users =await User.find()
-    // console.log(users);
     res.render('admin/userlist',{users:users})
 }
 
@@ -71,9 +70,9 @@ let userBlock=async(req,res)=>{
         const user=await User.findOne({_id:userId})
         console.log(user);
         if(user){
-            user.Blocked=!user.Blocked
+            user.blocked=!user.blocked
             await user.save()
-            console.log(user.Blocked);
+            console.log("block stts :",user.blocked);
         }
         res.redirect('/admin/user')
     }catch(error){
@@ -81,6 +80,73 @@ let userBlock=async(req,res)=>{
     }
 }
 
+let categoryListPage=async(req,res)=>{
+    let admin=await Admin.findOne()
+    if(!admin){
+       return res.status(400).send('user not found')
+    }
+    let category=admin.category.map(category=>category)
+     res.render('admin/categorylist',{category})
+}
+
+let addCategoryPage=async(req,res)=>{
+    res.render('admin/addCategory')
+}
+
+let addCategoryPostPage=async(req,res)=>{
+
+    try {
+        let {categoryName}=req.body
+        if(!categoryName){
+            return res.status(400).send('category name required')
+        }
+        let admin=await Admin.findOne()
+        if(!admin){
+           return res.status(400).send('admin not found')
+        }
+        admin.category.push({categoryName})
+       await admin.save()
+       return res.redirect('/admin/categorylist')
+    } catch (error) {
+        console.log(error);
+       return res.status(500).send('internal server error')
+    }
+}
+
+let deleteCategory=async(req,res)=>{
+        let categoryId=req.params.id
+        try{
+            let admin=await Admin.findOne()
+        if(!admin){
+            return res.status(400).send('admin not found')
+        }
+        admin.category=admin.category.filter(cat=>cat.id !=categoryId)
+        admin.save()
+            res.redirect('/admin/categorylist')
+        }catch(error){
+            console.log('not deleting the category');
+            res.status(500).send('internal server error')
+        }
+}
+let editCategoryGetPage=async(req,res)=>{
+    let categoryId=req.params.id
+    // console.log(categoryId );
+    if(!categoryId){
+        res.status(400).send('category id not found')
+    }
+    let admin=await Admin.findOne()
+    // console.log(admin);
+    if(!admin){
+        res.status(400).send('admin not found')
+    }
+    let editCategory=admin.categoryId.find()
+
+    res.render('admin/editcategory')
+}
+
+let editCategoryPostPage=async(req,res)=>{
+   
+}
 
 module.exports={
     adminLogin,
@@ -88,6 +154,13 @@ module.exports={
     adminDashBoard,
     productsGetPage,
     UserGetPage,
-    userBlock
+    userBlock,
+    adminLogoutpage,
+    categoryListPage,
+    addCategoryPage,
+    addCategoryPostPage,
+    deleteCategory,
+    editCategoryGetPage,
+    editCategoryPostPage
     
 }
