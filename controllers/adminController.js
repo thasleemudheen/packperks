@@ -170,7 +170,22 @@ let editCategoryPostPage=async(req,res)=>{
    }
 }
 let addProductsGetPage=async(req,res)=>{
-    res.render('admin/addproduct')
+    try{
+        let category=await Products.distinct('category.categoryName')
+        console.log(category);
+     res.render('admin/addproduct',{category})
+    }catch(error){
+        console.log('the category is not founded');
+        res.status(400).send('internal server error')
+    }
+      
+}
+let addProductPostPage=async(req,res)=>{
+
+}
+
+let productListPage=async(req,res)=>{
+    res.render('admin/productlist')
 }
 module.exports={
     adminLogin,
@@ -186,6 +201,7 @@ module.exports={
     deleteCategory,
     editCategoryGetPage,
     editCategoryPostPage,
-    addProductsGetPage
+    addProductsGetPage,
+    productListPage
     
 }

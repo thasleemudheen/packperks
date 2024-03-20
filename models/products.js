@@ -1,6 +1,12 @@
 const mongoose=require('mongoose')
 
+
 let productSchema=new mongoose.Schema({
+    productName:{type:String},
+    discription:{type:String},
+    price:{type:String},
+    stockQuantity:{type:String},
+    image:{type:Array},
     category:[{
         categoryName:{
             type:String,

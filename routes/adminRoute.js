@@ -21,6 +21,7 @@ router.post('/admin/deleteCategory/:id',adminController.deleteCategory)
 router.get('/admin/editCategory/:id',adminController.editCategoryGetPage)
 router.post('/admin/editCategory/:id',adminController.editCategoryPostPage)
 router.get('/admin/addProduct',adminController.addProductsGetPage)
+router.get('/admin/productlist',adminController.productListPage)
 
 
 

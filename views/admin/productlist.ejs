@@ -44,10 +44,51 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+<!-- table with pagination -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/mdb.min.css">
+<!-- Plugin file -->
+<link rel="stylesheet" href="./css/addons/datatables.min.css">
+<link rel="stylesheet" href="css/style.css">
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+<script type="text/javascript" language="javascript" src="media/js/jquery.dataTables.js"></script>
+
+<link rel="stylesheet" type="text/css" href="media/css/jquery.dataTables.css">
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet" 
+href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+<script type="text/javascript" 
+src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" 
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
 </head>
 
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div> -->
+        <!-- Spinner End -->
+
+
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
@@ -185,168 +226,56 @@
             </nav>
             <!-- Navbar End -->
 
-<!-- addd products start -->
-
-
-<form class="form-horizontal">
-    <fieldset>
-    
-    <!-- Form Name -->
-    <legend> ADD PRODUCTS</legend>
-    
-    <!-- Text input-->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="product_id">PRODUCT ID</label>  
-      <div class="col-md-4">
-      <input id="product_id" name="product_id" placeholder="PRODUCT ID" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div>
-    
-    <!-- Text input-->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>  
-      <div class="col-md-4">
-      <input id="product_name" name="product_name" placeholder="PRODUCT NAME" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div>
-    
-    <!-- Text input-->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="product_name_fr">PRODUCT DESCRIPTION FR</label>  
-      <div class="col-md-4">
-      <input id="product_name_fr" name="product_name_fr" placeholder="PRODUCT DESCRIPTION FR" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div> -->
-    
-    <!-- Select Basic -->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
-      <div class="col-md-4">
-        <select id="product_category" name="product_category" class="form-control">
-            <%category.forEach(category=>{%>
-                <option value="<%=category %>"><%=category%></option>
-           <% }) %>
-        </select>
-      </div>
-    </div>
-    
-    <!-- Text input-->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="available_quantity">AVAILABLE QUANTITY</label>  
-      <div class="col-md-4">
-      <input id="available_quantity" name="available_quantity" placeholder="AVAILABLE QUANTITY" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div>
-    
-    <!-- Text input-->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="product_weight">PRODUCT WEIGHT</label>  
-      <div class="col-md-4">
-      <input id="product_weight" name="product_weight" placeholder="PRODUCT WEIGHT" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div> -->
-    
-    <!-- Textarea -->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="product_description">PRODUCT DESCRIPTION</label>
-      <div class="col-md-4">                     
-        <textarea class="form-control" id="product_description" name="product_description"></textarea>
-      </div>
-    </div>
-    
-    <!-- Textarea -->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="product_name_fr">PRODUCT DESCRIPTION FR</label>
-      <div class="col-md-4">                     
-        <textarea class="form-control" id="product_name_fr" name="product_name_fr"></textarea>
-      </div>
-    </div> -->
-    
-    <!-- Text input-->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="percentage_discount">PERCENTAGE DISCOUNT</label>  
-      <div class="col-md-4">
-      <input id="percentage_discount" name="percentage_discount" placeholder="PERCENTAGE DISCOUNT" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div> -->
-    
-    <!-- Text input-->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="stock_alert">STOCK ALERT</label>  
-      <div class="col-md-4">
-      <input id="stock_alert" name="stock_alert" placeholder="STOCK ALERT" class="form-control input-md" required="" type="text">
-        
-      </div>
-    </div> -->
-    
-   
-     <!-- File Button --> 
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="filebutton">product image</label>
-      <div class="col-md-4">
-        <input id="filebutton" name="filebutton" class="input-file" type="file">
-      </div>
-    </div>
-    <!-- File Button --> 
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="filebutton">auxiliary_images</label>
-      <div class="col-md-4">
-        <input id="filebutton" name="filebutton" class="input-file" type="file">
-      </div>
-    </div> -->
-    
-    <!-- Button -->
-    <form action="" method="post">
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="singlebutton"></label>
-      <div class="col-md-4">
-        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Add product</button>
-      </div>
-      </div>
-    </form>
-    
-    </fieldset>
-    </form>
-    
-
-
+           <!--------------- product listing page start from here------------ -->
+           <table id="myproductTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="th-sm">Name</th>
+                <th class="th-sm">Position </th>
+                <th class="th-sm">Office</th>
+                <th class="th-sm">Age</th>
+                <th class="th-sm">Start date </th>
+                <th class="th-sm">Salary</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+             
+          </table>
            
 
-
-
-
-           
-        
-
-
+          <script>
+            $(document).ready(function(){
+                $('#myproductTable').dataTable();
+            });
+            </script>
+    </div>
     <!-- JavaScript Libraries -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="../../code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="../../cdn.jsdelivr.net/npm/bootstrap%405.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/admin/lib/chart/chart.min.js"></script>
-    <script src="/assets/admin/lib/easing/easing.min.js"></script>
-    <script src="/assets/admin/lib/waypoints/waypoints.min.js"></script>
-    <script src="/assets/admin/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/assets/admin/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/assets/admin/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/assets/admin/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-
-
-    <script src="/assets/admin/js/main.js"></script>
-</body>
-
-
-<!-- Mirrored from themewagon.github.io/dashmin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Mar 2024 04:17:34 GMT -->
-</html>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- Plugin file -->
+    <script src="./js/addons/datatables.min.js"></script>
+    
+    
+                             
+        <!-- JavaScript Libraries -->
+        <script src="../../code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="../../cdn.jsdelivr.net/npm/bootstrap%405.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="lib/chart/chart.min.js"></script>
+        <script src="lib/easing/easing.min.js"></script>
+        <script src="lib/waypoints/waypoints.min.js"></script>
+        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+        <script src="lib/tempusdominus/js/moment.min.js"></script>
+        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    
+        <!-- Template Javascript -->
+        <script src="js/main.js"></script>
+    </body>
+    
+    
+    <!-- Mirrored from themewagon.github.io/dashmin/signup.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Mar 2024 04:17:37 GMT -->
+    </html>
