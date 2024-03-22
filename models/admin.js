@@ -9,6 +9,16 @@ const adminSchema= new mongoose.Schema({
     password:{
         type:String
     },
+    category:[{
+        categoryName:{
+            type:String,
+            required:true
+        },
+        createdAt:{
+            type:Date,
+            default:Date.now
+        }
+    }]
    
 })
 

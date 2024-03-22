@@ -2,6 +2,12 @@ const Admin=require('../models/admin')
 const User=require('../models/users')
 const Products=require('../models/products')
 const jwt=require('jsonwebtoken')
+const cloudinary=require('../config/cloudinary')
+// const upload=require('../config/multer')
+const multer=require('multer')
+
+require('dotenv').config()
+
 
 let adminLogin=async(req,res)=>{
    
@@ -42,7 +48,8 @@ let adminPostLogin=async(req,res)=>{
 
 
      }else{
-      return res.render('admin/signin', {passError:'please complete the field'})          //,{category}
+
+      return res.render('admin/signin', {passError:'please complete the field'})          
      }
 }
 
@@ -82,12 +89,12 @@ let userBlock=async(req,res)=>{
 }
 
 let categoryListPage=async(req,res)=>{
-    let products=await Products.findOne()
-    // console.log(products);
-    if(!products){
+    let admin=await Admin.findOne()
+    console.log(admin);
+    if(!admin){
        return res.status(400).send('user not found')
     }
-    let category=products.category.map(category=>category)
+    let category=admin.category.map(category=>category)
     res.render('admin/categorylist',{category})
 }
 
@@ -103,7 +110,7 @@ let addCategoryPostPage=async(req,res)=>{
         if(!categoryName){
             return res.status(400).send('category name required')
         }
-        let products=await Products.findOne()
+        let products=await Admin.findOne()
         if(!products){
            return res.status(400).send('admin not found')
         }
@@ -122,7 +129,7 @@ let addCategoryPostPage=async(req,res)=>{
 let deleteCategory=async(req,res)=>{
         let categoryId=req.params.id
         try{
-            let products=await Products.findOne()
+            let products=await Admin.findOne()
         if(!products){
             return res.status(400).send('admin not found')
         }
@@ -138,7 +145,7 @@ let editCategoryGetPage=async(req,res)=>{
    try{
         let categoryId=req.params.id
         // console.log(categoryId);
-        let products=await Products.findOne({'category._id':categoryId})
+        let products=await Admin.findOne({'category._id':categoryId})
         // console.log(products);
         
         let category=products.category.id(categoryId)
@@ -154,7 +161,7 @@ let editCategoryPostPage=async(req,res)=>{
    try{
     let categoryId=req.params.id
     console.log(categoryId);
-    let products=await Products.findOne({'category._id':categoryId})
+    let products=await Admin.findOne({'category._id':categoryId})
     console.log(products);
    let category= products.category.id(categoryId)
     // console.log(category);
@@ -169,10 +176,11 @@ let editCategoryPostPage=async(req,res)=>{
     res.status(400).send('edit not updated')
    }
 }
+
 let addProductsGetPage=async(req,res)=>{
     try{
-        let category=await Products.distinct('category.categoryName')
-        console.log(category);
+        let category=await Admin.distinct('category.categoryName')
+        // console.log(category);
      res.render('admin/addproduct',{category})
     }catch(error){
         console.log('the category is not founded');
@@ -180,12 +188,66 @@ let addProductsGetPage=async(req,res)=>{
     }
       
 }
-let addProductPostPage=async(req,res)=>{
 
+let addProductPostPage=async(req,res)=>{
+   try{
+    
+      const{productId,productName,discription,productPrice,stockQuantity,categoryName,brand}=req.body
+      const productImage=req.files
+    //   console.log(req.files);
+    //   console.log("prdct :",productImage);
+      console.log(req.body);
+    const imageUrls = [];
+
+    const result = await Promise.all(productImage.map(async (image) => {
+        const result = await cloudinary.uploader.upload(image.path);
+        imageUrls.push(result.secure_url);
+    }));
+    
+    // const result=await Promise.all(productImage.map((image)=>{
+    //      return cloudinary.uploader.upload(image.path)
+    //      imageUrls.push(result.secure_url)
+    // }))
+       console.log("result ::",result);
+
+
+      const newProduct= new Products({
+        productId,
+        productName,
+        productPrice,
+        categoryName,
+        stockQuantity,
+        brand,
+        discription,
+        productImage:imageUrls
+
+      })
+      console.log(newProduct);
+
+      await newProduct.save()
+      res.redirect('/admin/productlist')
+   }catch(error){
+    if(error instanceof multer.MulterError){
+        console.error(error.message)
+        res.status(400).send('there was an error on uploading image')
+    }else{
+        console.log('product not added ');
+        res.status(400).send('internal server error')
+    }      
+   }
 }
 
 let productListPage=async(req,res)=>{
-    res.render('admin/productlist')
+    try{
+        let product=await Products.find()
+        
+        res.render('admin/productlist',{product})
+    }catch(error){
+        console.log('product not listed in the tabel');
+        res.status(400).send('internal server error')
+    }
+
+   
 }
 module.exports={
     adminLogin,
@@ -202,6 +264,7 @@ module.exports={
     editCategoryGetPage,
     editCategoryPostPage,
     addProductsGetPage,
-    productListPage
+    productListPage,
+    addProductPostPage
     
 }

@@ -170,7 +170,6 @@ let successGoogleLogin=async(req,res)=>{
     //     if(user.blocked)
     //     console.log('user is blocked');
     //     return res.render('user/login',{passError:'your account has been restricted by the admin'})
-        
     // }
     console.log('login with google');
     const token=jwt.sign({

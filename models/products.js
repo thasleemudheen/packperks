@@ -2,21 +2,14 @@ const mongoose=require('mongoose')
 
 
 let productSchema=new mongoose.Schema({
-    productName:{type:String},
-    discription:{type:String},
-    price:{type:String},
-    stockQuantity:{type:String},
-    image:{type:Array},
-    category:[{
-        categoryName:{
-            type:String,
-            required:true
-        },
-        createdAt:{
-            type:Date,
-            default:Date.now
-        }
-    }]
+    productId:{type:String, required:true},
+    productName:{type:String ,required:true},
+    discription:{type:String ,required:true},
+    productPrice:{type:Number, required:true},
+    stockQuantity:{type:Number ,required:true},
+    productImage:{type:Array },
+    brand:{type:String , required:true},
+    categoryName:{type:String}
 })
 
 const products=mongoose.model('products',productSchema)

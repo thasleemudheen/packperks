@@ -188,7 +188,7 @@
 <!-- addd products start -->
 
 
-<form class="form-horizontal">
+<form class="form-horizontal" action="/admin/addProduct" method="post" enctype="multipart/form-data">
     <fieldset>
     
     <!-- Form Name -->
@@ -198,7 +198,7 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="product_id">PRODUCT ID</label>  
       <div class="col-md-4">
-      <input id="product_id" name="product_id" placeholder="PRODUCT ID" class="form-control input-md" required="" type="text">
+      <input id="productId" name="productId" placeholder="PRODUCT ID" class="form-control input-md" required="" type="text">
         
       </div>
     </div>
@@ -207,25 +207,25 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>  
       <div class="col-md-4">
-      <input id="product_name" name="product_name" placeholder="PRODUCT NAME" class="form-control input-md" required="" type="text">
+      <input id="productName" name="productName" placeholder="PRODUCT NAME" class="form-control input-md" required="" type="text">
         
       </div>
     </div>
     
     <!-- Text input-->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="product_name_fr">PRODUCT DESCRIPTION FR</label>  
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="product_name_fr">PRICE</label>  
       <div class="col-md-4">
-      <input id="product_name_fr" name="product_name_fr" placeholder="PRODUCT DESCRIPTION FR" class="form-control input-md" required="" type="text">
+      <input id="productPrice" name="productPrice" placeholder="PRODUCT PRICE" class="form-control input-md" required="" type="text">
         
       </div>
-    </div> -->
+    </div>
     
     <!-- Select Basic -->
     <div class="form-group">
       <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
       <div class="col-md-4">
-        <select id="product_category" name="product_category" class="form-control">
+        <select id="categoryName" name="categoryName" class="form-control">
             <%category.forEach(category=>{%>
                 <option value="<%=category %>"><%=category%></option>
            <% }) %>
@@ -237,25 +237,25 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="available_quantity">AVAILABLE QUANTITY</label>  
       <div class="col-md-4">
-      <input id="available_quantity" name="available_quantity" placeholder="AVAILABLE QUANTITY" class="form-control input-md" required="" type="text">
+      <input id="stockQuantity" name="stockQuantity" placeholder="AVAILABLE QUANTITY" class="form-control input-md" required="" type="text">
         
       </div>
     </div>
     
     <!-- Text input-->
-    <!-- <div class="form-group">
-      <label class="col-md-4 control-label" for="product_weight">PRODUCT WEIGHT</label>  
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="product_weight">BRAND</label>  
       <div class="col-md-4">
-      <input id="product_weight" name="product_weight" placeholder="PRODUCT WEIGHT" class="form-control input-md" required="" type="text">
+      <input id="brand" name="brand" placeholder="BRAND" class="form-control input-md" required="" type="text">
         
       </div>
-    </div> -->
+    </div>
     
     <!-- Textarea -->
     <div class="form-group">
       <label class="col-md-4 control-label" for="product_description">PRODUCT DESCRIPTION</label>
       <div class="col-md-4">                     
-        <textarea class="form-control" id="product_description" name="product_description"></textarea>
+        <textarea class="form-control" id="discription" name="discription"></textarea>
       </div>
     </div>
     
@@ -290,7 +290,7 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="filebutton">product image</label>
       <div class="col-md-4">
-        <input id="filebutton" name="filebutton" class="input-file" type="file">
+        <input type="file" id="productImage" name="productImage" class="input-file" multiple >
       </div>
     </div>
     <!-- File Button --> 
@@ -302,14 +302,16 @@
     </div> -->
     
     <!-- Button -->
-    <form action="" method="post">
+    
     <div class="form-group">
       <label class="col-md-4 control-label" for="singlebutton"></label>
       <div class="col-md-4">
-        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Add product</button>
+        <button type="submit" id="addProductbtn" name="addProductbtn" class="btn btn-primary">Add product</button>
+   
+
       </div>
       </div>
-    </form>
+    
     
     </fieldset>
     </form>
