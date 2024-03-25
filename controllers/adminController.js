@@ -5,6 +5,7 @@ const jwt=require('jsonwebtoken')
 const cloudinary=require('../config/cloudinary')
 // const upload=require('../config/multer')
 const multer=require('multer')
+const upload = multer({ dest: 'uploads/' }); 
 
 require('dotenv').config()
 
@@ -219,7 +220,8 @@ let addProductPostPage=async(req,res)=>{
         stockQuantity,
         brand,
         discription,
-        productImage:imageUrls
+        productImage:imageUrls,
+        // createdAt
 
       })
       console.log(newProduct);
@@ -240,14 +242,79 @@ let addProductPostPage=async(req,res)=>{
 let productListPage=async(req,res)=>{
     try{
         let product=await Products.find()
-        
+
         res.render('admin/productlist',{product})
     }catch(error){
         console.log('product not listed in the tabel');
         res.status(400).send('internal server error')
+    }  
+}
+
+let productDelete=async(req,res)=>{
+     const productId=req.params.id
+     try{
+       
+       await Products.findByIdAndDelete(productId)
+
+        res.redirect('/admin/productlist')
+     }catch(error){
+          console.log('product not deleted');
+          res.status(400).send('internal server error')
+     }
+}
+let editProductGetPage=async(req,res)=>{
+    try{
+         let productId=req.params.id
+         const product=await Products.findById(productId)
+         if(!product){
+            res.send('product not found')
+         }
+         let category=await Admin.distinct('category.categoryName')
+         res.render('admin/editProduct',{category,product})
+    }catch(error){
+            console.log('product not found for edit');
+            res.status(400).send('internal server error')
+    }   
+}
+
+let editProductPostPage=async(req,res)=>{
+
+    try{
+        let categoryId=req.params.id
+        const product=await Products.findById(categoryId)
+        if(!product){
+            res.send('product not found')
+            return 
+        }
+       
+        product.productId=req.body.productId
+        product.productName=req.body.productName
+        product.productPrice=req.body.productPrice
+        product.categoryName=req.body.categoryName
+        product.discription=req.body.discription
+        product.brand=req.body.brand
+        product.stockQuantity=req.body.stockQuantity
+        // product.productImage=req.body.newProductImage
+
+        const newProductImages = req.files;
+        const imageUrls = [];
+        // console.log('New Product Images:', newProductImages);
+        for (const image of newProductImages) {
+            // console.log('Uploading image:', image.originalname);
+            const result = await cloudinary.uploader.upload(image.path);
+            // console.log('Uploaded image:', result);
+            imageUrls.push(result.secure_url);
+        }
+        // console.log('Image URLs:', imageUrls);
+        product.productImage = imageUrls;
+
+        await product.save()
+        res.redirect('/admin/productlist')
+    }catch(error){
+        console.log('product not updated now also');
+        res.status(400).send('internal server error')
     }
 
-   
 }
 module.exports={
     adminLogin,
@@ -265,6 +332,9 @@ module.exports={
     editCategoryPostPage,
     addProductsGetPage,
     productListPage,
-    addProductPostPage
+    addProductPostPage,
+    productDelete,
+    editProductGetPage,
+    editProductPostPage
     
 }

@@ -9,7 +9,8 @@ let productSchema=new mongoose.Schema({
     stockQuantity:{type:Number ,required:true},
     productImage:{type:Array },
     brand:{type:String , required:true},
-    categoryName:{type:String}
+    categoryName:{type:String},
+    createdAt:{type:Date,default:Date.now}
 })
 
 const products=mongoose.model('products',productSchema)

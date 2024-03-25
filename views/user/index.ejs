@@ -34,7 +34,7 @@
             <div class="col-xl-2 col-lg-2 col-md-6 col-4">
                 <div class="logo">
                     <a href="index.html">
-                        <img alt="" src="/assets/img/logo/logo.png">
+                        <!-- <img alt="" src="/assets/img/logo/logo.png"> -->
                     </a>
                 </div>
             </div>
@@ -255,14 +255,14 @@
     <div class="container">
         <div class="tab-filter-wrap mb-60">
             <div class="product-tab-list-2 nav">
-                <a href="#product-1" data-toggle="tab" >
+                <a class="active" href="#product-1" data-toggle="tab" >
                     <h4>New Arrivals  </h4>
                 </a>
-                <a class="active" href="#product-2" data-toggle="tab">
-                    <h4>Best Sellers </h4>
+                <a  href="#product-2" data-toggle="tab">
+                    <h4>best sellers</h4>
                 </a>
                 <a href="#product-3" data-toggle="tab">
-                    <h4>Sale Items</h4>
+                    <h4>top Selling</h4>
                 </a>
             </div>
             <div class="filter-active">
@@ -332,35 +332,39 @@
         <div class="tab-content jump">
             <div class="tab-pane" id="product-1">
                 <div class="row">
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
-                        <div class="product-wrap-2 mb-25">
-                            <div class="product-img">
-                                <a href="product-details.html">
-                                    <img class="default-img" src="/assets/img/product/hm13-pro-4.avif" alt="">
-                                    <img class="hover-img" src="/assets/img/product/hm13-pro-4.avif" alt="">
-                                </a>
-                                <span class="pink">-10%</span>
-                                <div class="product-action-2">
-                                    <a title="Add To Cart" href="#"><i class="fa fa-shopping-cart"></i></a>
-                                    <a title="Quick View" href="#" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                    <a title="Compare" href="#"><i class="fa fa-retweet"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-content-2">
-                                <div class="title-price-wrap-2">
-                                    <h3><a href="product-details.html">Benetton duffle bag</a></h3>
-                                    <div class="price-2">
-                                        <span>$ 60.00</span>
-                                        <span class="old">$ 60.00</span>
+                    <% products.forEach(product => { %>
+                        <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                            <div class="product-wrap-2 mb-25">
+                                <div class="product-img">
+                                    <a href="product-details.html">
+                                        <img class="default-img" src="<%=product.productImage[0]%>" alt="">
+                                        <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
+                                    </a>
+                                    <div class="product-action-2">
+                                        <a title="Add To Cart" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                        <a title="Quick View" href="#" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-eye"></i></a>
+                                        <a title="Compare" href="#"><i class="fa fa-retweet"></i></a>
                                     </div>
                                 </div>
-                                <div class="pro-wishlist-2">
-                                    <a title="Wishlist" href="wishlist.html"><i class="fa fa-heart-o"></i></a>
+                                <div class="product-content-2">
+                                    <div class="title-price-wrap-2">
+                                        <h3><a href="product-details.html"><%=product.productName%></a></h3>
+                                        <div class="price-2">
+                                            <span><%=product.productPrice%></span>
+                                        </div>
+                                    </div>
+                                    <div class="pro-wishlist-2">
+                                        <a title="Wishlist" href="wishlist.html"><i class="fa fa-heart-o"></i></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+        
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -386,8 +390,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -414,8 +418,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -441,8 +445,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -469,8 +473,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -496,8 +500,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -524,8 +528,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -553,10 +557,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane active" id="product-2">
-                <div class="row">
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+            </div> -->
+            <!-- <div class="tab-pane active" id="product-2">
+                <div class="row"> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -582,9 +586,9 @@
                                     <a title="Wishlist" href="wishlist.html"><i class="fa fa-heart-o"></i></a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                        </div> -->
+                    <!-- </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -610,8 +614,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -638,8 +642,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -665,8 +669,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -693,8 +697,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -720,8 +724,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -748,8 +752,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
+                    </div> -->
+                    <!-- <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
                             <div class="product-img">
                                 <a href="product-details.html">
@@ -777,8 +781,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane" id="product-3">
+            </div> -->
+            <!-- <div class="tab-pane" id="product-3">
                 <div class="row">
                     <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                         <div class="product-wrap-2 mb-25">
@@ -1004,7 +1008,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <div class="support-area pb-70">
     <div class="container">
         <div class="row">

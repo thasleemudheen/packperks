@@ -1,23 +1,24 @@
 const User=require('../models/users')
+const Products=require('../models/products')
 const bcrypt=require('bcryptjs')
 const passport=require('passport')
 const jwt=require('jsonwebtoken')
 const cookieparser=require('cookie-parser')
 require('dotenv').config()
+const nodemailer=require('nodemailer')
 
 
-let homePage=(req,res)=>{
+let homePage=async(req,res)=>{
      try{
         let isAuthenticated
-        
+        const products=await Products.find()
        if(req.cookies.user_jwt){
         isAuthenticated = req.cookies.user_jwt
-        res.render('user/index',{isAuthenticated})
+
+        console.log(products);
+        res.render('user/index',{isAuthenticated,products})
        }
-       res.render('user/index',{isAuthenticated})
-       
-     
-       
+       res.render('user/index',{isAuthenticated,products})
      }catch(error){
         console.log('home page is not found');
         res.status(400).send('home page not found')
@@ -190,7 +191,12 @@ let failureGoogleLogin=async(req,res)=>{
      res.send('error')
 }
 
+let forgerPasswordGetPage=async(req,res)=>{
+    res.render('user/forgetPassword')
+}
+let forgetPasswordPostPage=async(req,res)=>{
 
+}
 
 
 
@@ -203,5 +209,6 @@ module.exports={
     profile,
     logout,
     successGoogleLogin,
-    failureGoogleLogin
+    failureGoogleLogin,
+    forgerPasswordGetPage
 }

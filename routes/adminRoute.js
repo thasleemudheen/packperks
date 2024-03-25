@@ -26,6 +26,9 @@ router.post('/admin/editCategory/:id',adminController.editCategoryPostPage)
 router.get('/admin/addProduct',adminController.addProductsGetPage)
 router.post('/admin/addProduct', upload.array('productImage',4),adminController.addProductPostPage)
 router.get('/admin/productlist',adminController.productListPage)
+router.post('/admin/deleteProduct/:id',adminController.productDelete)
+router.get('/admin/editProduct/:id',adminController.editProductGetPage)
+router.post('/admin/editProduct/:id',upload.array('newProductImage',4),adminController.editProductPostPage)
 
 
 

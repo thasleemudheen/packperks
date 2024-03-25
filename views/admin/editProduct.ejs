@@ -44,61 +44,20 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-
-<!-- table with pagination -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/mdb.min.css">
-<!-- Plugin file -->
-<link rel="stylesheet" href="./css/addons/datatables.min.css">
-<link rel="stylesheet" href="css/style.css">
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
-<script type="text/javascript" language="javascript" src="media/js/jquery.dataTables.js"></script>
-
-<link rel="stylesheet" type="text/css" href="media/css/jquery.dataTables.css">
-
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<link rel="stylesheet" 
-href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
-<script type="text/javascript" 
-src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" 
-src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
-
 </head>
 
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div> -->
-        <!-- Spinner End -->
-
-
         <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
+         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <!-- <img class="rounded-circle" src="/assets/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;"> -->
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                         <!-- <img class="rounded-circle" src="/assets/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;"> --> -->
+                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0"> thasleem </h6>
@@ -129,8 +88,8 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                         </div>
                     </div>
                 </div>
-            </nav>
-        </div>
+            </nav> 
+         </div>   
         <!-- Sidebar End -->
 
 
@@ -225,89 +184,148 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                 </div>
             </nav>
             <!-- Navbar End -->
-            <!-- <a href="/admin/addProduct" class="btn btn-primary disabled" tabindex="-1" role="button" type="submit" aria-disabled="true">ADD PRODUCT</a> -->
-<!-- <a href="#" class="btn btn-secondary disabled" tabindex="-1" role="button" aria-disabled="true">Link</a> -->
-<div class="text-center">
-    <a href="/admin/addProduct" class="btn btn-primary ">Add Product</a>
-</div>
 
-           <!--------------- product listing page start from here------------ -->
-           <table id="myproductTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="th-sm">Product image</th>
-                <th class="th-sm">ProductId</th>
-                <th class="th-sm">Name </th>
-                <th class="th-sm">category</th>               
-                <th class="th-sm">discription</th>
-                <th class="th-sm">Price</th>
-                <th class="th-sm">quantity </th>
-                <th class="th-sm">Brand</th>
-                <!-- <th class="th-sm"></th> -->
-                
-                <th class="th-sm">action</th>
-              </tr>
-            </thead>
-            <tbody>
-             
-                <% product.forEach(product=> { %>
-                    <tr>
-                      <td><img style="width: 100px; height: 100px;" src="<%=product.productImage[0]%>" alt="productImage"> </td>
-                      <td><%=product.productId %></td>
-                      <td><%=product.productName %></td>
-                      <td><%=product.categoryName %></td>
-                      <td><%=product.discription %></td>
-                      <td><%=product.productPrice %></td>
-                      <td><%=product.stockQuantity %></td>
-                      <td><%=product.brand %></td>
-                      <!-- <td><%=product.createdAt%></td> -->
-                       <td class="d-flex">
-                        <form action="/admin/deleteProduct/<%= product._id %>" class="col-6" method="post">
-                            <button type="submit" class="btn btn-outline-secondary">delete</button>
-                        </form>
-                        <form action="/admin/editProduct/<%= product._id %>" method="get">
-                            <button type="submit" class="btn btn-outline-secondary">edit</button>
-                        </form>
-                      </td>
-                      
-               <% }) %>
-              </tr>
-             
-          </table>
+<!-- addd products start -->
+
+
+<form class="form-horizontal" action="/admin/editProduct/<%=product._id%>" method="post" enctype="multipart/form-data">
+    <fieldset>
+    
+    <!-- Form Name -->
+    <legend> EDIT PRODUCT DETAILS</legend>
+    
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="productId">PRODUCT ID</label>  
+      <div class="col-md-4">
+      <input id="productId" name="productId"  class="form-control input-md" type="text" value="<%=product.productId%>">
+        
+      </div>
+    </div>
+    
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="productName">PRODUCT NAME</label>  
+      <div class="col-md-4">
+      <input id="productName" name="productName"  class="form-control input-md"  type="text" value="<%=product.productName%>">
+        
+      </div>
+    </div>
+    
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="productPrice">PRICE</label>  
+      <div class="col-md-4">
+      <input id="productPrice" name="productPrice"  class="form-control input-md"  type="text" value="<%=product.productPrice%>" >
+        
+      </div>
+    </div>
+    
+    <!-- Select Basic -->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="categoryName">PRODUCT CATEGORY</label>
+      <div class="col-md-4">
+        <select id="categoryName" name="categoryName" class="form-control"  >
+            <option value="<%=product.categoryName%>" selected><%=product.categoryName%></option>
+            <% category.forEach(cat=>{%>
+                    <option value="<%=cat %>"><%=cat %></option>    
+             <% })%>        
+            </select>
+      </div>
+    </div>
+    
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="stockQuantity">AVAILABLE QUANTITY</label>  
+      <div class="col-md-4">
+      <input id="stockQuantity" name="stockQuantity" class="form-control input-md" required="" type="text" value="<%=product.stockQuantity%>">
+        
+      </div>
+    </div>
+    
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="brand">BRAND</label>  
+      <div class="col-md-4">
+      <input id="brand" name="brand"  class="form-control input-md" required="" type="text" value="<%=product.brand%>">
+        
+      </div>
+    </div>
+    
+    <!-- Textarea -->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="discription">PRODUCT DESCRIPTION</label>
+      <div class="col-md-4">                     
+        <textarea class="form-control" id="discription" name="discription" type="textarea" ><%=product.discription%></textarea>
+      </div>
+    </div>
+    
+    
+    
+   
+     <!-- File Button --> 
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="newProductImage">product image</label>
+      <div class="col-md-4">
+        <input type="file" id="newProductImage" name="newProductImage" class="input-file" multiple >
+      </div>
+    </div>
+    <!-- File Button --> 
+    <!-- <div class="form-group">
+      <label class="col-md-4 control-label" for="filebutton">auxiliary_images</label>
+      <div class="col-md-4">
+        <input id="filebutton" name="filebutton" class="input-file" type="file">
+      </div>
+    </div> -->
+    
+    <!-- Button -->
+    
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="singlebutton"></label>
+      <div class="col-md-4">
+        <button type="submit" id="addProductbtn" name="addProductbtn" class="btn btn-primary">Update product</button>
+   
+
+      </div>
+      </div>
+    
+    
+    </fieldset>
+    </form>
+    
+
+
            
 
-          <script>
-            $(document).ready(function(){
-                $('#myproductTable').dataTable();
-            });
-            </script>
-    </div>
+
+
+
+           
+        
+
+
     <!-- JavaScript Libraries -->
 
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/popper.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/mdb.min.js"></script>
-    <!-- Plugin file -->
-    <script src="./js/addons/datatables.min.js"></script>
-    
-    
-                             
-        <!-- JavaScript Libraries -->
-        <script src="../../code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="../../cdn.jsdelivr.net/npm/bootstrap%405.0.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="lib/chart/chart.min.js"></script>
-        <script src="lib/easing/easing.min.js"></script>
-        <script src="lib/waypoints/waypoints.min.js"></script>
-        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="lib/tempusdominus/js/moment.min.js"></script>
-        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    
-        <!-- Template Javascript -->
-        <script src="js/main.js"></script>
-    </body>
-    
-    
-    <!-- Mirrored from themewagon.github.io/dashmin/signup.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Mar 2024 04:17:37 GMT -->
-    </html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../../code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="../../cdn.jsdelivr.net/npm/bootstrap%405.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/admin/lib/chart/chart.min.js"></script>
+    <script src="/assets/admin/lib/easing/easing.min.js"></script>
+    <script src="/assets/admin/lib/waypoints/waypoints.min.js"></script>
+    <script src="/assets/admin/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/assets/admin/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/assets/admin/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/assets/admin/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+
+    <script src="/assets/admin/js/main.js"></script>
+</body>
+
+
+<!-- Mirrored from themewagon.github.io/dashmin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Mar 2024 04:17:34 GMT -->
+</html>

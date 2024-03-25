@@ -17,6 +17,10 @@ router.post('/user/login',userController.loginPostPage)
 router.get('/profile',userAuth,userController.profile)
 router.get('/logout',userController.logout)
 
+//forget password 
+router.get('/forgetPassword',userController.forgerPasswordGetPage)
+
+
 //google login authentication
 
 router.get('/auth/google',passport.authenticate('google',{scope:['email','profile']}))
