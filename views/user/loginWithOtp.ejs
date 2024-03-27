@@ -62,18 +62,14 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">Login with OTP</div>
+                    <div class="card-header">login with otp</div>
                     <div class="card-body">
-                        <form action="/sendOtp" method="POST">
+                        <form action="/verifyOtp" method="POST">
                             <div class="mb-3">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Email address" required>
+                                <input type="number" class="form-control" id="verifyOtp" name="otp" placeholder="enter your otp" >
+                                <input type="hidden" name="email" id="email" value="<%= email %>">
                             </div>
-                            <% if (error) { %>
-                                <div class="alert alert-danger" role="alert" style="color: red;">
-                                    <%= error %>
-                                </div>
-                                <% } %>
-                            <button type="submit" class="btn btn-primary">Send  Email</button>
+                            <button type="submit" class="btn btn-primary">verify otp</button>
                         </form>
                     </div>
                 </div>

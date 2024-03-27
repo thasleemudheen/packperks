@@ -108,10 +108,10 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                 <div class="navbar-nav w-100">
                     <a href="/admin/dashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
                     <div class="nav-item dropdown">
-                        <a href="/admin/products" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-tachometer-alt me-2">b</i>products</a>
+                        <a href="/admin/productlist" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-tachometer-alt me-2">b</i>products</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="button.html" class="dropdown-item">Product List</a>
-                            <a href="typography.html" class="dropdown-item">Add product</a>
+                            <!-- <a href="/admin/productlist" class="dropdown-item">Product List</a> -->
+                            <!-- <a href="/admin/addProduct" class="dropdown-item">Add product</a> -->
                             <a href="/admin/categorylist" class="dropdown-item">category</a>
                         </div>
                     </div>
@@ -262,8 +262,15 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                       <td><%=product.brand %></td>
                       <!-- <td><%=product.createdAt%></td> -->
                        <td class="d-flex">
-                        <form action="/admin/deleteProduct/<%= product._id %>" class="col-6" method="post">
-                            <button type="submit" class="btn btn-outline-secondary">delete</button>
+                        <form action="/admin/disableProduct/<%= product._id %>" class="col-6" method="post">
+                            <input type="hidden" name="productId" value="<%=product._id%>">
+                            <% if(product.isDisabled){%>
+                                <button type="submit" class="btn btn-success">enable</button>
+                           <% }else{%>
+                            <button type="submit" class="btn btn-danger">disabled</button>
+                           <%}%>
+                            
+                            
                         </form>
                         <form action="/admin/editProduct/<%= product._id %>" method="get">
                             <button type="submit" class="btn btn-outline-secondary">edit</button>

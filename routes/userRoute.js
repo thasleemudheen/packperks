@@ -4,6 +4,7 @@ const userController=require('../controllers/userController')
 const bodyparser=require('body-parser')
 const userAuth=require('../middleware/jwt_user')
 const passport=require('passport')
+const user = require('../models/users')
 
 router.use(bodyparser.urlencoded({extended:true}))
 
@@ -18,7 +19,9 @@ router.get('/profile',userAuth,userController.profile)
 router.get('/logout',userController.logout)
 
 //forget password 
-router.get('/forgetPassword',userController.forgerPasswordGetPage)
+router.get('/loginWithOtp',userController.forgetPasswordGetPage)
+router.post('/sendOtp',userController.sendOtp)
+router.post('/verifyOtp',userController.verifyOtp)
 
 
 //google login authentication
@@ -31,6 +34,9 @@ passport.authenticate('google',{successRedirect:'/success',failureRedirect:'/fai
 router.get('/success',userController.successGoogleLogin)
 router.get('/failure',userController.failureGoogleLogin)
 
+
+router.get('/shop',userController.shopPage)
+router.get('/singleProduct/:id',userController.singleProductPage)
 
 
 module.exports=router

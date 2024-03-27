@@ -59,12 +59,12 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/admin/dashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
                     <div class="nav-item dropdown">
-                        <a href="/admin/products" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">products</a>
+                        <a href="/admin/productlist" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-tachometer-alt me-2">b</i>products</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="button.html" class="dropdown-item">Product List</a>
-                            <a href="typography.html" class="dropdown-item">Add product</a>
+                            <!-- <a href="/admin/productlist" class="dropdown-item">Product List</a> -->
+                            <!-- <a href="/admin/addProduct" class="dropdown-item">Add product</a> -->
                             <a href="/admin/categorylist" class="dropdown-item">category</a>
                         </div>
                     </div>
@@ -204,7 +204,8 @@
                         <td><%= user.username %></td>
                         <td><%= user.email %></td>
                         <td><%= user.phonenumber %></td>
-                        <td><form action="/admin/userBlocked" method="post">
+                        <td>
+                            <form action="/admin/userBlocked" method="post">
                             <input type="hidden" name="userId" value="<%= user._id %>">
                             <% if(user.blocked){  %>
                               <button type="submit" class="bg-success border-0">unblock</button>

@@ -6,6 +6,7 @@ const jwt=require('jsonwebtoken')
 const cookieparser=require('cookie-parser')
 require('dotenv').config()
 const nodemailer=require('nodemailer')
+const otpService=require('../service/otpservice')
 
 
 let homePage=async(req,res)=>{
@@ -15,7 +16,6 @@ let homePage=async(req,res)=>{
        if(req.cookies.user_jwt){
         isAuthenticated = req.cookies.user_jwt
 
-        console.log(products);
         res.render('user/index',{isAuthenticated,products})
        }
        res.render('user/index',{isAuthenticated,products})
@@ -54,7 +54,6 @@ let loginPage = (req, res) => {
 
 
 
-
 let loginPostPage = async (req, res) => {
     console.log('req.body:', req.body);
 
@@ -67,8 +66,6 @@ let loginPostPage = async (req, res) => {
             // Find the user by email
             const user = await User.findOne({ email });
             // console.log(user,'user not found');
-
-            
 
             if (!user) {
                 return res.render('user/login', { passError: 'user not found' });
@@ -88,23 +85,27 @@ let loginPostPage = async (req, res) => {
                     return res.status(401).render('user/login', { passError: 'Wrong password' });
                 }
 
-                // Generate JWT token
-                const token = jwt.sign({
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                }, process.env.JWT_SECRET, {
-                    expiresIn: '24h'
-                });
-                // console.log(token);
-
-                // Set the JWT token in a cookie
-                res.cookie('user_jwt', token, { httpOnly: true, maxAge: 86400000 });
-
-                console.log('User logged in successfully, token created');
-                // Redirect the user to the home page
-                res.redirect('/');
-            });
+                
+                    // Generate JWT token
+                    const token = jwt.sign({
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                    }, process.env.JWT_SECRET, {
+                        expiresIn: '24h'
+                    });
+                
+                    // Set the JWT token in a cookie
+                    res.cookie('user_jwt', token, { httpOnly: true, maxAge: 86400000 });
+                
+                    console.log('User logged in successfully, token created');
+                    // Use the replace method to prevent the user from going back to the login page
+                    // res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+                    res.render('user/login', { successMessage: 'Logged in successfully' });
+                    res.redirect('/');
+                   
+                         
+             });
         } catch (error) {
             console.log('Error on login submit', error);
             res.status(500).send('Internal server error');
@@ -115,7 +116,6 @@ let loginPostPage = async (req, res) => {
         res.render('user/login', { passError: 'Please provide email and password' });
     }
 }
-
 
 
 let signupPostpage = async (req, res) => {
@@ -191,14 +191,66 @@ let failureGoogleLogin=async(req,res)=>{
      res.send('error')
 }
 
-let forgerPasswordGetPage=async(req,res)=>{
-    res.render('user/forgetPassword')
-}
-let forgetPasswordPostPage=async(req,res)=>{
-
+let forgetPasswordGetPage=async(req,res)=>{
+    res.render('user/forgetPassword',{error:null})
 }
 
+let sendOtp=async(req,res)=>{
+    const {email}=req.body
+    console.log(email);
+    const otp=otpService.generateOTP()
+    
+    try{
+        const user = await User.findOne({email})
+        if(!user){
+           return res.render('user/forgetPassword',{error:'user not found with this email'})
+        }
+           await otpService.sendOTP(email,otp)
+           console.log("otp send successfully");
+           res.cookie('otp',otp.toString(),{maxAge:300000})
 
+           return res.status(200).render('user/loginWithOtp',{email})
+          
+    }catch(error){
+        console.error('there are some error in generating otp', error);
+        res.status(500).send('Error sending OTP. Please try again.');
+    }
+}
+
+let verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+    const user=await User.findOne({email})
+    console.log("userwithotp",user);
+    const storedOtp=req.cookies.otp
+    console.log(storedOtp);
+    try {
+        if(storedOtp === otp){
+            const token = jwt.sign({
+                id: user._id,
+                name: user.name,
+                email: user.email,
+            }, process.env.JWT_SECRET, {
+                expiresIn: '24h'
+            });
+            res.cookie('user_jwt', token, { httpOnly: true, maxAge: 86400000 });
+            res.redirect("/")
+        }
+    } catch (error) {
+        console.error('Error verifying OTP:', error);
+        res.status(500).send('Error verifying OTP. Please try again.');
+    }
+}
+
+
+let shopPage=async(req,res)=>{
+    let products=await Products.find()
+    res.render('user/shop',{products})
+}
+let singleProductPage=async(req,res)=>{
+    let productId=req.params.id
+    let singleProduct=await Products.findById(productId)
+    res.render('user/productDetails',{product:singleProduct})
+}
 
 module.exports={
     homePage,
@@ -210,5 +262,9 @@ module.exports={
     logout,
     successGoogleLogin,
     failureGoogleLogin,
-    forgerPasswordGetPage
+    forgetPasswordGetPage,
+    shopPage,
+    singleProductPage,
+    sendOtp,
+    verifyOtp
 }

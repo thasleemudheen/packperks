@@ -263,13 +263,26 @@
     
     
    
-     <!-- File Button --> 
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="newProductImage">product image</label>
-      <div class="col-md-4">
-        <input type="file" id="newProductImage" name="newProductImage" class="input-file" multiple >
-      </div>
+     <!-- File Button -->
+
+     <input type="hidden" id="existingImageUrls" value="<%= JSON.stringify(product.productImage) %>">
+     <div class="form-group">
+        <label class="col-md-4 control-label" for="existingImages">Existing Images</label>
+        <div class="col-md-4">
+            <div id="existingImages">
+                <% product.productImage.forEach(image => { %>
+                    <img src="<%= image %>" alt="Product Image" style="max-width: 100px; margin-right: 10px;">
+                <% }); %>
+            </div>
+        </div>
     </div>
+
+   <div class="form-group">
+    <label class="col-md-4 control-label" for="newProductImage">Upload New Images</label>
+    <div class="col-md-4">
+        <input type="file" id="newProductImage" name="newProductImage" class="input-file" multiple>
+    </div>
+</div>
     <!-- File Button --> 
     <!-- <div class="form-group">
       <label class="col-md-4 control-label" for="filebutton">auxiliary_images</label>
@@ -303,7 +316,19 @@
            
         
 
-
+    <script>
+        // JavaScript to set file input value only when new images are selected
+        document.getElementById('newProductImage').addEventListener('change', function() {
+            const files = this.files;
+            if (files.length > 0) {
+                const existingImageUrls = JSON.parse(document.getElementById('existingImageUrls').value);
+                if (existingImageUrls && existingImageUrls.length > 0) {
+                    // If user selects new images, don't set value to existing images
+                    this.value = '';
+                }
+            }
+        });
+    </script>
     <!-- JavaScript Libraries -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>

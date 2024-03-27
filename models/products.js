@@ -10,7 +10,8 @@ let productSchema=new mongoose.Schema({
     productImage:{type:Array },
     brand:{type:String , required:true},
     categoryName:{type:String},
-    createdAt:{type:Date,default:Date.now}
+    createdAt:{type:Date,default:Date.now},
+    isDisabled:{type:Boolean,default:false}
 })
 
 const products=mongoose.model('products',productSchema)

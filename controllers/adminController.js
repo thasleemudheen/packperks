@@ -3,7 +3,6 @@ const User=require('../models/users')
 const Products=require('../models/products')
 const jwt=require('jsonwebtoken')
 const cloudinary=require('../config/cloudinary')
-// const upload=require('../config/multer')
 const multer=require('multer')
 const upload = multer({ dest: 'uploads/' }); 
 
@@ -64,9 +63,9 @@ let adminDashBoard=(req,res)=>{
     res.render('admin/index')
 }
 
-let productsGetPage=async(req,res)=>{
-    res.render('admin/products')
-}
+// let productsGetPage=async(req,res)=>{
+//     res.render('admin/products')
+// }
 
 let UserGetPage=async(req,res)=>{
     let users =await User.find()
@@ -204,11 +203,6 @@ let addProductPostPage=async(req,res)=>{
         const result = await cloudinary.uploader.upload(image.path);
         imageUrls.push(result.secure_url);
     }));
-    
-    // const result=await Promise.all(productImage.map((image)=>{
-    //      return cloudinary.uploader.upload(image.path)
-    //      imageUrls.push(result.secure_url)
-    // }))
        console.log("result ::",result);
 
 
@@ -221,7 +215,6 @@ let addProductPostPage=async(req,res)=>{
         brand,
         discription,
         productImage:imageUrls,
-        // createdAt
 
       })
       console.log(newProduct);
@@ -250,17 +243,23 @@ let productListPage=async(req,res)=>{
     }  
 }
 
-let productDelete=async(req,res)=>{
-     const productId=req.params.id
-     try{
-       
-       await Products.findByIdAndDelete(productId)
-
+let productDisable=async(req,res)=>{
+      let productId=req.body.productId
+    //   console.log(productId);
+      try {
+        const product=await Products.findOne({_id:productId})
+        // console.log(product);
+        if(product){
+            product.isDisabled=!product.isDisabled
+            await product.save()
+            console.log('product disabled');
+        }
         res.redirect('/admin/productlist')
-     }catch(error){
-          console.log('product not deleted');
-          res.status(400).send('internal server error')
-     }
+      } catch (error) {
+        console.log('product not disabled ');
+        res.status(400).send('internal server error')
+        
+      }     
 }
 let editProductGetPage=async(req,res)=>{
     try{
@@ -294,7 +293,6 @@ let editProductPostPage=async(req,res)=>{
         product.discription=req.body.discription
         product.brand=req.body.brand
         product.stockQuantity=req.body.stockQuantity
-        // product.productImage=req.body.newProductImage
 
         const newProductImages = req.files;
         const imageUrls = [];
@@ -320,7 +318,6 @@ module.exports={
     adminLogin,
     adminPostLogin,
     adminDashBoard,
-    productsGetPage,
     UserGetPage,
     userBlock,
     adminLogoutpage,
@@ -333,7 +330,7 @@ module.exports={
     addProductsGetPage,
     productListPage,
     addProductPostPage,
-    productDelete,
+    productDisable,
     editProductGetPage,
     editProductPostPage
     
