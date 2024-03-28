@@ -21,14 +21,33 @@ const userSchema=new mongoose.Schema({
     phonenumber:{
         type:String
     },
-    token:{
-        type:String,
-        default:null
-    },
+   
     blocked:{
         type:Boolean,
         default:false
     },
+    cart:{
+        product:[{
+            productId:{type:mongoose.Schema.ObjectId,
+                ref:'product'
+            },
+            productImage:{
+                type:[String]
+            },
+            productName:{
+                type:String
+            },
+            productPrice:{
+                type:String
+            },
+            quantity:{
+                type:String, default:1
+            },
+        }],
+        total:{
+            type:String
+        }
+    }
 });
 
 const user=mongoose.model('user',userSchema);

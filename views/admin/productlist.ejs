@@ -74,7 +74,35 @@ href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" 
 src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<style>
+    /* Add this CSS to style the disabled product image */
+.product-image {
+    position: relative;
+    transition: opacity 0.3s;
+}
 
+.product-image img {
+    max-width: 100%;
+}
+
+.product-image.disabled img {
+    opacity: 0.5; /* Reduce opacity of the image */
+}
+
+.product-image.disabled::after {
+    content: "Out of Stock"; /* Display "Out of Stock" text over the image */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.7); /* Red color with some transparency */
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+</style>
 
 </head>
 
@@ -246,13 +274,16 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                 <!-- <th class="th-sm"></th> -->
                 
                 <th class="th-sm">action</th>
+                <th class="th-sm">edit</th>
               </tr>
             </thead>
             <tbody>
              
                 <% product.forEach(product=> { %>
                     <tr>
-                      <td><img style="width: 100px; height: 100px;" src="<%=product.productImage[0]%>" alt="productImage"> </td>
+                        <td class="product-image <%= product.isDisabled ? 'disabled' : '' %>">
+                            <img style="height: 200px; width: 200px;" src="<%=product.productImage[0]%>" alt="productImage">
+                        </td>
                       <td><%=product.productId %></td>
                       <td><%=product.productName %></td>
                       <td><%=product.categoryName %></td>
@@ -272,8 +303,12 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                             
                             
                         </form>
+                    </td>
+                        <td>
+
+                        
                         <form action="/admin/editProduct/<%= product._id %>" method="get">
-                            <button type="submit" class="btn btn-outline-secondary">edit</button>
+                            <button type="submit" class="btn btn-secondary">edit</button>
                         </form>
                       </td>
                       

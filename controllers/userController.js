@@ -251,6 +251,99 @@ let singleProductPage=async(req,res)=>{
     let singleProduct=await Products.findById(productId)
     res.render('user/productDetails',{product:singleProduct})
 }
+let wishListPage=async(req,res)=>{
+    res.render('user/wishlist')
+}
+
+let cartPage=async(req,res)=>{
+    try {
+        const token =req.cookies.user_jwt
+        console.log(token);
+        if(!token){
+           return res.redirect('/login')
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded || !decoded.id) {
+            return res.redirect('/login');
+        }
+        const userId = decoded.id;
+        console.log('User ID:', userId)
+        console.log(decoded);
+        
+        const user=await User.findById(userId).populate('cart.product')
+        console.log(user);
+        let cartTotal=0
+
+        user.cart.product.forEach(item=>{
+            item.total=item.quantity*item.productPrice
+            cartTotal+=item.total
+
+            console.log(item.total);
+            console.log(cartTotal);
+        })
+        // const product=await getProductById(req.params.productId)
+        // console.log(product);
+
+        res.render('user/cart-page',{user,cartTotal})
+    } catch (error) {
+        console.log('cart page not getting');
+        res.status(400).send('internal server error')
+    }
+   
+    
+}
+
+let addProductCart=async(req,res)=>{
+    const productId=req.params.id
+    console.log(productId);
+   try {
+    const token=req.cookies.user_jwt
+    console.log(token);
+    if(!token){
+        return res.redirect('/login')
+    }
+    const decoded=jwt.verify(token,process.env.JWT_SECRET)
+    if(!decoded || !decoded.id){
+        return res.redirect('/login')
+    }
+    const userId=decoded.id
+    console.log(userId);
+    const user=await User.findById(userId)
+    console.log(user);
+    if(!user){
+        return res.status(400).send('user not found')
+    }
+    const productId=req.params.id
+    console.log(productId);
+    const product=await Products.findById(productId)
+    console.log(product);
+
+
+    if(!product){
+        return res.status(400).send('product not found')
+    }
+
+    const existingItemIndex=user.cart.product.findIndex(item=>item.productId.toString()===productId)
+    if(existingItemIndex!= -1){
+        user.cart.product[existingItemIndex].quantity++;
+    }else{
+        user.cart.product.push({
+            productId:productId,
+            productImage:product.productImage,
+            productName:product.productName,
+            productPrice:product.productPrice,
+            quantity:1
+
+        })
+    }
+    await user.save()
+   return res.json({message:'product add to the cart'})
+
+  } catch (error) {
+    console.log('product not added to the cart');
+    res.status(500).send('internal server error')
+  }
+}
 
 module.exports={
     homePage,
@@ -266,5 +359,8 @@ module.exports={
     shopPage,
     singleProductPage,
     sendOtp,
-    verifyOtp
+    verifyOtp,
+    wishListPage,
+    cartPage,
+    addProductCart
 }

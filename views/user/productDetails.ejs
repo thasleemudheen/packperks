@@ -25,6 +25,33 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <!-- Modernizer JS -->
     <script src="/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <style>
+       .product-image-overlay {
+    position: absolute;
+    top: -7%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em; /* Increase font size */
+}
+
+
+.product-image.disabled {
+    opacity: 0.2; /* Reduce opacity of the image */
+}
+.zoompro-border.disabled img {
+    opacity: 0.5; /* Reduce opacity of the image */
+}
+
+.pro-details-cart.disabled {
+    display: none; /* Hide the Buy now button */
+}
+
+    </style>
 </head>
 
 <body>
@@ -89,7 +116,7 @@
                                 <li><a href="#"> Pages <i class="fa fa-angle-down"></i></a>
                                     <ul class="submenu">
                                         <li><a href="about.html">about us</a></li>
-                                        <li><a href="cart-page.html">cart page</a></li>
+                                        <li><a href="/cart">cart page</a></li>
                                         <li><a href="checkout.html">checkout </a></li>
                                         <li><a href="wishlist.html">wishlist </a></li>
                                         <li><a href="my-account.html">my account</a></li>
@@ -169,7 +196,7 @@
                                     <h4>Total : <span class="shop-total">$260.00</span></h4>
                                 </div>
                                 <div class="shopping-cart-btn btn-hover text-center">
-                                    <a class="default-btn" href="cart-page.html">view cart</a>
+                                    <a class="default-btn" href="/cart">view cart</a>
                                     <a class="default-btn" href="checkout.html">checkout</a>
                                 </div>
                             </div>
@@ -182,17 +209,7 @@
                     <nav id="mobile-menu-active">
                         <ul class="menu-overflow">
                             <li><a href="/">HOME</a>
-                                <ul>
-                                    <li><a href="#">Demo Group 01</a>
-                                       
-                                    </li>
-                                    <li><a href="#">Demo Group 02</a>
-                                       
-                                    </li>
-                                    <li><a href="#">Demo Group 03</a>
-                                       
-                                    </li>
-                                </ul>
+                               
                             </li>
                             <li><a href="/shop">Shop</a>
                                 <ul>
@@ -241,7 +258,7 @@
         <div class="breadcrumb-content text-center">
             <ul>
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="/">Home</a>
                 </li>
                 <li class="active">Shop Details </li>
             </ul>
@@ -257,38 +274,27 @@
             <div class="col-xl-7 col-lg-7 col-md-12">
                 <div class="product-details-img mr-20 product-details-tab">
                     <div id="gallery" class="product-dec-slider-2">
-                        <a data-image="<%=product.productImage[0]%>" data-zoom-image="<%=product.productImage[0]%>">
-                            <img src="<%=product.productImage[0]%>" alt="">
-                        </a>
-                        <a data-image="<%=product.productImage[1]%>" data-zoom-image="<%=product.productImage[1]%>">
-                            <img src="<%=product.productImage[1]%>" alt="">
-                        </a>
-                        <a data-image="<%=product.productImage[2]%>" data-zoom-image="<%=product.productImage[2]%>">
-                            <img src="<%=product.productImage[2]%>" alt="">
-                        </a>
-                        <a data-image="<%=product.productImage[3]%>" data-zoom-image="<%=product.productImage[3]%>">
-                            <img src="<%=product.productImage[3]%>" alt="">
-                        </a> 
-                        <!-- <a data-image="/assets/img/product-details/product-detalis-l4.jpg" data-zoom-image="assets/img/product-details/product-detalis-bl4.jpg">
-                            <img src="<%=product.productImage[0]%>" alt="">
-                        </a>  -->
+                        <% for(let i=0; i<product.productImage.length; i++) { %>
+                            <a data-image="<%=product.productImage[i]%>" data-zoom-image="<%=product.productImage[i]%>">
+                                <img src="<%=product.productImage[i]%>" alt="">
+                            </a>
+                        <% } %>
                     </div>
                     <div class="zoompro-wrap zoompro-2 pl-20">
-                        <div class="zoompro-border zoompro-span">
-                            <img class="zoompro" src="<%=product.productImage[0]%>" data-zoom-image="<%=product.productImage[0]%>" alt=""/>          
+                        <div class="zoompro-border zoompro-span <%= product.isDisabled ? 'disabled' : '' %>">
+                            <img class="zoompro" src="<%=product.productImage[0]%>" data-zoom-image="<%=product.productImage[0]%>" alt=""/>
                             <span>-29%</span>
-                            <!-- <div class="product-video">
-                                <a class="video-popup" href="https://www.youtube.com/watch?v=tce_Ap96b0c">
-                                    <i class="fa fa-video-camera"></i>
-                                    View Video
-                                </a>
-                            </div> -->
+                           
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-5 col-lg-5 col-md-12">
                 <div class="product-details-content">
+                    <% if(product.isDisabled){%>
+                        <div class="product-image-overlay">Currently not available</div>
+                    <% } %>
                     <h2><%=product.ProductName%></h2>
                     <div class="product-details-price">
                         <span>₹: <%=product.productPrice%></span>
@@ -343,11 +349,13 @@
                         <div class="cart-plus-minus">
                             <input class="cart-plus-minus-box" type="text" name="qtybutton" value="2">
                         </div>
+                        <form action="/addToCart/<%= product._id%>" method="post">
                         <div class="pro-details-cart btn-hover">
-                            <a href="#">Add To Cart</a>
+                          <a href=""> <button style="background-color: #343538; color: white; font-weight: 500; font-size: 15px;" type="submit"> Add To Cart</button></a>
                         </div>
-                        <div class="pro-details-cart btn-hover">
-                            <a href="#">Buy now</a>
+                    </form>
+                        <div class="pro-details-cart btn-hover <%= product.isDisabled ? 'disabled' : '' %>">
+                            <a href="#"><button type="submit">Buy now</button></a>
                         </div>
                         <div class="pro-details-wishlist">
                             <a href="#"><i class="fa fa-heart-o"></i></a>
@@ -372,15 +380,7 @@
                             <li><a href="#">Electronic</a></li>
                         </ul>
                     </div> -->
-                    <!-- <div class="pro-details-social">
-                        <ul>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-                            <li><a href="#"><i class="fa fa-pinterest-p"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                        </ul>
-                    </div> -->
+                    
                 </div>
             </div>
             

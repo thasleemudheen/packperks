@@ -38,5 +38,9 @@ router.get('/failure',userController.failureGoogleLogin)
 router.get('/shop',userController.shopPage)
 router.get('/singleProduct/:id',userController.singleProductPage)
 
+router.get('/wishlist',userController.wishListPage)
+router.get('/cart',userController.cartPage)
+router.post('/addToCart/:id',userController.addProductCart)
+
 
 module.exports=router
