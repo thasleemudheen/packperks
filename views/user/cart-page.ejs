@@ -25,6 +25,18 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <!-- Modernizer JS -->
     <script src="/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+    <!-- bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- tostify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
@@ -169,7 +181,7 @@
                                     <h4>Total : <span class="shop-total">$260.00</span></h4>
                                 </div>
                                 <div class="shopping-cart-btn btn-hover text-center">
-                                    <a class="default-btn" href="cart-page.html">view cart</a>
+                                    <a class="default-btn" href="/cart">view cart</a>
                                     <a class="default-btn" href="checkout.html">checkout</a>
                                 </div>
                             </div>
@@ -181,10 +193,10 @@
                 <div class="mobile-menu">
                     <nav id="mobile-menu-active">
                         <ul class="menu-overflow">
-                            <li><a href="index.html">HOME</a>
+                            <li><a href="/">HOME</a>
                                
                             </li>
-                            <li><a href="shop.html">Shop</a>
+                            <li><a href="/shop">Shop</a>
                                
                             </li>
                             <li><a href="shop.html">Collection</a></li>
@@ -198,16 +210,6 @@
                                     <li><a href="login-register.html">login / register </a></li>
                                     <li><a href="contact.html">contact us </a></li>
                                     <li><a href="404.html">404 page </a></li>
-                                </ul>
-                            </li>
-                            <li><a href="blog.html">Blog</a>
-                                <ul>
-                                    <li><a href="blog.html">blog standard</a></li>
-                                    <li><a href="blog-no-sidebar.html">blog no sidebar</a></li>
-                                    <li><a href="blog-right-sidebar.html">blog right sidebar</a></li>
-                                    <li><a href="blog-details.html">blog details 1</a></li>
-                                    <li><a href="blog-details-2.html">blog details 2</a></li>
-                                    <li><a href="blog-details-3.html">blog details 3</a></li>
                                 </ul>
                             </li>
                             <li><a href="about.html">About us</a></li>
@@ -224,7 +226,7 @@
         <div class="breadcrumb-content text-center">
             <ul>
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="/">Home</a>
                 </li>
                 <li class="active">Cart Page </li>
             </ul>
@@ -253,7 +255,7 @@
                                 <% user.cart.product.forEach(item=>{%>
 
                                 
-                                <tr>
+                                <tr data-product-id="<%= item.productId %>">
                                     <td class="product-thumbnail">
                                         <a href="#"><img style="height: 100px; width: 100px;" src="<%=item.productImage[0]%>" alt=""></a>
                                     </td>
@@ -261,38 +263,32 @@
                                     <td class="product-price-cart"><span class="amount"><%=item.productPrice%></span></td>
                                     <td class="product-quantity">
                                         <div class="">
-                                       <span>-</span>     <%=item.quantity%>   <span>+</span>
+                                            <button class="btn btn-sm btn-plus  bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityminus('<%= item.productId %>')">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                           <span> <%=item.quantity%> </span>
+                                             <button class="btn btn-sm btn-plus  bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityminus('<%= item.productId %>')">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
                                              <!-- <input class="cart-plus-minus-box " type="text" name="qtybutton" > -->
                                         </div>
                                     </td>
                                     <td class="product-subtotal"> ₹ <%=(item.productPrice*item.quantity)%></td>
+                                    <!-- <form action="/removeFromCart/<%=item.productId%>" method="post"> -->
                                     <td class="product-remove">
-                                        <a href="#"><i class="fa fa-pencil"></i></a>
-                                        <a href="#"><i class="fa fa-times"></i></a>
+                                        <!-- <a href="#"><i class="fa fa-pencil"></i></a> -->
+                                        <button type="button" onclick="removeFromCart('<%=item.productId%>')" ><i class="fa fa-times"></i> </button>
                                    </td>
+                                <!-- </form> -->
                                 </tr>
                                 <%})%>
                                 
-                                <!-- <tr>
-                                    <td class="product-thumbnail">
-                                        <a href="#"><img src="/assets/img/cart/cart-1.png" alt=""></a>
-                                    </td>
-                                    <td class="product-name"><a href="#">Product Name </a></td>
-                                    <td class="product-price-cart"><span class="amount">$170.00</span></td>
-                                    <td class="product-quantity">
-                                        <div class="cart-plus-minus">
-                                            <input class="cart-plus-minus-box" type="text" name="qtybutton" value="2">
-                                        </div>
-                                    </td>
-                                    <td class="product-subtotal">$170.00</td>
-                                    <td class="product-remove">
-                                        <a href="#"><i class="fa fa-pencil"></i></a>
-                                        <a href="#"><i class="fa fa-times"></i></a>
-                                   </td>
-                                </tr> -->
+                               
                             </tbody>
                         </table>
                     </div>
+                    
+
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="cart-shiping-update-wrapper">
@@ -370,7 +366,7 @@
                             <div class="title-wrap">
                                 <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                             </div>
-                            <h5>Total products <span>$260.0</span></h5>
+                            <h5>Total products <span><%=cartTotal %></span></h5>
                             <div class="total-shipping">
                                 <h5>Total shipping</h5>
                                 <ul>
@@ -387,6 +383,36 @@
         </div>
     </div>
 </div>
+
+<script>
+    function removeFromCart(productId){
+        axios.post('/removeFromCart/'+productId)
+        .then((response)=>{
+            console.log(response);
+            if(response.status===200){
+                
+                Toastify({
+                    text: 'product remove from the cart',
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'center',
+                    backgroundColor: 'darkGrey'
+                }).showToast();
+                const rowToRemove = document.querySelector(`tr[data-product-id="${productId}"]`);
+                if (rowToRemove) {
+                    rowToRemove.remove();
+                }
+
+            }                            
+        })
+        .catch(error => {
+                console.error('product not deleted from the cart', error);
+                alert('product not delete from the cart');
+ });
+    }
+</script>
+ 
+
 <footer class="footer-area bg-gray pt-100 pb-70">
     <div class="container">
         <div class="row">
@@ -497,6 +523,7 @@
 <script src="/assets/js/ajax-mail.js"></script>
 <!-- Main JS -->
 <script src="/assets/js/main.js"></script>
+
 
 </body>
 

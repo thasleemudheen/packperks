@@ -23,8 +23,19 @@
     <link rel="stylesheet" href="/assets/css/plugins.css">
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="/assets/css/style.css">
+
+    <!-- //tosastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
     <!-- Modernizer JS -->
     <script src="/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- tostify -->
+
+
     <style>
        .product-image-overlay {
     position: absolute;
@@ -349,9 +360,9 @@
                         <div class="cart-plus-minus">
                             <input class="cart-plus-minus-box" type="text" name="qtybutton" value="2">
                         </div>
-                        <form action="/addToCart/<%= product._id%>" method="post">
+                        <form>
                         <div class="pro-details-cart btn-hover">
-                          <a href=""> <button style="background-color: #343538; color: white; font-weight: 500; font-size: 15px;" type="submit"> Add To Cart</button></a>
+                          <a href=""> <button onclick="addToCart('<%= product._id %>')" style="background-color: #343538; color: white; font-weight: 500; font-size: 15px;" type="button"> Add To Cart</button></a>
                         </div>
                     </form>
                         <div class="pro-details-cart btn-hover <%= product.isDisabled ? 'disabled' : '' %>">
@@ -388,6 +399,36 @@
 
     </div>
 </div>
+<script>
+    function addToCart(productId) {
+        console.log("dunctiio kjjjs");
+      // Prevent the default behavior of the click event
+      event.preventDefault();
+      // Make the request to add the product to the cart
+      axios.post('/addToCart/' + productId)
+        .then((response)=>{
+            console.log(response.status)
+            if(response.status === 200){
+                Toastify({
+                text: "Product added to cart",
+                duration: 3000,
+                gravity:"top",
+                position :"center",
+                backgroundColor: "darkGrey",
+                }).showToast()
+            }
+           
+        })
+        .catch(error => {
+          console.error('Error adding product to cart:', error);
+          alert('Failed to add product to cart. Please try again.');
+        });
+    }
+    
+    </script>
+    
+
+
 <!-- <div class="description-review-area pb-90">
     <div class="container">
         <div class="description-review-wrapper">

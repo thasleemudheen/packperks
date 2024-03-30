@@ -16,7 +16,7 @@ let homePage=async(req,res)=>{
        if(req.cookies.user_jwt){
         isAuthenticated = req.cookies.user_jwt
 
-        res.render('user/index',{isAuthenticated,products})
+        return res.render('user/index',{isAuthenticated,products})
        }
        res.render('user/index',{isAuthenticated,products})
      }catch(error){
@@ -258,7 +258,7 @@ let wishListPage=async(req,res)=>{
 let cartPage=async(req,res)=>{
     try {
         const token =req.cookies.user_jwt
-        console.log(token);
+        // console.log(token);
         if(!token){
            return res.redirect('/login')
         }
@@ -267,24 +267,23 @@ let cartPage=async(req,res)=>{
             return res.redirect('/login');
         }
         const userId = decoded.id;
-        console.log('User ID:', userId)
-        console.log(decoded);
+        // console.log('User ID:', userId)
+        // console.log(decoded);
         
         const user=await User.findById(userId).populate('cart.product')
-        console.log(user);
+        // console.log(user);
         let cartTotal=0
 
         user.cart.product.forEach(item=>{
             item.total=item.quantity*item.productPrice
             cartTotal+=item.total
 
-            console.log(item.total);
-            console.log(cartTotal);
+        //  console.log(item.productId)
+            // console.log(item.total);
+            // console.log(cartTotal);
         })
-        // const product=await getProductById(req.params.productId)
-        // console.log(product);
-
-        res.render('user/cart-page',{user,cartTotal})
+        
+          res.render('user/cart-page',{user,cartTotal})
     } catch (error) {
         console.log('cart page not getting');
         res.status(400).send('internal server error')
@@ -294,11 +293,10 @@ let cartPage=async(req,res)=>{
 }
 
 let addProductCart=async(req,res)=>{
-    const productId=req.params.id
-    console.log(productId);
+    // console.log(productId);
    try {
     const token=req.cookies.user_jwt
-    console.log(token);
+    // console.log(token);
     if(!token){
         return res.redirect('/login')
     }
@@ -307,16 +305,16 @@ let addProductCart=async(req,res)=>{
         return res.redirect('/login')
     }
     const userId=decoded.id
-    console.log(userId);
+    // console.log(userId);
     const user=await User.findById(userId)
-    console.log(user);
+    // console.log(user);
     if(!user){
         return res.status(400).send('user not found')
     }
     const productId=req.params.id
-    console.log(productId);
-    const product=await Products.findById(productId)
-    console.log(product);
+    // console.log(productId);
+    const product = await Products.findById(productId)
+    // console.log(product);
 
 
     if(!product){
@@ -335,14 +333,57 @@ let addProductCart=async(req,res)=>{
             quantity:1
 
         })
+        // Calculate cart total
+        let cartTotal = user.cart.product.reduce((acc, item) => acc + (parseInt(item.productPrice) * parseInt(item.quantity)), 0);
+        user.cart.total = cartTotal.toString();
+        
     }
     await user.save()
-   return res.json({message:'product add to the cart'})
-
+    console.log("workingggg...");
+     res.status(200).json({message:'product added to cart'})
   } catch (error) {
     console.log('product not added to the cart');
     res.status(500).send('internal server error')
   }
+}
+
+let removeFromCart=async(req,res)=>{
+    try {
+        const token=req.cookies.user_jwt
+        console.log(token);
+        if(!token){
+           return res.redirect('/login')
+        }
+        const decoded=jwt.verify(token,process.env.JWT_SECRET)
+        if(!decoded || !decoded.id){
+            return res.redirect('/login')
+        }
+        const userId=decoded.id
+        const user=await User.findById(userId)
+        console.log(user);
+        if(!user){
+            return res.status(400).send('user not found')
+        }
+        const productId=req.params.id
+        console.log(productId);
+        user.cart.product=user.cart.product.filter(item=>item.productId.toString()!==productId)
+
+        // Recalculate cartTotal
+        // user.cart.product = user.cart.product.filter(item => item.productId.toString() !== productId);
+        let cartTotal = user.cart.product.reduce((acc, item) => acc + (parseInt(item.productPrice) * parseInt(item.quantity)), 0);
+        user.cart.total = cartTotal.toString();
+
+        await user.save()
+         res.status(200).json({message:'product remove from the cart'})
+        
+    } catch (error) {
+        console.log('not remove from the cart');
+        res.status(500).send('product not remove from the cart')
+    }
+}
+
+let quantityPlus=async(req,res)=>{
+
 }
 
 module.exports={
@@ -362,5 +403,6 @@ module.exports={
     verifyOtp,
     wishListPage,
     cartPage,
-    addProductCart
+    addProductCart,
+    removeFromCart
 }

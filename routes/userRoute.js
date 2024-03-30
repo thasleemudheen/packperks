@@ -41,6 +41,6 @@ router.get('/singleProduct/:id',userController.singleProductPage)
 router.get('/wishlist',userController.wishListPage)
 router.get('/cart',userController.cartPage)
 router.post('/addToCart/:id',userController.addProductCart)
-
+router.post('/removeFromCart/:id',userController.removeFromCart)
 
 module.exports=router
