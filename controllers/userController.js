@@ -381,11 +381,77 @@ let removeFromCart=async(req,res)=>{
         res.status(500).send('product not remove from the cart')
     }
 }
-
 let quantityPlus=async(req,res)=>{
+    try {
+        const token = req.cookies.user_jwt;
+        if (!token) {
+            return res.redirect('/login');
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded || !decoded.id) {
+            return res.redirect('/login');
+        }
+
+        const userId = decoded.id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).send('User not found');
+        }
+        const productId=req.params.id
+        const cartItem=user.cart.product.find(item=>item.productId.toString()===productId)
+        if(!cartItem){
+            return res.status(400).send('product not found in the cart')
+        }
+         cartItem.quantity++;
+
+         let cartTotal=user.cart.product.reduce((acc,item)=>acc+(parseInt(item.productPrice)*parseInt(item.quantity)),0)
+         user.cart.total=cartTotal.toString()
+         await user.save()
+         res.status(200).json({message:'quantity increased successfully'})
+     }catch (error) {
+        console.log('failed to increase the quantity');
+        res.status(500).send('failed to increase the quantity')
+    }
 
 }
 
+let quantityMinus=async(req,res)=>{
+    try {
+        const token = req.cookies.user_jwt;
+        if (!token) {
+            return res.redirect('/login');
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded || !decoded.id) {
+            return res.redirect('/login');
+        }
+
+        const userId = decoded.id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).send('User not found');
+        }
+        const productId=req.params.id
+        const cartItem = user.cart.product.find(item => item.productId.toString() === productId);
+        if (!cartItem) {
+            return res.status(400).send('Product not found in the cart');
+        }
+        if(cartItem.quantity >1){
+            cartItem.quantity--;
+            let cartTotal=user.cart.product.reduce((acc,item)=>acc+(parseInt(item.productPrice)*parseInt(item.quantity)),0)
+            user.cart.total=cartTotal.toString()
+            await user.save()
+            res.status(200).json({message:'quantity decreased successfully'})
+        }else{
+            res.status(400).send('quantity is not one')
+        }
+    } catch (error) {
+        console.log('failedd to decrease the quantity');
+        res.status(500).send('failed to decrease the quantity')
+    }
+}
 module.exports={
     homePage,
     signUpPage,
@@ -404,5 +470,7 @@ module.exports={
     wishListPage,
     cartPage,
     addProductCart,
-    removeFromCart
+    removeFromCart,
+    quantityPlus,
+    quantityMinus
 }

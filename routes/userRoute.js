@@ -39,8 +39,12 @@ router.get('/shop',userController.shopPage)
 router.get('/singleProduct/:id',userController.singleProductPage)
 
 router.get('/wishlist',userController.wishListPage)
+
+//cart page
 router.get('/cart',userController.cartPage)
 router.post('/addToCart/:id',userController.addProductCart)
 router.post('/removeFromCart/:id',userController.removeFromCart)
+router.post('/quantityPlus/:id',userController.quantityPlus)
+router.post('/quantityMinus/:id',userController.quantityMinus)
 
 module.exports=router

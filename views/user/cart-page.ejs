@@ -262,18 +262,17 @@
                                     <td class="product-name"><a href="#"><%=item.productName%></a></td>
                                     <td class="product-price-cart"><span class="amount"><%=item.productPrice%></span></td>
                                     <td class="product-quantity">
-                                        <div class="">
-                                            <button class="btn btn-sm btn-plus  bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityminus('<%= item.productId %>')">
+                                        <div class="quantity-control">
+                                            <button class="btn btn-sm btn-plus bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityMinus('<%=item.productId %>')">
                                                 <i class="fa fa-minus"></i>
                                             </button>
-                                           <span> <%=item.quantity%> </span>
-                                             <button class="btn btn-sm btn-plus  bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityminus('<%= item.productId %>')">
+                                            <span id="quantity_<%= item.productId %>"><%= item.quantity %></span>
+                                            <button class="btn btn-sm btn-plus bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityPlus('<%=item.productId %>')">
                                                 <i class="fa fa-plus"></i>
                                             </button>
-                                             <!-- <input class="cart-plus-minus-box " type="text" name="qtybutton" > -->
                                         </div>
                                     </td>
-                                    <td class="product-subtotal"> ₹ <%=(item.productPrice*item.quantity)%></td>
+                                    <td id="subtotal_<%= item.productId %>" class="product-subtotal"> ₹ <%=(item.productPrice*item.quantity)%></td>
                                     <!-- <form action="/removeFromCart/<%=item.productId%>" method="post"> -->
                                     <td class="product-remove">
                                         <!-- <a href="#"><i class="fa fa-pencil"></i></a> -->
@@ -287,8 +286,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
-
+                   
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="cart-shiping-update-wrapper">
@@ -366,7 +364,7 @@
                             <div class="title-wrap">
                                 <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                             </div>
-                            <h5>Total products <span><%=cartTotal %></span></h5>
+                            <h5>Total products <span id="cartTotalPrice"><%=cartTotal %></span></h5>
                             <div class="total-shipping">
                                 <h5>Total shipping</h5>
                                 <ul>
@@ -383,6 +381,72 @@
         </div>
     </div>
 </div>
+ 
+<script>
+    function quantityPlus(productId){
+        axios.post('/quantityPlus/'+productId)
+        .then(response =>{
+            console.log(response);
+        if(response.status===200){
+            const quantityElement=document.getElementById(`quantity_${productId}`)
+            let quantity=parseInt(quantityElement.textContent)
+
+            quantity++;
+            quantityElement.textContent=quantity
+
+            
+                const priceElement = document.querySelector(`[data-product-id="${productId}"] .product-price-cart .amount`);
+                const price = parseFloat(priceElement.textContent);
+
+                const subtotalElement = document.getElementById(`subtotal_${productId}`);
+                const subtotal = quantity * price;
+                subtotalElement.textContent = `₹${subtotal}`;
+
+                const cartTotalElement = document.getElementById('cartTotalPrice');
+            let cartTotal = parseFloat(cartTotalElement.textContent);
+            cartTotal += price;
+            cartTotalElement.textContent = cartTotal.toFixed(2);
+        }
+        })
+        
+
+        }
+
+        // quantity minus
+        function quantityMinus(productId){
+            axios.post('/quantityMinus/'+productId)
+            .then(response =>{
+                if(response.status===200){
+              const quantityElement=document.getElementById(`quantity_${productId}`)
+              let quantity=parseInt(quantityElement.textContent)
+
+              if(quantity >1){
+                quantity--;
+                quantityElement.textContent = quantity;
+
+                const priceElement = document.querySelector(`[data-product-id="${productId}"] .product-price-cart .amount`);
+                const price = parseFloat(priceElement.textContent);
+
+                const subtotalElement = document.getElementById(`subtotal_${productId}`);
+                const subtotal = quantity * price;
+                subtotalElement.textContent = `₹${subtotal.toFixed(2)}`;
+
+                const cartTotalElement = document.getElementById('cartTotalPrice');
+                let cartTotal = parseFloat(cartTotalElement.textContent);
+                cartTotal -= price;
+                cartTotalElement.textContent = cartTotal.toFixed(2);
+              }
+
+                }
+            })
+        .catch(error=>{
+               console.log('product quantity not decreased');j
+               res.status(400).send('')
+        })
+        }
+    
+</script>
+
 
 <script>
     function removeFromCart(productId){
