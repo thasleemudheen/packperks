@@ -5,15 +5,17 @@ const bodyparser=require('body-parser')
 const userAuth=require('../middleware/jwt_user')
 const passport=require('passport')
 const user = require('../models/users')
+const preventBack=require('../middleware/preventback')
 
 router.use(bodyparser.urlencoded({extended:true}))
+// app.use(preventCache);
 
 // user routes
 
-router.get('/',userController.homePage)
-router.get('/signup',userController.signUpPage)
+router.get('/',preventBack,userController.homePage)
+router.get('/signup',preventBack,userController.signUpPage)
 router.post('/user/signup',userController.signupPostpage)
-router.get('/login',userController.loginPage)
+router.get('/login',preventBack,userController.loginPage)
 router.post('/user/login',userController.loginPostPage)
 router.get('/profile',userAuth,userController.profile)
 router.get('/logout',userController.logout)
@@ -38,10 +40,12 @@ router.get('/failure',userController.failureGoogleLogin)
 router.get('/shop',userController.shopPage)
 router.get('/singleProduct/:id',userController.singleProductPage)
 
-router.get('/wishlist',userController.wishListPage)
+router.get('/wishlist',userAuth,userController.wishListPage)
+router.post('/addWishlist/:id',userController.productAddedToWishlist)
+router.post('/removeWishlist/:id',userController.removeProductFromWishlist)
 
 //cart page
-router.get('/cart',userController.cartPage)
+router.get('/cart',userAuth,userController.cartPage)
 router.post('/addToCart/:id',userController.addProductCart)
 router.post('/removeFromCart/:id',userController.removeFromCart)
 router.post('/quantityPlus/:id',userController.quantityPlus)

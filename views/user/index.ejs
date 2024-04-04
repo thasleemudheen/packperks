@@ -9,6 +9,8 @@
     <title>Pack Perks</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.png">
     
@@ -25,6 +27,11 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <!-- Modernizer JS -->
     <script src="/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         .container {
             text-align: center;
@@ -84,7 +91,7 @@
                 <div class="main-menu">
                     <nav>
                         <ul>
-                            <li><a href="index.html">Home <i class=""></i></a>
+                            <li><a href="/">Home <i class=""></i></a>
                                 
                             </li>
                             <li><a href="/shop"> Shop <i class=""></i> </a>
@@ -140,12 +147,12 @@
                         </div>
                     </div>
                     <div class="same-style header-wishlist">
-                        <a href="/cart"><i class="pe-7s-like"></i></a>
+                        <a href="/wishlist"><i class="pe-7s-like"></i></a>
                     </div>
                     <div class="same-style cart-wrap">
                       <a href="/cart">  <button class="icon-cart">
                             <i class="pe-7s-shopbag"></i>
-                            <span class="count-style">02</span>
+                            <!-- <span class="count-style"></span> -->
                         </button></a>
                         <div class="shopping-cart-content">
                             <!-- <ul>
@@ -201,7 +208,7 @@
                                
                             </ul>
                         </li>
-                        <li><a href="shop.html">Shop</a>
+                        <li><a href="/shop">Shop</a>
                             <ul>
                                 <li><a href="#">shop layout</a>
                                    
@@ -243,20 +250,20 @@
                             <h5 class="animated">Industry Best Selling </h5>
                             <h1 class="animated">Discover <br> The Perfect</h1>
                             <div class="slider-btn btn-hover">
-                                <a class="animated" href="shop.html">SHOP NOW</a>
+                                <a class="animated" href="/shop">SHOP NOW</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="single-slider-2 slider-height-1 d-flex align-items-center slider-height-res bg-img hm-13-slider" style="background-image:url(/assets/img/slider/hm13-slider-1.jpg);">
+        <div class="single-slider-2 slider-height-1 d-flex align-items-center slider-height-res bg-img hm-13-slider" style="background-image:url(/assets/img/slider/hm-13-slider-1.jpeg);">
             <div class="container">
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="slider-content-13 slider-animated-1">
-                            <h5 class="animated">Cosmetic Best Selling </h5>
-                            <h1 class="animated">Fashion <br>Cosmetic</h1>
+                            <h5 class="animated">The Best Selling </h5>
+                            <h1 class="animated">Fashion <br>bags</h1>
                             <div class="slider-btn btn-hover">
                                 <a class="animated" href="shop.html">SHOP NOW</a>
                             </div>
@@ -366,29 +373,31 @@
                                         </div>
                                     <% } else { %>
                                         <div class="product-action-2">
-                                            <a title="Add To Cart" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                            <!-- <a title="Add To Cart" href="#"><i class="fa fa-shopping-cart"></i></a>
                                             <a title="Quick View" href="#" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            <a title="Compare" href="#"><i class="fa fa-retweet"></i></a>
+                                            <a title="Compare" href="#"><i class="fa fa-retweet"></i></a> -->
                                         </div>
                                     <% } %>
                                 </div>
                                 <div class="product-content-2">
                                     <div class="title-price-wrap-2">
-                                        <h3><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
-                                        <div class="price-2">
+                                        <h3 class="text-center "><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
+                                        <div class="price-2 text-center">
                                             <span>₹: <%=product.productPrice%></span>
-                                        </div>
-                                    </div>
-                                    <div class="pro-wishlist-2">
-                                        <a title="Wishlist" href="wishlist.html"><i class="fa fa-heart-o"></i></a>
-                                    </div>
+                                        </div>   
+                                    </div>                                      
+                                    
                                 </div>
+
                             </div>
                         </div>
                     <% }) %>
                 </div>
             </div>
         </div>
+
+      
+        
         
                    
 <div class="support-area pb-70">
@@ -424,6 +433,9 @@
         </div>
     </div>
 </div>
+<!-------------------- slider to show the wishlist products------------------ -->
+
+
 <div class="testimonial-area pb-95">
     <div class="container">
         <div class="row">

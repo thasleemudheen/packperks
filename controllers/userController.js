@@ -10,15 +10,25 @@ const otpService=require('../service/otpservice')
 
 
 let homePage=async(req,res)=>{
+   
      try{
+
         let isAuthenticated
-        const products=await Products.find()
+        const products=await Products.find().sort({createdAt:-1}).limit(8)
        if(req.cookies.user_jwt){
         isAuthenticated = req.cookies.user_jwt
 
-        return res.render('user/index',{isAuthenticated,products})
+        const token=req.cookies.user_jwt
+        const decoded=jwt.verify(token,process.env.JWT_SECRET)
+        const userId=decoded.id
+        const user=await User.findById(userId)
+    //    console.log(user);
+        // console.log(user);
+
+        return res.render('user/index',{isAuthenticated,products,user})
        }
-       res.render('user/index',{isAuthenticated,products})
+       
+       res.render('user/index',{isAuthenticated,products,user:req.user})
      }catch(error){
         console.log('home page is not found');
         res.status(400).send('home page not found')
@@ -29,7 +39,7 @@ let homePage=async(req,res)=>{
 let profile = async (req, res) => {
     let userId = req.user.id;
     let user = await User.findOne({ _id: userId });
-    console.log(user,'getting the user details');
+    // console.log(user,'getting the user details');
     if (!user) {
         return res.status(400).send('User not found');
     }
@@ -38,8 +48,8 @@ let profile = async (req, res) => {
 
 let logout= async (req,res) => {
 
-    res.clearCookie('user_jwt')
-    res.redirect('/')
+     res.clearCookie('user_jwt')
+     res.redirect('/')
 }
 // user signup page
 
@@ -55,7 +65,7 @@ let loginPage = (req, res) => {
 
 
 let loginPostPage = async (req, res) => {
-    console.log('req.body:', req.body);
+    // console.log('req.body:', req.body);
 
     // Get email and password from the request body
     const { email, password } = req.body;
@@ -156,7 +166,7 @@ let successGoogleLogin=async(req,res)=>{
      if(!req.user){
       return res.redirect('/failure')
      }
-     console.log('google login email :',req.user.email);
+    //  console.log('google login email :',req.user.email);
       let user=await User.findOne({email:req.user.email})
         if(!user){
             user=new User({
@@ -220,7 +230,7 @@ let sendOtp=async(req,res)=>{
 let verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
     const user=await User.findOne({email})
-    console.log("userwithotp",user);
+    // console.log("userwithotp",user);
     const storedOtp=req.cookies.otp
     console.log(storedOtp);
     try {
@@ -243,16 +253,19 @@ let verifyOtp = async (req, res) => {
 
 
 let shopPage=async(req,res)=>{
+    let token=req.cookies.user_jwt
+    let decoded=jwt.verify(token,process.env.JWT_SECRET)
+    let userId=decoded.id
+    let user=await User.findById(userId)
     let products=await Products.find()
-    res.render('user/shop',{products})
+    res.render('user/shop',{products,user})
 }
 let singleProductPage=async(req,res)=>{
     let productId=req.params.id
     let singleProduct=await Products.findById(productId)
-    res.render('user/productDetails',{product:singleProduct})
-}
-let wishListPage=async(req,res)=>{
-    res.render('user/wishlist')
+    let wishlist=await User.find(singleProduct)
+    // console.log(wishlist);
+    res.render('user/productDetails',{product:singleProduct,wishlist:wishlist})
 }
 
 let cartPage=async(req,res)=>{
@@ -278,9 +291,6 @@ let cartPage=async(req,res)=>{
             item.total=item.quantity*item.productPrice
             cartTotal+=item.total
 
-        //  console.log(item.productId)
-            // console.log(item.total);
-            // console.log(cartTotal);
         })
         
           res.render('user/cart-page',{user,cartTotal})
@@ -301,6 +311,7 @@ let addProductCart=async(req,res)=>{
         return res.redirect('/login')
     }
     const decoded=jwt.verify(token,process.env.JWT_SECRET)
+    console.log(decoded);
     if(!decoded || !decoded.id){
         return res.redirect('/login')
     }
@@ -339,7 +350,7 @@ let addProductCart=async(req,res)=>{
         
     }
     await user.save()
-    console.log("workingggg...");
+    // console.log("workingggg...");
      res.status(200).json({message:'product added to cart'})
   } catch (error) {
     console.log('product not added to the cart');
@@ -350,7 +361,7 @@ let addProductCart=async(req,res)=>{
 let removeFromCart=async(req,res)=>{
     try {
         const token=req.cookies.user_jwt
-        console.log(token);
+        // console.log(token);
         if(!token){
            return res.redirect('/login')
         }
@@ -360,12 +371,12 @@ let removeFromCart=async(req,res)=>{
         }
         const userId=decoded.id
         const user=await User.findById(userId)
-        console.log(user);
+        // console.log(user);
         if(!user){
             return res.status(400).send('user not found')
         }
         const productId=req.params.id
-        console.log(productId);
+        // console.log(productId);
         user.cart.product=user.cart.product.filter(item=>item.productId.toString()!==productId)
 
         // Recalculate cartTotal
@@ -373,8 +384,10 @@ let removeFromCart=async(req,res)=>{
         let cartTotal = user.cart.product.reduce((acc, item) => acc + (parseInt(item.productPrice) * parseInt(item.quantity)), 0);
         user.cart.total = cartTotal.toString();
 
+        
+
         await user.save()
-         res.status(200).json({message:'product remove from the cart'})
+         res.status(200).json({message:'product remove from the cart',cartTotal})
         
     } catch (error) {
         console.log('not remove from the cart');
@@ -452,6 +465,102 @@ let quantityMinus=async(req,res)=>{
         res.status(500).send('failed to decrease the quantity')
     }
 }
+
+let wishListPage=async(req,res)=>{
+    try {
+        let token=req.cookies.user_jwt
+        if(!token){
+            return res.redirect('/login')
+        }
+        // console.log(token);
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        if(!userId){
+            return res.status(400).send('user not found')
+        }
+        // console.log(userId);
+        let user=await User.findById(userId)
+        // console.log(user);
+       const wishlistData=user.wishlist.map(item=>({
+        productId:item.productId,
+        productImage:item.productImage,
+        productName:item.productName,
+        productPrice:item.productPrice
+       }))       
+        res.render('user/wishlist',{wishlist:wishlistData})
+    } catch (error) {
+        console.log('wishlist page not getting');
+        res.status(400).send('wishlist not get')
+    }
+    
+}
+
+let productAddedToWishlist=async(req,res)=>{
+       try {
+        const token=req.cookies.user_jwt
+        if(!token){
+            return res.redirect('/login')
+        }
+        const decoded=jwt.verify(token,process.env.JWT_SECRET)
+        const userId=decoded.id
+        const user=await User.findById(userId)
+
+        const productId=req.params.id
+        // console.log(productId);
+
+        const product=await Products.findById(productId)
+        // console.log(product);
+ // Check if the product already exists in the wishlist
+        const existingProductIndex = user.wishlist.findIndex(item => item.productId.toString() === productId);
+        // console.log(existingProductIndex);
+        if (existingProductIndex !== -1) {
+            user.wishlist=user.wishlist.filter(item=>item.productId.toString()!==productId)
+           await user.save()
+           return res.status(201).json({message:'product removed from the wishlist'})
+            // Product already exists in the wishlist
+            // user.wishlist.splice(existingProductIndex,1)
+
+            // await user.save()
+        }
+        
+
+        user.wishlist.push({
+            productId:product._id,
+            productImage:product.productImage,
+            productName:product.productName,
+            productPrice:product.productPrice
+        })
+
+        await user.save()
+        console.log("added to wishlist")
+        res.status(200).json({message:'product added to the wishlist'})
+
+       } catch (error) {
+        console.log('product not added to wishlist');
+        res.status(400).send('something went wrong')
+        
+       }
+}
+ let removeProductFromWishlist=async(req,res)=>{
+    console.log('product remove route working')
+    try {
+        const token=req.cookies.user_jwt
+        if(!token){
+            return res.redirect('/login')
+        }
+        const decoded=jwt.verify(token,process.env.JWT_SECRET)
+        const userId=decoded.id
+        const user=await User.findById(userId)
+        const productId=req.params.id
+        user.wishlist=user.wishlist.filter(item=>item.productId.toString()!==productId)
+        await user.save()
+        res.status(200).json({message:'product removed from the wishlist'})
+        
+    } catch (error) {
+        console.log('product not removed from the wishlist');
+        res.status(500).send('internal server error')
+    }
+ }
 module.exports={
     homePage,
     signUpPage,
@@ -467,10 +576,13 @@ module.exports={
     singleProductPage,
     sendOtp,
     verifyOtp,
-    wishListPage,
     cartPage,
     addProductCart,
     removeFromCart,
     quantityPlus,
-    quantityMinus
+    quantityMinus,
+    wishListPage,
+    productAddedToWishlist,
+    removeProductFromWishlist
+
 }

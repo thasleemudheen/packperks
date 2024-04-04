@@ -140,12 +140,12 @@
                             </div>
                         </div>
                         <div class="same-style header-wishlist">
-                            <a href="wishlist.html"><i class="pe-7s-like"></i></a>
+                            <a href="/wishlist"><i class="pe-7s-like"></i></a>
                         </div>
                         <div class="same-style cart-wrap">
                             <button class="icon-cart">
                                 <i class="pe-7s-shopbag"></i>
-                                <span class="count-style">02</span>
+                                <!-- <span class="count-style"></span> -->
                             </button>
                             <div class="shopping-cart-content">
                                 <ul>
@@ -257,6 +257,7 @@
                                 
                                 <tr data-product-id="<%= item.productId %>">
                                     <td class="product-thumbnail">
+                                        
                                         <a href="#"><img style="height: 100px; width: 100px;" src="<%=item.productImage[0]%>" alt=""></a>
                                     </td>
                                     <td class="product-name"><a href="#"><%=item.productName%></a></td>
@@ -465,6 +466,11 @@
                 const rowToRemove = document.querySelector(`tr[data-product-id="${productId}"]`);
                 if (rowToRemove) {
                     rowToRemove.remove();
+                }
+
+                const cartTotalElement = document.getElementById('cartTotalPrice');
+                if (cartTotalElement) {
+                    cartTotalElement.textContent = response.data.cartTotal;
                 }
 
             }                            
