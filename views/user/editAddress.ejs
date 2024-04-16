@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Address</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Address</h1>
+        <div class="editAddress">
+            
+
+           
+            <form id="editAddressForm" action="/editAddress/<%= address._id %>" method="post">
+                <div class="form-group">
+                    <label for="edit-name">Name</label>
+                    <input type="text" class="form-control" id="edit-name" name="name" value="<%=address.name%>">
+                </div>
+                <div class="form-group">
+                    <label for="edit-houseNumber">House Number</label>
+                    <input type="text" class="form-control" id="edit-houseNumber" name="houseNumber" value="<%=address.houseNumber%>">
+                </div>
+                <div class="form-group">
+                    <label for="edit-city">City</label>
+                    <input type="text" class="form-control" id="edit-city" name="city" value="<%=address.city%>">
+                </div>
+                <div class="form-group">
+                    <label for="edit-street">Street</label>
+                    <input type="text" class="form-control" id="edit-street" name="street" value="<%=address.street%>">
+                </div>
+                <div class="form-group">
+                    <label for="edit-pincode">Pincode</label>
+                    <input type="text" class="form-control" id="edit-pincode" name="pincode" value="<%=address.pincode%>">
+                </div>
+                <div class="form-group">
+                    <label for="edit-phone">Phone Number</label>
+                    <input type="text" class="form-control" id="edit-phone" name="phonenumber" value="<%=address.phonenumber%>">
+                </div>
+                <button type="submit" class="btn">Save Address</button>
+            </form>
+          
+        </div>
+    </div>
+</body>
+</html>

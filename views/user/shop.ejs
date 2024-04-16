@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Flone - Minimal eCommerce HTML Template</title>
+    <title>Pack Perks</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon -->
@@ -113,10 +113,10 @@
                                 <li><a href="#"> Pages <i class="fa fa-angle-down"></i></a>
                                     <ul class="submenu">
                                         <li><a href="about.html">about us</a></li>
-                                        <li><a href="cart-page.html">cart page</a></li>
-                                        <li><a href="checkout.html">checkout </a></li>
-                                        <li><a href="wishlist.html">wishlist </a></li>
-                                        <li><a href="my-account.html">my account</a></li>
+                                        <li><a href="/cart">cart page</a></li>
+                                        <li><a href="/checkOutPage">checkout </a></li>
+                                        <li><a href="/wishlist">wishlist </a></li>
+                                        <li><a href="/profile">my account</a></li>
                                         <li><a href="login-register.html">login / register </a></li>
                                         <li><a href="contact.html">contact us </a></li>
                                         <li><a href="404.html">404 page </a></li>
@@ -276,7 +276,7 @@
                 <div class="shop-bottom-area mt-35">
                     <div class="tab-content jump">
                         <div id="shop-1" class="tab-pane active">
-                            <div class="row">
+                            <div class="row" id="productList">
                                 <%products.forEach(product=>{%>
 
                                 
@@ -292,29 +292,19 @@
                                             <% } %>
                                             <div class="product-action">
                                                 <div class="">
-                                                    <!-- <a title="Wishlist" href="#"><i class="pe-7s-like"></i></a> -->
                                                 </div>
                                                 <div class="">
-                                                    <!-- <a title="Add To Cart" href="#"><i class="pe-7s-cart"></i> Add to cart</a> -->
                                                 </div>
                                                 <div class="">
-                                                    <!-- <a title="Quick View" href="#" data-toggle="modal" data-target="#exampleModal"><i class="pe-7s-look"></i></a> -->
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="product-content text-center">
                                             <h3><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
-                                            <!-- <div class="product-rating">
-                                                <i class="fa fa-star-o yellow"></i>
-                                                <i class="fa fa-star-o yellow"></i>
-                                                <i class="fa fa-star-o yellow"></i>
-                                                <i class="fa fa-star-o"></i>
-                                                <i class="fa fa-star-o"></i>
-                                            </div> -->
+                                            
                                             <div class="product-price">
                                                 <span>₹: <%=product.productPrice%></span>
-                                                <!-- <span class="old">$ 60.00</span> -->
                                             </div>
 
                                             <div id="wishlist_<%=product._id%>" class="pro-details-wishlist">
@@ -337,194 +327,8 @@
                      </div>
                       </div>
 
-
-                      <script>                        
-                        function toggleWishlist(productId, user) {                                
-                                // Product is already in the wishlist, so remove it
-                                axios.post(`/addWishlist/${productId}`)
-                                    .then(response => {
-                                        console.log(response);
-                                        if (response.status == 201) {
-                                            document.getElementById(`wishlist-${productId}`).innerHTML =` <i id="plain_heart_${productId}" class="fa fa-heart-o fa-2x"></i>`
-                                            Toastify({
-                                                text: 'Product removed from wishlist',
-                                                duration: 3000,
-                                                gravity: 'top',
-                                                position: 'center',
-                                                backgroundColor: 'darkGrey'
-                                            }).showToast();
-                                        }
-                                        else if(response.status == 200){
-                                            document.getElementById(`wishlist-${productId}`).innerHTML = `<i id="red_heart_${productId}" class="fa fa-heart fa-2x" style="color: red;"></i>`
-                                            Toastify({
-                                                text: 'Product added to wishlist',
-                                                duration: 3000,
-                                                gravity: 'top',
-                                                position: 'center',
-                                                backgroundColor: 'darkGrey'
-                                            }).showToast();
-                                        }
-
-                                    })
-                                    .catch(error => {
-                                        console.error('Failed to remove product from wishlist:', error);
-                                    });
-                        }
+                     
                         
-                                </script>
-                        <div id="shop-2" class="tab-pane">
-                            <div class="shop-list-wrap mb-30">
-                                <div class="row">
-                                    
-                                    <div class="col-xl-4 col-lg-5 col-md-5 col-sm-6">
-                                        <div class="product-wrap">
-                                            <div class="product-img">
-                                                <a href="#">
-                                                    <img class="default-img" src="assets/img/product/pro-1.jpg" alt="">
-                                                    <img class="hover-img" src="assets/img/product/pro-1-1.jpg" alt="">
-                                                </a>
-                                                <span class="pink">-10%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-8 col-lg-7 col-md-7 col-sm-6">
-                                        <div class="shop-list-content">
-                                            <h3><a href="#">Products Name Here</a></h3>
-                                            <div class="product-list-price">
-                                                <span>$ 60.00</span>
-                                                <span class="old">$ 90.00</span>
-                                            </div>
-                                            <div class="rating-review">
-                                                <div class="product-list-rating">
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <a href="#">3 Reviews</a>
-                                            </div>
-                                            <p>Lorem ipsum dolor sit amet, consecteto adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua Ut enim ad minim </p>
-                                            <div class="shop-list-btn btn-hover">
-                                                <a href="#">ADD TO CART</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="shop-list-wrap mb-30">
-                                <div class="row">
-                                    <div class="col-xl-4 col-lg-5 col-md-5 col-sm-6">
-                                        <div class="product-wrap">
-                                            <div class="product-img">
-                                                <a href="#">
-                                                    <img class="default-img" src="assets/img/product/pro-2.jpg" alt="">
-                                                    <img class="hover-img" src="assets/img/product/pro-2-1.jpg" alt="">
-                                                </a>
-                                                <span class="purple">New</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-8 col-lg-7 col-md-7 col-sm-6">
-                                        <div class="shop-list-content">
-                                            <h3><a href="#">Products Name Here</a></h3>
-                                            <div class="product-list-price">
-                                                <span>$ 60.00</span>
-                                            </div>
-                                            <div class="rating-review">
-                                                <div class="product-list-rating">
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <a href="#">3 Reviews</a>
-                                            </div>
-                                            <p>Lorem ipsum dolor sit amet, consecteto adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua Ut enim ad minim </p>
-                                            <div class="shop-list-btn btn-hover">
-                                                <a href="#">ADD TO CART</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="shop-list-wrap mb-30">
-                                <div class="row">
-                                    <div class="col-xl-4 col-lg-5 col-md-5 col-sm-6">
-                                        <div class="product-wrap">
-                                            <div class="product-img">
-                                                <a href="#">
-                                                    <img class="default-img" src="assets/img/product/pro-3.jpg" alt="">
-                                                    <img class="hover-img" src="assets/img/product/pro-3-1.jpg" alt="">
-                                                </a>
-                                                <span class="pink">-20%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-8 col-lg-7 col-md-7 col-sm-6">
-                                        <div class="shop-list-content">
-                                            <h3><a href="#">Products Name Here</a></h3>
-                                            <div class="product-list-price">
-                                                <span>$ 30.00</span>
-                                                <span class="old">$ 50.00</span>
-                                            </div>
-                                            <div class="rating-review">
-                                                <div class="product-list-rating">
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <a href="#">3 Reviews</a>
-                                            </div>
-                                            <p>Lorem ipsum dolor sit amet, consecteto adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua Ut enim ad minim </p>
-                                            <div class="shop-list-btn btn-hover">
-                                                <a href="#">ADD TO CART</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="shop-list-wrap mb-30">
-                                <div class="row">
-                                    <div class="col-xl-4 col-lg-5 col-md-5 col-sm-6">
-                                        <div class="product-wrap">
-                                            <div class="product-img">
-                                                <a href="#">
-                                                    <img class="default-img" src="assets/img/product/pro-7.jpg" alt="">
-                                                    <img class="hover-img" src="assets/img/product/pro-4-1.jpg" alt="">
-                                                </a>
-                                                <span class="purple">New</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-8 col-lg-7 col-md-7 col-sm-6">
-                                        <div class="shop-list-content">
-                                            <h3><a href="#">Products Name Here</a></h3>
-                                            <div class="product-list-price">
-                                                <span>$ 70.00</span>
-                                            </div>
-                                            <div class="rating-review">
-                                                <div class="product-list-rating">
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o yellow"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                    <i class="fa fa-star-o"></i>
-                                                </div>
-                                                <a href="#">3 Reviews</a>
-                                            </div>
-                                            <p>Lorem ipsum dolor sit amet, consecteto adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua Ut enim ad minim </p>
-                                            <div class="shop-list-btn btn-hover">
-                                                <a href="#">ADD TO CART</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="pro-pagination-style text-center mt-30">
                         <ul>
@@ -536,19 +340,57 @@
                     </div>
                 </div>
             </div>
+
+
+            <script>                        
+                function toggleWishlist(productId, user) {                                
+                        // Product is already in the wishlist, so remove it
+                        axios.post(`/addWishlist/${productId}`)
+                            .then(response => {
+                                console.log(response);
+                                if (response.status == 201) {
+                                    document.getElementById(`wishlist-${productId}`).innerHTML =` <i id="plain_heart_${productId}" class="fa fa-heart-o fa-2x"></i>`
+                                    Toastify({
+                                        text: 'Product removed from wishlist',
+                                        duration: 3000,
+                                        gravity: 'top',
+                                        position: 'center',
+                                        backgroundColor: 'red'
+                                    }).showToast();
+                                }
+                                else if(response.status == 200){
+                                    document.getElementById(`wishlist-${productId}`).innerHTML = `<i id="red_heart_${productId}" class="fa fa-heart fa-2x" style="color: red;"></i>`
+                                    Toastify({
+                                        text: 'Product added to wishlist',
+                                        duration: 3000,
+                                        gravity: 'top',
+                                        position: 'center',
+                                        backgroundColor: 'darkGrey'
+                                    }).showToast();
+                                }
+
+                            })
+                            .catch(error => {
+                                console.error('Failed to remove product from wishlist:', error);
+                            });
+                }
+                
+                        </script>
+
             <div class="col-lg-3">
                 <div class="sidebar-style mr-30">
                     <div class="sidebar-widget">
                         <h4 class="pro-sidebar-title">Search </h4>
                         <div class="pro-sidebar-search mb-50 mt-25">
-                            <form class="pro-sidebar-search-form" action="#">
-                                <input type="text" placeholder="Search here...">
-                                <button>
+                            <form class="pro-sidebar-search-form"  id="searchForm" action="/search" method="get">
+                                <input type="text" id="searchInput" name="q" placeholder="Search here...">
+                                <button type="submit" id="searchButton">
                                     <i class="pe-7s-search"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
+
                     <div class="sidebar-widget">
                         <h4 class="pro-sidebar-title">Refine By </h4>
                         <div class="sidebar-widget-list mt-30">
@@ -662,6 +504,66 @@
         </div>
     </div>
 </div>
+
+<script>
+    const searchForProducts = async (event) => {
+        event.preventDefault(); // Prevent form submission
+        const query = document.getElementById('searchInput').value;
+        console.log(query);
+        if (!query) {
+            return alert('Please enter a search query');
+        }
+
+        try {
+            const response = await fetch(`/search?q=${query}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch search results');
+            }
+            const { productsSearch, user } = await response.json();
+            console.log(productsSearch);
+            // Update the DOM to display the search results
+            document.getElementById('productList').innerHTML = productsSearch.map(product => `
+                <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6">
+                    <div class="product-wrap mb-25 scroll-zoom">
+                        <div class="product-img">
+                            <a href="/singleProduct/${product._id}">
+                                <img class="default-img ${product.isDisabled ? 'disabled' : ''}" src="${product.productImage[0]}" alt="">
+                                <img class="hover-img" src="${product.productImage[1]}" alt="">
+                            </a>
+                            ${product.isDisabled ? '<div class="error-message">Out of Stock</div>' : ''}
+                            <div class="product-action">
+                                <div class=""></div>
+                                <div class=""></div>
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <div class="product-content text-center">
+                            <h3><a href="/singleProduct/${product._id}">${product.productName}</a></h3>
+                            <div class="product-price">
+                                <span>₹: ${product.productPrice}</span>
+                            </div>
+                            <div id="wishlist_${product._id}" class="pro-details-wishlist">
+                                <button onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" style="border: none; background-color: white;">
+                                    ${user && user.wishlist.some(prd => prd.productId.toString() === product._id.toString()) ?
+                                        `<i id="red_heart_${product._id}" class="fa fa-heart fa-2x" style="color: red;"></i>` :
+                                        `<i id="plain_heart_${product._id}" class="fa fa-heart-o fa-2x"></i>`
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error(error);
+            alert('Failed to fetch search results');
+        }
+    };
+
+    document.getElementById('searchForm').addEventListener('submit', searchForProducts);
+</script>
+
+
 <footer class="footer-area bg-gray pt-100 pb-70">
     <div class="container">
         <div class="row">

@@ -64,6 +64,32 @@ const userSchema=new mongoose.Schema({
         },
         
 
+    }],
+    address:[{
+        name:{
+            type:String,
+            required:true
+        },
+        houseNumber:{
+            type:String,
+            required:true
+        },
+        street:{
+            type:String,
+            required:true
+        },
+        city:{
+            type:String,
+            required:true
+        },
+        pincode:{
+            type:Number,
+            required:true
+        },
+        phonenumber:{
+            type:Number,
+            required:true
+        }
     }]
 });
 

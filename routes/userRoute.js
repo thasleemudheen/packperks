@@ -17,8 +17,16 @@ router.get('/signup',preventBack,userController.signUpPage)
 router.post('/user/signup',userController.signupPostpage)
 router.get('/login',preventBack,userController.loginPage)
 router.post('/user/login',userController.loginPostPage)
-router.get('/profile',userAuth,userController.profile)
 router.get('/logout',userController.logout)
+
+
+router.get('/profile',userAuth,userController.profile)
+router.post('/addAddress',userController.addAddressPage)
+router.get('/editAddress/:id',userController.editAddressGet)
+router.post('/editAddress/:id',userController.editAddressPost)
+router.post('/deleteAddress/:id',userController.deleteAddress)
+
+
 
 //forget password 
 router.get('/loginWithOtp',userController.forgetPasswordGetPage)
@@ -39,6 +47,7 @@ router.get('/failure',userController.failureGoogleLogin)
 
 router.get('/shop',userController.shopPage)
 router.get('/singleProduct/:id',userController.singleProductPage)
+router.get('/search',userController.searchForProducts)
 
 router.get('/wishlist',userAuth,userController.wishListPage)
 router.post('/addWishlist/:id',userController.productAddedToWishlist)
@@ -50,5 +59,8 @@ router.post('/addToCart/:id',userController.addProductCart)
 router.post('/removeFromCart/:id',userController.removeFromCart)
 router.post('/quantityPlus/:id',userController.quantityPlus)
 router.post('/quantityMinus/:id',userController.quantityMinus)
+
+
+router.get('/checkOutPage',userController.checkOutGetPage)
 
 module.exports=router

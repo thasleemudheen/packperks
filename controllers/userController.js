@@ -8,42 +8,164 @@ require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 
+let homePage = async (req, res) => {
+    try {
+        let isAuthenticated = false;
+        let wishlistProducts = [];
 
-let homePage=async(req,res)=>{
-   
-     try{
+        const products = await Products.find().sort({ createdAt: -1 }).limit(8);
 
-        let isAuthenticated
-        const products=await Products.find().sort({createdAt:-1}).limit(8)
-       if(req.cookies.user_jwt){
-        isAuthenticated = req.cookies.user_jwt
+        if (req.cookies.user_jwt) {
+            isAuthenticated = true;
+            const token = req.cookies.user_jwt;
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const userId = decoded.id;
+            const user = await User.findById(userId);
 
-        const token=req.cookies.user_jwt
-        const decoded=jwt.verify(token,process.env.JWT_SECRET)
-        const userId=decoded.id
-        const user=await User.findById(userId)
-    //    console.log(user);
-        // console.log(user);
+            wishlistProducts = await User.findById(userId, 'wishlist').populate('wishlist').lean();
+        }
 
-        return res.render('user/index',{isAuthenticated,products,user})
-       }
-       
-       res.render('user/index',{isAuthenticated,products,user:req.user})
-     }catch(error){
-        console.log('home page is not found');
-        res.status(400).send('home page not found')
-     } 
+        res.render('user/index', { isAuthenticated, products, user: req.user, wishlistProducts });
+
+    } catch (error) {
+        console.log('Home page is not found');
+        res.status(400).send('Home page not found');
+    }
 }
+
 
 // profile page
 let profile = async (req, res) => {
     let userId = req.user.id;
     let user = await User.findOne({ _id: userId });
+    // console.log(userId);
     // console.log(user,'getting the user details');
     if (!user) {
         return res.status(400).send('User not found');
     }
     res.render('user/profile', {user});
+}
+
+let addAddressPage=async(req,res)=>{
+    try {
+
+        if (req.headers.referer) {
+            const refererUrl = new URL(req.headers.referer);
+            const pathName = refererUrl.pathname;
+    
+            // Redirect based on the referer
+            if (pathName === '/profile') {
+                res.redirect('/profile');
+            } else if (pathName === '/checkOutPage') {
+                res.redirect('/checkOutPage');
+            } else {
+                // Default redirection if referer is unknown
+                res.redirect('/');
+            }
+        } else {
+            // Default redirection if no referer
+            res.redirect('/');
+        }
+            let {name,houseNumber,city,street,pincode,phoneNumber}=req.body
+
+            let token =req.cookies.user_jwt
+            let decoded=jwt.verify(token,process.env.JWT_SECRET)
+            let userId=decoded.id
+            let user=await User.findById(userId)
+
+            user.address.push({
+                name:name,
+                houseNumber:houseNumber,
+                city:city,
+                street:street,
+                pincode:pincode,
+               phonenumber:phoneNumber
+            })
+            console.log('details are here');
+            await user.save()
+            console.log('new address saved')
+            res.status(200)
+        
+    } catch (error) {
+        console.log('the user address not saved ')
+        console.error(error)
+        res.status(400).send('user address not saved')
+    }
+}
+
+let editAddressGet=async(req,res)=>{
+
+    let token=req.cookies.user_jwt
+     
+    let decoded=jwt.verify(token,process.env.JWT_SECRET)
+    let userId=decoded.id
+    let user=await User.findById(userId)
+    let userIdToEdit=req.params.id
+    // console.log(userIdToEdit);
+    let address = user.address.find(addr => addr._id.toString() === userIdToEdit);
+        // console.log(address);
+     
+    res.render('user/editAddress',{address:address})
+}
+
+let editAddressPost=async(req,res)=>{
+
+    try {
+        let token =req.cookies.user_jwt
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        let user=await User.findById(userId)
+    
+        let userIndex=user.address.findIndex(addr=>addr._id.toString()===req.params.id)
+        console.log(userIndex);
+        if(userIndex===-1){
+            return res.status(404).send('address not found')
+    
+        }
+    //    let updateAddress=req.body
+    //    console.log(updateAddress);
+    user.address[userIndex].name=req.body.name
+    user.address[userIndex].houseNumber=req.body.houseNumber
+    user.address[userIndex].street=req.body.street
+    user.address[userIndex].city=req.body.city
+    user.address[userIndex].pincode=req.body.pincode
+    user.address[userIndex].phonenumber=req.body.phonenumber
+    
+    console.log(user.address[userIndex].name=req.body.name);
+    console.log(user.address[userIndex].houseNumber=req.body.houseNumber);
+    console.log(user.address[userIndex].street=req.body.street);
+    console.log(user.address[userIndex].city=req.body.city);
+    console.log(user.address[userIndex].pincode=req.body.pincode);
+    console.log(user.address[userIndex].phonenumber=req.body.phonenumber);
+
+       await user.save()
+            // Save the updated user object
+            
+        res.redirect('/profile')
+    } catch (error) {
+        res.status(500).send('internal server error')
+    }
+   
+}
+
+let deleteAddress=async(req,res)=>{
+     try {
+        let token=req.cookies.user_jwt
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        let user=await User.findById(userId)
+
+        let userIndex=user.address.findIndex(addr=>addr._id.toString()===req.params.id)
+
+    if(userIndex===-1){
+        return res.status(404).send('address not found')
+    }
+    user.address.splice(userIndex,1)
+    await user.save()
+    res.redirect('/profile')
+     } catch (error) {
+        res.status(500).send('internal server error')
+     }
 }
 
 let logout= async (req,res) => {
@@ -111,7 +233,7 @@ let loginPostPage = async (req, res) => {
                     console.log('User logged in successfully, token created');
                     // Use the replace method to prevent the user from going back to the login page
                     // res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-                    res.render('user/login', { successMessage: 'Logged in successfully' });
+                    // res.render('user/login', { successMessage: 'Logged in successfully' });
                     res.redirect('/');
                    
                          
@@ -160,43 +282,78 @@ let signupPostpage = async (req, res) => {
 }
 
 // google authentication
-
-
-let successGoogleLogin=async(req,res)=>{
-     if(!req.user){
-      return res.redirect('/failure')
-     }
-    //  console.log('google login email :',req.user.email);
-      let user=await User.findOne({email:req.user.email})
-        if(!user){
-            user=new User({
-                username:req.user.displayName,
-                email:req.user.email
-            })
-            await user.save()
-            console.log('user data saved');
-           return res.redirect('/login')
+let successGoogleLogin = async (req, res) => {
+    if (!req.user) {
+        return res.redirect('/failure');
     }
-    // else{
-    //     if(user.blocked)
-    //     console.log('user is blocked');
-    //     return res.render('user/login',{passError:'your account has been restricted by the admin'})
-    // }
+
+    let user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+        user = new User({
+            username: req.user.displayName,
+            email: req.user.email
+        });
+        await user.save();
+        console.log('user data saved');
+    }
+
     console.log('login with google');
-    const token=jwt.sign({
-        id:user._id,
-        name:user.username,
-        email:user.email,
+    const token = jwt.sign({
+        id: user._id,
+        name: user.username,
+        email: user.email,
     },
-    process.env.JWT_SECRET,
-    {
-        expiresIn:'24h',
-    }
+        process.env.JWT_SECRET,
+        {
+            expiresIn: '24h',
+        }
     );
-    res.cookie('user_jwt',token,{httpOnly:true,maxAge:86400000})
+      res.cookie('user_jwt', token, { httpOnly: true, maxAge: 86400000 });
     console.log('user logged in successfully: token created');
-   return res.redirect('/')
-}
+     res.redirect('/');
+     console.log('not redirecting to the home page');
+};
+
+
+
+// let successGoogleLogin=async(req,res)=>{
+//      if(!req.user){
+//       return res.redirect('/failure')
+//      }
+//     //  console.log('google login email :',req.user.email);
+//       let user=await User.findOne({email:req.user.email})
+//         if(!user){
+//             user=new User({
+//                 username:req.user.displayName,
+//                 email:req.user.email
+//             })
+//             await user.save()
+//             console.log('user data saved');
+//            return res.redirect('/login')
+//     }
+//     // else{
+//     //     if(user.blocked)
+//     //     console.log('user is blocked');
+//     //     return res.render('user/login',{passError:'your account has been restricted by the admin'})
+//     // }
+//     console.log('login with google');
+//     const token=jwt.sign({
+//         id:user._id,
+//         name:user.username,
+//         email:user.email,
+//     },
+//     process.env.JWT_SECRET,
+//     {
+//         expiresIn:'24h',
+//     }
+//     );
+//     res.cookie('user_jwt',token,{httpOnly:true,maxAge:86400000})
+//     console.log('user logged in successfully: token created');
+//    return res.redirect('/')
+// }
+
+
 let failureGoogleLogin=async(req,res)=>{
      res.send('error')
 }
@@ -258,7 +415,18 @@ let shopPage=async(req,res)=>{
     let userId=decoded.id
     let user=await User.findById(userId)
     let products=await Products.find()
-    res.render('user/shop',{products,user})
+
+    let query=req.query.q
+    query=String(query)
+    const productsSearch=await Products.find({
+        $or:[
+            {productName:{$regex:query,$options:'i'}},
+            {brand:{$regex:query,$options:'i'}},
+            {categoryName:{$regex:query,$options:'i'}}
+        ]
+    })
+    res.render('user/shop',{products,user,query,productsSearch})
+
 }
 let singleProductPage=async(req,res)=>{
     let productId=req.params.id
@@ -561,6 +729,71 @@ let productAddedToWishlist=async(req,res)=>{
         res.status(500).send('internal server error')
     }
  }
+
+ let checkOutGetPage=async(req,res)=>{
+    try {
+
+        let token=req.cookies.user_jwt
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        let user=await User.findById(userId)
+
+        let address=user.address
+        // console.log(address);
+        // let shippingCharge=45
+        let cart=user.cart.product
+        let cartTotal=user.cart.total
+        
+        
+        
+
+        // console.log(cartTotal)
+        // console.log(cart)
+
+        res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal})
+    } catch (error) {
+        
+    }
+    
+ }
+
+ let searchForProducts=async(req,res)=>{
+    const query=req.query.q
+    console.log(query)
+    if(!query){
+        return res.status(400).json({message:'search query is required'})
+    }
+    try {
+        const productsSearch=await Products.find({
+            $or:[
+                {productName:{$regex:query,$options:'i'}},
+                {brand:{$regex:query,$options:'i'}},
+                {categoryName:{$regex:query,$options:'i'}}
+            ]
+        })
+        let products=await Products.find()
+
+        let token=req.cookies.user_jwt
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        let user=await User.findById(userId)
+        console.log(user);
+        // console.log(products);
+        
+        console.log(productsSearch)
+        //  console.log(query)
+        res.render('user/shop',{query,productsSearch:productsSearch,products,user})
+        // if(products.length===0){
+        //     return res.status(400).json({message:'product not found'})
+        // }
+        // res.json({productsSearch})
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('internal server error')
+        
+    }
+
+ }
 module.exports={
     homePage,
     signUpPage,
@@ -583,6 +816,12 @@ module.exports={
     quantityMinus,
     wishListPage,
     productAddedToWishlist,
-    removeProductFromWishlist
+    removeProductFromWishlist,
+    checkOutGetPage,
+    addAddressPage,
+    editAddressGet,
+    editAddressPost,
+    deleteAddress,
+    searchForProducts
 
 }

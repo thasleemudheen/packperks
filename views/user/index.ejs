@@ -32,6 +32,9 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- swiper js codes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         .container {
             text-align: center;
@@ -72,6 +75,33 @@
     color: white;
     font-weight: bold;
 }
+
+.swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    .swiper {
+      width: 100%;
+      height: 300px;
+      margin: 20px auto;
+    }
 
     </style>
 </head>
@@ -358,11 +388,11 @@
         </div>
         <div class="">
             <div class="tab-pane" id="product-1">
-                <div class="row">
+                <div class="row ">
                     <% products.forEach(product => { %>
                         <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
                             <div class="product-wrap-2 mb-25">
-                                <div class="product-img">
+                                <div class="product-img ">
                                     <a href="/singleProduct/<%=product._id%>">
                                         <img class="default-img <%= product.isDisabled ? 'disabled' : '' %>" src="<%=product.productImage[0]%>" alt="">
                                         <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
@@ -379,10 +409,10 @@
                                         </div>
                                     <% } %>
                                 </div>
-                                <div class="product-content-2">
-                                    <div class="title-price-wrap-2">
-                                        <h3 class="text-center "><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
-                                        <div class="price-2 text-center">
+                                <div class="product-content-2  " style="background-color: blue;" >
+                                    <div class="title-price-wrap-2 " style="background-color: aqua;">
+                                        <h3  ><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
+                                        <div class="price-2 ">
                                             <span>₹: <%=product.productPrice%></span>
                                         </div>   
                                     </div>                                      
@@ -433,7 +463,71 @@
         </div>
     </div>
 </div>
-<!-------------------- slider to show the wishlist products------------------ -->
+<!-------------------- swiper to show the wishlist products------------------ -->
+<% if (isAuthenticated) { %>
+    <div style="display: flex; justify-content: center; text-align: center; width: 100%;" id="favourite_products">
+        <h2>Your favourite products</h2>
+    </div>
+
+    <div #swiperRef="" class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            <% if (wishlistProducts.wishlist && wishlistProducts.wishlist.length > 0) { %>
+                <% wishlistProducts.wishlist.forEach(wishlistItem => { %>
+                    <div class="swiper-slide">
+                        <div class="img_box">
+                           <a href=""> <img style="width: 260px; height: 280px; object-fit: cover;" src="<%= wishlistItem.productImage[0] %>" alt="<%= wishlistItem.productName %>"></a>
+                            <h4><%=wishlistItem.productName%></h4>
+                        </div>              
+                    </div>
+                <% }); %>
+             <% } %>  
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+<% } %>
+
+
+
+<!-- script tag  ------------- -->
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+     var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 4,
+    //   centeredSlides: true,
+      spaceBetween: 30,
+      pagination: {
+        el: ".swiper-pagination",
+        type: "fraction",
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });
+</script>
+<!-- 
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        var swiper = new Swiper(".card_slider", {
+      slidesPerView:4,
+      centeredSlides: true,
+      spaceBetween: 30,
+      pagination: {
+        el: ".swiper-pagination",
+        // type: "fraction",
+        clickable:true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    })
+    })
+    
+</script> -->
+
 
 
 <div class="testimonial-area pb-95">
@@ -791,9 +885,8 @@
 
 
 
-<!-- JS
-============================================ -->
-
+<!-- JS for =========================================== -->
+<!-- sswiper slieder js -->
 <!-- jQuery JS -->
 <script src="/assets/js/vendor/jquery-v3.4.1.min.js"></script>
 <!-- Popper JS -->
