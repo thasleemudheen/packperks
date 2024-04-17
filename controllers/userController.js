@@ -251,7 +251,7 @@ let loginPostPage = async (req, res) => {
 
 
 let signupPostpage = async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const { username, email, phonenumber, password, confirmpassword } = req.body;
     try {
         const userExist = await User.findOne({ email: email });
@@ -261,25 +261,68 @@ let signupPostpage = async (req, res) => {
         if (!password) {
             res.status(400).send('Password is empty');
         }
-        
-        const hashPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, phonenumber, password: hashPassword });
-        await newUser.save();
+        //generate otp for signup
+
+        const otp=otpService.generateOTP()
+
+        //send otp to the users mail adddress
+
+        await otpService.sendOTP(email,otp)
+
+        req.session.userDetails={username,email,phonenumber,password,confirmpassword}
+
+        // otpService.otpMap.set(email,otp)
+        res.cookie('otp',otp,{httpOnly:true,expires:new Date(Date.now()+5*60*1000)})
+
+        // const hashPassword = await bcrypt.hash(password, 10);
+        // const newUser = new User({ username, email, phonenumber, password: hashPassword });
+        // await newUser.save();
         // console.log(newUser);
 
-        // Generate JWT token
-        const token = jwt.sign({ userId: newUser._id }, 'Pack_perks', { expiresIn: '24h' });
-        console.log(token,'token created successfully');
-
-
-        // Set the token in a cookie
-        res.cookie('token', token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) });
-
-        res.redirect('/login');
+    
+        res.redirect(`/verifyOtpForSign?email=${encodeURIComponent(email)}`);
     } catch (error) {
         res.status(500).send('Internal server error');
     }
 }
+
+let signUpverifyPage=async(req,res)=>{
+    const {username,email,phonenumber,password,confirmpassword}=req.session.userDetails || {}
+    res.render('user/verifyOtp',{email,username,phonenumber,password,confirmpassword})
+}
+
+let verifyOtpForSignup=async(req,res)=>{
+    const {username,email,phonenumber,password,otp}=req.body
+    console.log(req.body)
+    
+    if(!username ){
+        return res.status(400).send('username is invalid')
+    }
+    try{
+        const storedOTP=req.cookies.otp
+
+        if(!storedOTP || storedOTP !== otp){
+            return res.status(400).send('invalid otp . please try again')
+        }
+          res.clearCookie('otp')
+        // const newUser=await User.findOne({email:email})
+        console.log('password before hashing',password)
+        const hashPassword=await bcrypt.hash(password,10)
+        console.log(hashPassword)
+        const newUser=new User({username,email,phonenumber,password:hashPassword})
+        console.log(newUser)
+        await newUser.save()
+        const token=jwt.sign({userId:newUser._id},'Pack_perks',{expiresIn:'24h'})
+
+        res.cookie('token',token,{httpOnly:true,expires:new Date(Date.now()+24*60*60*1000)})
+        res.redirect('/')
+    }catch(error){
+        console.error(error)
+        res.status(500).send('internal server error')
+    }
+}
+
+
 
 // google authentication
 let successGoogleLogin = async (req, res) => {
@@ -297,6 +340,7 @@ let successGoogleLogin = async (req, res) => {
         await user.save();
         console.log('user data saved');
     }
+
 
     console.log('login with google');
     const token = jwt.sign({
@@ -410,24 +454,28 @@ let verifyOtp = async (req, res) => {
 
 
 let shopPage=async(req,res)=>{
+    
+    try{
     let token=req.cookies.user_jwt
-    let decoded=jwt.verify(token,process.env.JWT_SECRET)
-    let userId=decoded.id
-    let user=await User.findById(userId)
+    let user=null
+    if(token){
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        user=await User.findById(userId)
+    }
+   
     let products=await Products.find()
 
-    let query=req.query.q
-    query=String(query)
-    const productsSearch=await Products.find({
-        $or:[
-            {productName:{$regex:query,$options:'i'}},
-            {brand:{$regex:query,$options:'i'}},
-            {categoryName:{$regex:query,$options:'i'}}
-        ]
-    })
-    res.render('user/shop',{products,user,query,productsSearch})
+        res.render('user/shop',{products,user})
+    }catch(error){
+        console.error(error)
+        res.status(500).send('internal server error')
+    }
+   
 
 }
+
+
 let singleProductPage=async(req,res)=>{
     let productId=req.params.id
     let singleProduct=await Products.findById(productId)
@@ -758,7 +806,7 @@ let productAddedToWishlist=async(req,res)=>{
  }
 
  let searchForProducts=async(req,res)=>{
-    const query=req.query.q
+    const query=req.params.inputValue
     console.log(query)
     if(!query){
         return res.status(400).json({message:'search query is required'})
@@ -771,22 +819,22 @@ let productAddedToWishlist=async(req,res)=>{
                 {categoryName:{$regex:query,$options:'i'}}
             ]
         })
-        let products=await Products.find()
-
-        let token=req.cookies.user_jwt
+   
+       let token=req.cookies.user_jwt
+       let user=null
+       if(token){
         let decoded=jwt.verify(token,process.env.JWT_SECRET)
         let userId=decoded.id
-        let user=await User.findById(userId)
-        console.log(user);
-        // console.log(products);
-        
-        console.log(productsSearch)
-        //  console.log(query)
-        res.render('user/shop',{query,productsSearch:productsSearch,products,user})
-        // if(products.length===0){
-        //     return res.status(400).json({message:'product not found'})
+         user=await User.findById(userId)
+ 
+       }
+       
+        // if(productsSearch.length===0){
+        //     return res.status(404).json({message:'sorry no result found'})
         // }
-        // res.json({productsSearch})
+        console.log(productsSearch)
+        res.status(200).json({message:'productsSearch',productsSearch,user})
+       
     } catch (error) {
         console.error(error)
         res.status(500).send('internal server error')
@@ -799,6 +847,8 @@ module.exports={
     signUpPage,
     loginPage,
     signupPostpage,
+    verifyOtpForSignup,
+    signUpverifyPage,
     loginPostPage,
     profile,
     logout,

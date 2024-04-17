@@ -355,29 +355,44 @@
                             </div>
                         </div>
                     </div>
-                    <div class="pro-details-quality">
+                    <div class="pro-details-quality" style="display: flex; justify-content:space-evenly;">
                         
                         <form>
-                        <div class="pro-details-cart btn-hover">
-                          <a href=""> <button onclick="addToCart('<%= product._id %>')" style="background-color: #343538; color: white; font-weight: 500; font-size: 15px;" type="button"> Add To Cart</button></a>
-                        </div>
-                    </form>
-                        <div class="pro-details-cart btn-hover <%= product.isDisabled ? 'disabled' : '' %>">
-                            <a href="#"><button type="submit">Buy now</button></a>
+                        <!-- <div class="pro-details-cart " style="background-color: #2a54d4;">
+                          <a href=""> <button onclick="addToCart('<%= product._id %>')" style="background-color: #2a54d4; color: white; font-weight: 500; font-size: 15px;" type="button"> Add To Cart</button></a>
+                        </div> -->
+                        <div>
+                            <a href="#">
+                                <button onclick="addToCart('<%=product._id%>')" style="background-color: rgb(137, 137, 216); height: 50px; width: 150px; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; border-radius: 5px;">
+                                    Add To Cart
+                                </button>
+                            </a>
                         </div>
                         
-                        <div id="wishlist_<%=product._id%>" class="pro-details-wishlist">
+                    </form>
+                    <div>
+                        <a href="#">
+                            <button onclick="addToCart('<%=product._id%>')" style="background-color: rgb(137, 137, 216); height: 50px; width: 150px; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; border-radius: 5px;">
+                                Buy Now
+                            </button>
+                        </a>
+                    </div>
+                        <!-- <div class="pro-details-cart btn-hover <%= product.isDisabled ? 'disabled' : '' %>">
+                            <a href="#"><button type="submit">Buy now</button></a>
+                        </div> -->
+                        
+                        <!-- <div id="wishlist_<%=product._id%>" class="pro-details-wishlist">
                             <button onclick="addToWishlist('<%=product._id%>')" style="border: none;">
                                 <i id="plain_heart_<%=product._id%>" class="fa fa-heart-o fa-2x <% if(!wishlist.includes(product._id.toString())) { %>visible<% } else { %>hidden<% } %>"></i>
                                 <i id="red_heart_<%=product._id%>" class="fa fa-heart fa-2x <% if(wishlist.includes(product._id.toString())) { %>visible<% } else { %>hidden<% } %>" style="color: red;"></i>
                             </button>
-                        </div>
+                        </div> -->
                         
 
                         
 
                         <div class="pro-details-compare">
-                            <a href="#"><i class="pe-7s-shuffle"></i></a>
+                            <a href="#"><i class=""></i></a>
                         </div>
                     </div>
                     <!-- <div class="pro-details-meta">

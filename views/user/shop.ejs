@@ -276,7 +276,7 @@
                 <div class="shop-bottom-area mt-35">
                     <div class="tab-content jump">
                         <div id="shop-1" class="tab-pane active">
-                            <div class="row" id="productList">
+                            <div class="row" id="productDisplay">
                                 <%products.forEach(product=>{%>
 
                                 
@@ -383,7 +383,7 @@
                         <h4 class="pro-sidebar-title">Search </h4>
                         <div class="pro-sidebar-search mb-50 mt-25">
                             <form class="pro-sidebar-search-form"  id="searchForm" action="/search" method="get">
-                                <input type="text" id="searchInput" name="q" placeholder="Search here...">
+                                <input type="text" id="searchInput" name="inputValue" placeholder="Search here...">
                                 <button type="submit" id="searchButton">
                                     <i class="pe-7s-search"></i>
                                 </button>
@@ -506,61 +506,67 @@
 </div>
 
 <script>
-    const searchForProducts = async (event) => {
-        event.preventDefault(); // Prevent form submission
-        const query = document.getElementById('searchInput').value;
-        console.log(query);
-        if (!query) {
-            return alert('Please enter a search query');
-        }
+    document.getElementById('searchButton').addEventListener('click',function(event){
+        event.preventDefault()
+        const inputValue=document.getElementById('searchInput').value;
 
-        try {
-            const response = await fetch(`/search?q=${query}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch search results');
-            }
-            const { productsSearch, user } = await response.json();
-            console.log(productsSearch);
-            // Update the DOM to display the search results
-            document.getElementById('productList').innerHTML = productsSearch.map(product => `
-                <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6">
-                    <div class="product-wrap mb-25 scroll-zoom">
-                        <div class="product-img">
-                            <a href="/singleProduct/${product._id}">
-                                <img class="default-img ${product.isDisabled ? 'disabled' : ''}" src="${product.productImage[0]}" alt="">
-                                <img class="hover-img" src="${product.productImage[1]}" alt="">
-                            </a>
-                            ${product.isDisabled ? '<div class="error-message">Out of Stock</div>' : ''}
-                            <div class="product-action">
-                                <div class=""></div>
-                                <div class=""></div>
-                                <div class=""></div>
-                            </div>
+        axios.get(`/search/${inputValue}`)
+        .then(response=>{
+            console.log(response);
+            displayProducts(response.data)
+            document.getElementById('searchInput').value;
+        }).catch(error=>{
+            console.error(error);
+        });
+    });
+    function displayProducts(data) {
+    const { productsSearch, user } = data;
+    const productDisplay = document.getElementById('productDisplay');
+    productDisplay.innerHTML = '';
+
+    if(productsSearch.length===0){
+        productDisplay.innerHTML='<h2>sorry no result found</h2>';
+        return;
+    }
+    let productHTML = '';
+    productsSearch.forEach(product => {
+        productHTML += `
+            <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6">
+                <div class="product-wrap mb-25 scroll-zoom">
+                    <div class="product-img">
+                        <a href="/singleProduct/${product._id}">
+                            <img class="default-img ${product.isDisabled ? 'disabled' : ''}" src="${product.productImage[0]}" alt="">
+                            <img class="hover-img" src="${product.productImage[1]}" alt="">
+                        </a>
+                        ${product.isDisabled ? '<div class="error-message">Out of Stock</div>' : ''}
+                        <div class="product-action">
+                            <div class=""></div>
+                            <div class=""></div>
+                            <div class=""></div>
                         </div>
-                        <div class="product-content text-center">
-                            <h3><a href="/singleProduct/${product._id}">${product.productName}</a></h3>
-                            <div class="product-price">
-                                <span>₹: ${product.productPrice}</span>
-                            </div>
-                            <div id="wishlist_${product._id}" class="pro-details-wishlist">
-                                <button onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" style="border: none; background-color: white;">
-                                    ${user && user.wishlist.some(prd => prd.productId.toString() === product._id.toString()) ?
-                                        `<i id="red_heart_${product._id}" class="fa fa-heart fa-2x" style="color: red;"></i>` :
-                                        `<i id="plain_heart_${product._id}" class="fa fa-heart-o fa-2x"></i>`
-                                    }
-                                </button>
-                            </div>
+                    </div>
+                    <div class="product-content text-center">
+                        <h3><a href="/singleProduct/${product._id}">${product.productName}</a></h3>
+                        <div class="product-price">
+                            <span>₹: ${product.productPrice}</span>
+                        </div>
+                        <div id="wishlist_${product._id}" class="pro-details-wishlist">
+                            <button onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" style="border: none; background-color: white;">
+                                ${user && user.wishlist.some(prd => prd.productId.toString() === product._id.toString()) ?
+                                    '<i class="fa fa-heart fa-2x" style="color: red;"></i>' :
+                                    '<i class="fa fa-heart-o fa-2x"></i>'
+                                }
+                            </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
-        } catch (error) {
-            console.error(error);
-            alert('Failed to fetch search results');
-        }
-    };
+            </div>
+        `;
+    });
+    productDisplay.innerHTML += productHTML;
+}
 
-    document.getElementById('searchForm').addEventListener('submit', searchForProducts);
+
 </script>
 
 

@@ -1,0 +1,23 @@
+<!-- verifyOtp.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+</head>
+<body>
+    <h1>Verify OTP</h1>
+    <form action="/verify-otp" method="post">
+        <input type="hidden" name="email" value="<%= email %>">
+        <input type="hidden" name="username" value="<%=username%>">
+        <input type="hidden" name="phonenumber" value="<%=phonenumber%>">
+        <input type="hidden" name="password" value="<%=password%>">
+        <input type="hidden" name="confirmpassword" value="<%=confirmpassword%>">
+        <label for="otp">Enter OTP:</label>
+        <input type="text" id="otp" name="otp" required>
+        <button type="submit">Verify OTP</button>
+    </form>
+</body>
+</html>

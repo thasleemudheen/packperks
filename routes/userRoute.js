@@ -33,6 +33,10 @@ router.get('/loginWithOtp',userController.forgetPasswordGetPage)
 router.post('/sendOtp',userController.sendOtp)
 router.post('/verifyOtp',userController.verifyOtp)
 
+router.get('/verifyOtpForSign',userController.signUpverifyPage)
+
+router.post('/verify-otp',userController.verifyOtpForSignup)
+
 
 //google login authentication
 
@@ -47,7 +51,7 @@ router.get('/failure',userController.failureGoogleLogin)
 
 router.get('/shop',userController.shopPage)
 router.get('/singleProduct/:id',userController.singleProductPage)
-router.get('/search',userController.searchForProducts)
+router.get('/search/:inputValue',userController.searchForProducts)
 
 router.get('/wishlist',userAuth,userController.wishListPage)
 router.post('/addWishlist/:id',userController.productAddedToWishlist)

@@ -464,23 +464,21 @@
     </div>
 </div>
 <!-------------------- swiper to show the wishlist products------------------ -->
-<% if (isAuthenticated) { %>
+<% if (isAuthenticated && wishlistProducts && wishlistProducts.wishlist && wishlistProducts.wishlist.length > 0) { %>
     <div style="display: flex; justify-content: center; text-align: center; width: 100%;" id="favourite_products">
         <h2>Your favourite products</h2>
     </div>
 
     <div #swiperRef="" class="swiper mySwiper">
         <div class="swiper-wrapper">
-            <% if (wishlistProducts.wishlist && wishlistProducts.wishlist.length > 0) { %>
-                <% wishlistProducts.wishlist.forEach(wishlistItem => { %>
-                    <div class="swiper-slide">
-                        <div class="img_box">
-                           <a href=""> <img style="width: 260px; height: 280px; object-fit: cover;" src="<%= wishlistItem.productImage[0] %>" alt="<%= wishlistItem.productName %>"></a>
-                            <h4><%=wishlistItem.productName%></h4>
-                        </div>              
-                    </div>
-                <% }); %>
-             <% } %>  
+            <% wishlistProducts.wishlist.forEach(wishlistItem => { %>
+                <div class="swiper-slide">
+                    <div class="img_box">
+                       <a href=""> <img style="width: 260px; height: 280px; object-fit: cover;" src="<%= wishlistItem.productImage[0] %>" alt="<%= wishlistItem.productName %>"></a>
+                        <h4><%=wishlistItem.productName%></h4>
+                    </div>              
+                </div>
+            <% }); %>  
         </div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
@@ -876,7 +874,6 @@
     </div>
 </div>
 <!-- Modal end -->
-
 
 
 

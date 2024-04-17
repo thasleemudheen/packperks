@@ -263,11 +263,11 @@
                                     <td class="product-name"><a href="#"><%=item.productName%></a></td>
                                     <td class="product-price-cart"><span class="amount"><%=item.productPrice%></span></td>
                                     <td class="product-quantity">
-                                        <div class="quantity-control">
+                                        <div class="quantity-control" style="display: flex; justify-content: center; align-items: center;">
                                             <button class="btn btn-sm btn-plus bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityMinus('<%=item.productId %>')">
                                                 <i class="fa fa-minus"></i>
                                             </button>
-                                            <span id="quantity_<%= item.productId %>"><%= item.quantity %></span>
+                                            <span id="quantity_<%= item.productId %>" style="margin: 15px 10px 0 10px ;"><%= item.quantity %></span>
                                             <button class="btn btn-sm btn-plus bg-light border mt-4" style="width:30px; height:30px;" onclick="quantityPlus('<%=item.productId %>')">
                                                 <i class="fa fa-plus"></i>
                                             </button>
