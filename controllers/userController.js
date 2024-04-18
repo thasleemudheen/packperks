@@ -496,6 +496,7 @@ let cartPage=async(req,res)=>{
             return res.redirect('/login');
         }
         const userId = decoded.id;
+        
         // console.log('User ID:', userId)
         // console.log(decoded);
         

@@ -32,11 +32,6 @@ const otpService = {
             throw new Error('Error sending OTP. Please try again.');
         }
     },
-
-    // verifyOTP: function (email, otp) {
-    //     const storedOTP = this.otpMap.get(email);
-    //     return storedOTP === otp;
-    // }
 };
 
 module.exports = otpService;

@@ -34,6 +34,12 @@
     <link href="/assets/admin/css/style.css" rel="stylesheet">
 
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -61,6 +67,9 @@ href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" 
 src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+
 
 </head>
 
@@ -202,41 +211,109 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
             </div>
         </nav>
 <div class="container-fluid"> 
-    <h1>category list</h1>  
-    <form action="/admin/addcategory" method="get">
-    <div class="d-flex justify-content-center">
-        <input type="submit" value="add category" class="btn btn-primary btn-lg">
-    </form>
+    <h1>coupon List</h1>  
+<!-- Button trigger modal -->
+<div class="d-flex justify-content-center">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+      Add Coupon
+    </button>
+  </div>
+  
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/addCoupon" method="post">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLabel">add coupon</h2>
+                    <button type="button" class="close " data-dismiss="modal" aria-label="Close" style="font-size: 5rem;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <label for="couponCode" class="form-label">Coupon Code</label>
+                        <input type="text" class="form-control" id="couponCode" name="couponCode" required>
+                    </div>
+                    <div class="form-row" >
+                        <label class="form-label">Coupon Status</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="couponStatus" id="activeStatus" value="active" required>
+                            <label class="form-check-label" for="activeStatus">Active</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="couponStatus" id="inactiveStatus" value="inactive" required>
+                            <label class="form-check-label" for="inactiveStatus">Inactive</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row" >
+                        <label class="form-label">Coupon Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="couponType" id="fixedAmount" value="fixedAmount" required>
+                            <label class="form-check-label" for="fixedAmount">FixedAmount</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="couponType" id="percentage" value="percentage" required>
+                            <label class="form-check-label" for="percentage">Percentage</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="discountValue" class="form-label">Discount Value</label>
+                        <input type="number" class="form-control" id="discountValue" name="discountValue" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Coupon</button>
+                </div>
+            </form>
+        </div>
     </div>
-  <div>
+</div>
 
 
-    <table id="myTable" class="table table-striped">
+
+    <table id="myTableCoupon" class="table table-striped">
         <thead>
             <tr>
-                <th>id</th>
-                <th>category Name</th>
-                <th>time</th>
+                <th>coupon code</th>
+                <th>coupon type</th>
+                <th>discount value</th>
+                <th>end date</th>
+                <th>status</th>
                 <th>action</th>
             </tr>
         </thead>
         <tbody>
-            <% category.forEach(cat => { %>
+            <% coupon.forEach(coupon => { %>
                 <tr>
-                    <td><strong><%= cat.id %></strong></td>
-                    <td><%= cat.categoryName %></td>
-                    <td><%= cat.createdAt.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) %></td>
-                    <td class="d-flex">
-                        <form action="/admin/deleteCategory/<%= cat._id %>" class="col-6" method="post">
-                            <button type="submit" class="btn btn-outline-secondary">delete</button>
-                        </form>
-                        <form action="/admin/editCategory/<%= cat._id %>" method="get">
-                            <button type="submit" class="btn btn-outline-secondary">edit</button>
-                        </form>
-                    </td>
+                    <td><%= coupon.couponCode %></td>
+                    <td><%= coupon.couponType %></td>
+                    <td><%= coupon.discountValue %></td>
+                    <td><%= coupon.endDate %></td>
+                    <td><%= coupon.couponStatus %></td>
+                    <td> <a href="/editCoupon/<%= coupon._id %>" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i>
+                        
+                    </a>
+                    <form action="/deleteCoupon/<%=coupon._id%>" method="post" style="display: inline;">
+                       <button  type="submit" class="btn-danger btn-sm">  <i class="fas fa-trash-alt"></i>  </button>                        
+                    
+                </form>
+                </td> 
                 </tr>
             <% }) %>
-        </tbody>      
+            
+        </tbody>
+        
     </table>
     
 
@@ -248,7 +325,7 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
          
         <script>
         $(document).ready(function(){
-            $('#myTable').dataTable();
+            $('#myTableCoupon').dataTable();
         });
         </script>
       

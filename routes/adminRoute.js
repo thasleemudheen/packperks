@@ -29,7 +29,11 @@ router.get('/admin/productlist',adminAuth,adminController.productListPage)
 router.post('/admin/disableProduct/:id',adminController.productDisable)
 router.get('/admin/editProduct/:id',adminController.editProductGetPage)
 router.post('/admin/editProduct/:id',upload.array('newProductImage',4),adminController.editProductPostPage)
-
-
+//coupon
+router.get('/admin/coupon',adminController.couponPageGet)
+router.post('/addCoupon',adminController.addCoupon)
+router.post('/deleteCoupon/:id',adminController.deleteCoupon)
+router.get('/editCoupon/:id',adminController.couponEditGetPage)
+router.post('/editCouponData/:id',adminController.editCategoryPostPage)
 
 module.exports = router

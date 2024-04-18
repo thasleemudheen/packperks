@@ -370,7 +370,7 @@
                         </div>
                         
                     </form>
-                    <div>
+                    <div class="<%= product.isDisabled ? 'disabled' : '' %>">
                         <a href="#">
                             <button onclick="addToCart('<%=product._id%>')" style="background-color: rgb(137, 137, 216); height: 50px; width: 150px; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; border-radius: 5px;">
                                 Buy Now

@@ -10,6 +10,11 @@ const passportSetUp=require('./helpers/passport')
 
 const app = express();
 
+app.use((req,res,next)=>{
+    res.setHeader('Cache-Control','no store');
+    next();
+});
+
 // setting the view engine and public files
 app.set('view engine', 'ejs');
 app.use(express.static('public'));

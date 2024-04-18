@@ -5,18 +5,18 @@ const bodyparser=require('body-parser')
 const userAuth=require('../middleware/jwt_user')
 const passport=require('passport')
 const user = require('../models/users')
-const preventBack=require('../middleware/preventback')
+const {preventBack,disableCache}=require('../middleware/preventback')
 
 router.use(bodyparser.urlencoded({extended:true}))
 // app.use(preventCache);
 
 // user routes
 
-router.get('/',preventBack,userController.homePage)
-router.get('/signup',preventBack,userController.signUpPage)
-router.post('/user/signup',userController.signupPostpage)
-router.get('/login',preventBack,userController.loginPage)
-router.post('/user/login',userController.loginPostPage)
+router.get('/',disableCache,userController.homePage)
+router.get('/signup',disableCache,preventBack,userController.signUpPage)
+router.post('/user/signup',preventBack,userController.signupPostpage)
+router.get('/login',disableCache,preventBack,userController.loginPage)
+router.post('/user/login',preventBack,userController.loginPostPage)
 router.get('/logout',userController.logout)
 
 
@@ -29,13 +29,13 @@ router.post('/deleteAddress/:id',userController.deleteAddress)
 
 
 //forget password 
-router.get('/loginWithOtp',userController.forgetPasswordGetPage)
-router.post('/sendOtp',userController.sendOtp)
-router.post('/verifyOtp',userController.verifyOtp)
+router.get('/loginWithOtp',disableCache,preventBack,userController.forgetPasswordGetPage)
+router.post('/sendOtp',preventBack,userController.sendOtp)
+router.post('/verifyOtp',preventBack,userController.verifyOtp)
 
-router.get('/verifyOtpForSign',userController.signUpverifyPage)
+router.get('/verifyOtpForSign',disableCache,preventBack,userController.signUpverifyPage)
 
-router.post('/verify-otp',userController.verifyOtpForSignup)
+router.post('/verify-otp',preventBack,userController.verifyOtpForSignup)
 
 
 //google login authentication

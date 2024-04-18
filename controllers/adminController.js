@@ -160,20 +160,15 @@ let editCategoryGetPage=async(req,res)=>{
 let editCategoryPostPage=async(req,res)=>{
    try{
     let categoryId=req.params.id
-    console.log(categoryId);
     let products=await Admin.findOne({'category._id':categoryId})
-    console.log(products);
    let category= products.category.id(categoryId)
-    // console.log(category);
    let newName=req.body.editCategoryName
-   console.log(newName);
    category.categoryName=newName
    await products.save()
 
    res.redirect('/admin/categorylist')
    } catch(error){
-    console.log('something went wrong in the post request');
-    res.status(400).send('edit not updated')
+    res.status(400).send('category not edited')
    }
 }
 
@@ -236,7 +231,7 @@ let productListPage=async(req,res)=>{
     try{
         let product=await Products.find()
 
-        res.render('admin/productlist',{product})
+        res.render('admin/products',{product})
     }catch(error){
         console.log('product not listed in the tabel');
         res.status(400).send('internal server error')
@@ -275,44 +270,146 @@ let editProductGetPage=async(req,res)=>{
             res.status(400).send('internal server error')
     }   
 }
-
-let editProductPostPage=async(req,res)=>{
-
-    try{
-        let categoryId=req.params.id
-        const product=await Products.findById(categoryId)
-        if(!product){
-            res.send('product not found')
-            return 
+let editProductPostPage = async (req, res) => {
+    try {
+        let productId = req.params.id;
+        const product = await Products.findById(productId);
+        if (!product) {
+            res.send('Product not found');
+            return;
         }
-       
-        product.productId=req.body.productId
-        product.productName=req.body.productName
-        product.productPrice=req.body.productPrice
-        product.categoryName=req.body.categoryName
-        product.discription=req.body.discription
-        product.brand=req.body.brand
-        product.stockQuantity=req.body.stockQuantity
 
-        const newProductImages = req.files;
-        const imageUrls = [];
-        // console.log('New Product Images:', newProductImages);
-        for (const image of newProductImages) {
-            // console.log('Uploading image:', image.originalname);
-            const result = await cloudinary.uploader.upload(image.path);
-            // console.log('Uploaded image:', result);
-            imageUrls.push(result.secure_url);
+        product.productId = req.body.productId;
+        product.productName = req.body.productName;
+        product.productPrice = req.body.productPrice;
+        product.categoryName = req.body.categoryName;
+        product.discription = req.body.discription;
+        product.brand = req.body.brand;
+        product.stockQuantity = req.body.stockQuantity;
+
+        if (req.files && req.files.length > 0) {
+            const newProductImages = req.files;
+            console.log(req.files);
+            const imageUrls = [];
+            for (const image of newProductImages) {
+                const result = await cloudinary.uploader.upload(image.path);
+                imageUrls.push(result.secure_url);
+            }
+            product.productImage = imageUrls;
         }
-        // console.log('Image URLs:', imageUrls);
-        product.productImage = imageUrls;
 
-        await product.save()
-        res.redirect('/admin/productlist')
-    }catch(error){
-        console.log('product not updated now also');
-        res.status(400).send('internal server error')
+        await product.save();
+        res.redirect('/admin/productlist');
+    } catch (error) {
+        console.log('Product not updated:', error);
+        res.status(500).send('Internal server error');
     }
+}
 
+
+// let editProductPostPage=async(req,res)=>{
+
+//     try{
+//         let categoryId=req.params.id
+//         const product=await Products.findById(categoryId)
+//         if(!product){
+//             res.send('product not found')
+//             return 
+//         }
+       
+//         product.productId=req.body.productId
+//         product.productName=req.body.productName
+//         product.productPrice=req.body.productPrice
+//         product.categoryName=req.body.categoryName
+//         product.discription=req.body.discription
+//         product.brand=req.body.brand
+//         product.stockQuantity=req.body.stockQuantity
+
+//         const newProductImages = req.files;
+//         const imageUrls = [];
+//         for (const image of newProductImages) {
+//             const result = await cloudinary.uploader.upload(image.path);
+//             imageUrls.push(result.secure_url);
+//         }
+//         product.productImage = imageUrls;
+
+//         await product.save()
+//         res.redirect('/admin/productlist')
+//     }catch(error){
+//         console.log('product not updated now also');
+//         res.status(400).send('internal server error')
+//     }
+
+// }
+let addCoupon=async(req,res)=>{
+    const {couponCode,couponType,discountValue,endDate,couponStatus}=req.body
+    try{
+        let admin=await Admin.findOne()
+        // console.log(admin);
+    
+        admin.coupon.push({
+            couponCode,
+            couponType,
+            discountValue,
+            endDate,
+            couponStatus
+        })
+        await admin.save()
+        console.log('coupon added successfully')
+        res.redirect('/admin/coupon')
+    }catch(error){
+        console.error(error)
+        res.status(500).send('failed to add coupon')
+    }
+    
+}
+let couponPageGet=async(req,res)=>{
+
+    let admin=await Admin.findOne()
+    // console.log(admin)
+    let coupon=admin.coupon
+    // console.log(coupon)
+    res.render('admin/coupon',{coupon})
+}
+
+let deleteCoupon=async(req,res)=>{
+    let deletedId=req.params.id
+try{
+    let admin=await Admin.findOne()
+    // console.log(admin);
+    admin.coupon=admin.coupon.filter(coupon=>coupon.id != deletedId)
+    admin.save()
+    console.log('coupon deleted successfully')
+    res.status(200).redirect('/admin/coupon')
+}catch(error){
+    console.error(error)
+    res.status(500).send('coupon not deleted ')
+}
+}
+
+let couponEditGetPage=async(req,res)=>{
+    let couponEditId=req.params.id
+
+    let admin=await Admin.findOne()
+    // console.log(admin);
+    let coupon= admin.coupon.find(coupon=>coupon.id===couponEditId)
+    //   console.log(coupon)
+    res.render('admin/editCoupon',{coupon})
+}
+
+let couponEditPostPage=async(req,res)=>{
+      console.log('the edit request is here')
+    // let editCouponId=req.params.id
+try{
+    console.log(editCouponId);
+    let admin=await Admin.findOne()
+    // let coupon=admin.coupon.find(coupon=>coupon.id===editCouponId)
+    console.log(admin)
+    // res.redirect('/admin/coupon')
+}catch(error){
+    console.error(error)
+    res.status(500).send('coupon not updated')
+}    
 }
 module.exports={
     adminLogin,
@@ -332,6 +429,11 @@ module.exports={
     addProductPostPage,
     productDisable,
     editProductGetPage,
-    editProductPostPage
+    editProductPostPage,
+    couponPageGet,
+    addCoupon,
+    deleteCoupon,
+    couponEditGetPage,
+    couponEditPostPage
     
 }

@@ -18,6 +18,32 @@ const adminSchema= new mongoose.Schema({
             type:Date,
             default:Date.now
         }
+    }],
+    coupon:[{
+        couponCode:{
+            type:String,
+            required:true
+        },
+        couponStatus:{
+            type:String,
+            required:true
+        },
+        couponType:{
+            type:String,
+            required:true
+        },
+        discountValue:{
+            type:Number,
+            required:true
+        },
+        startDate:{
+            type:Date,
+            default:Date.now
+        },
+        endDate:{
+            type:Date,
+            required:true
+        }
     }]
    
 })
