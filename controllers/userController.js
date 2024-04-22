@@ -1,5 +1,6 @@
 const User=require('../models/users')
 const Products=require('../models/products')
+const Admin=require('../models/admin')
 const bcrypt=require('bcryptjs')
 const passport=require('passport')
 const jwt=require('jsonwebtoken')
@@ -15,6 +16,8 @@ let homePage = async (req, res) => {
 
         const products = await Products.find().sort({ createdAt: -1 }).limit(8);
 
+        let categoryName=await Products.distinct('categoryName')
+
         if (req.cookies.user_jwt) {
             isAuthenticated = true;
             const token = req.cookies.user_jwt;
@@ -25,7 +28,7 @@ let homePage = async (req, res) => {
             wishlistProducts = await User.findById(userId, 'wishlist').populate('wishlist').lean();
         }
 
-        res.render('user/index', { isAuthenticated, products, user: req.user, wishlistProducts });
+        res.render('user/index', { isAuthenticated, products, user: req.user, wishlistProducts,categoryName });
 
     } catch (error) {
         console.log('Home page is not found');
@@ -787,19 +790,19 @@ let productAddedToWishlist=async(req,res)=>{
         let userId=decoded.id
         let user=await User.findById(userId)
 
+        let admin=await Admin.findOne()
+        // console.log(admin)
+        let coupon=admin.coupon
+        // let couponCode=coupon.find(couponCode)
+        // console.log(couponCode)
+
         let address=user.address
         // console.log(address);
         // let shippingCharge=45
         let cart=user.cart.product
         let cartTotal=user.cart.total
-        
-        
-        
 
-        // console.log(cartTotal)
-        // console.log(cart)
-
-        res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal})
+        res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal,coupon:coupon})
     } catch (error) {
         
     }
@@ -808,7 +811,7 @@ let productAddedToWishlist=async(req,res)=>{
 
  let searchForProducts=async(req,res)=>{
     const query=req.params.inputValue
-    console.log(query)
+    // console.log(query)
     if(!query){
         return res.status(400).json({message:'search query is required'})
     }
@@ -833,7 +836,7 @@ let productAddedToWishlist=async(req,res)=>{
         // if(productsSearch.length===0){
         //     return res.status(404).json({message:'sorry no result found'})
         // }
-        console.log(productsSearch)
+        // console.log(productsSearch)
         res.status(200).json({message:'productsSearch',productsSearch,user})
        
     } catch (error) {
@@ -842,6 +845,20 @@ let productAddedToWishlist=async(req,res)=>{
         
     }
 
+ }
+
+ let showProductBasedOnCategory=async(req,res)=>{
+    // let categoryName=await Products.distinct('categoryName')
+    const categoryName=req.params.categoryName
+    console.log(categoryName)
+    try{
+          const product=await Products.find({categoryName:categoryName})
+          console.log(product)
+    }catch(error){
+        console.error(error)
+        res.status(500).send('internal server error')
+    }
+    
  }
 module.exports={
     homePage,
@@ -873,6 +890,7 @@ module.exports={
     editAddressGet,
     editAddressPost,
     deleteAddress,
-    searchForProducts
+    searchForProducts,
+    showProductBasedOnCategory
 
 }

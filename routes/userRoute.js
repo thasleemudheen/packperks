@@ -67,4 +67,6 @@ router.post('/quantityMinus/:id',userController.quantityMinus)
 
 router.get('/checkOutPage',userController.checkOutGetPage)
 
+router.get('/product/category/:categoryName',userController.showProductBasedOnCategory)
+
 module.exports=router

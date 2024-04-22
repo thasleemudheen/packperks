@@ -34,6 +34,8 @@ router.get('/admin/coupon',adminController.couponPageGet)
 router.post('/addCoupon',adminController.addCoupon)
 router.post('/deleteCoupon/:id',adminController.deleteCoupon)
 router.get('/editCoupon/:id',adminController.couponEditGetPage)
-router.post('/editCouponData/:id',adminController.editCategoryPostPage)
+router.post('/editCouponData/:id',adminController.couponEditPostPage)
+
+router.get('/admin/order',adminController.orderManagement)
 
 module.exports = router

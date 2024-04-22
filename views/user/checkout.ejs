@@ -419,6 +419,37 @@
                                 </ul>
                             </div>
                         </div>
+                        <div>
+                            <p>if you have coupon enter coupon code</p>
+                        </div>
+                        <div>
+                            <div class="coupon-apply">
+                                <form action="/couponApply" method="post">
+                                    <input type="text" name="couponCode" id="couponCode" placeholder="enter coupon code">
+                                    <select name="couponApply" id="couponApply" onchange="updateCouponCode()">
+                                        <% coupon.forEach(coupon=>{%>
+                                        <option value="<%=coupon._id%>"><%=coupon.couponCode%></option>
+                                        <% })%>
+                                    </select>
+                                    <button type="submit" class=" btn-primary " >apply coupon</button>
+                                </form>
+                            </div>
+    
+                            <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">
+                                <span><h4> order Total </h4></span>
+                                <span> <h4> 3000 </h4></span>
+                            </div>
+
+                        </div>
+                       <script>
+
+                        function updateCouponCode(){
+                        const select=document.getElementById('couponApply')
+                        const input=document.getElementById('couponCode')
+                        input.value=select.options[select.selectIndex].text;
+                        }
+                        
+                       </script>
                         <!-- <div class="payment-method">
                             <div class="payment-accordion element-mrg">
                                 <div class="panel-group" id="accordion">

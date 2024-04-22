@@ -76,11 +76,11 @@ let userBlock=async(req,res)=>{
     const userId=req.body.userId
     try{
         const user=await User.findOne({_id:userId})
-        console.log(user);
+        // console.log(user);
         if(user){
             user.blocked=!user.blocked
             await user.save()
-            console.log("block status :",user.blocked);
+            // console.log("block status :",user.blocked);
         }
         res.redirect('/admin/user')
     }catch(error){
@@ -90,7 +90,7 @@ let userBlock=async(req,res)=>{
 
 let categoryListPage=async(req,res)=>{
     let admin=await Admin.findOne()
-    console.log(admin);
+    // console.log(admin);
     if(!admin){
        return res.status(400).send('user not found')
     }
@@ -191,7 +191,7 @@ let addProductPostPage=async(req,res)=>{
       const productImage=req.files
     //   console.log(req.files);
     //   console.log("prdct :",productImage);
-      console.log(req.body);
+    //   console.log(req.body);
     const imageUrls = [];
 
     const result = await Promise.all(productImage.map(async (image) => {
@@ -212,7 +212,7 @@ let addProductPostPage=async(req,res)=>{
         productImage:imageUrls,
 
       })
-      console.log(newProduct);
+    //   console.log(newProduct);
 
       await newProduct.save()
       res.redirect('/admin/productlist')
@@ -270,77 +270,89 @@ let editProductGetPage=async(req,res)=>{
             res.status(400).send('internal server error')
     }   
 }
-let editProductPostPage = async (req, res) => {
-    try {
-        let productId = req.params.id;
-        const product = await Products.findById(productId);
-        if (!product) {
-            res.send('Product not found');
-            return;
+// let editProductPostPage = async (req, res) => {
+//     try {
+//         let productId = req.params.id;
+//         const product = await Products.findById(productId);
+//         if (!product) {
+//             res.send('Product not found');
+//             return;
+//         }
+
+//         product.productId = req.body.productId;
+//         product.productName = req.body.productName;
+//         product.productPrice = req.body.productPrice;
+//         product.categoryName = req.body.categoryName;
+//         product.discription = req.body.discription;
+//         product.brand = req.body.brand;
+//         product.stockQuantity = req.body.stockQuantity;
+
+//         if (req.files && req.files.length > 0) {
+//             const newProductImages = req.files;
+//             console.log(req.files);
+//             const imageUrls = [];
+//             for (const image of newProductImages) {
+//                 const result = await cloudinary.uploader.upload(image.path);
+//                 imageUrls.push(result.secure_url);
+//             }
+//             product.productImage = imageUrls;
+//         }
+
+//         await product.save();
+//         res.redirect('/admin/productlist');
+//     } catch (error) {
+//         console.log('Product not updated:', error);
+//         res.status(500).send('Internal server error');
+//     }
+// }
+
+
+let editProductPostPage=async(req,res)=>{
+
+    try{
+        let categoryId=req.params.id
+        const product=await Products.findById(categoryId)
+        if(!product){
+            res.send('product not found')
+            return 
         }
+       
+        product.productId=req.body.productId
+        product.productName=req.body.productName
+        product.productPrice=req.body.productPrice
+        product.categoryName=req.body.categoryName
+        product.discription=req.body.discription
+        product.brand=req.body.brand
+        product.stockQuantity=req.body.stockQuantity
 
-        product.productId = req.body.productId;
-        product.productName = req.body.productName;
-        product.productPrice = req.body.productPrice;
-        product.categoryName = req.body.categoryName;
-        product.discription = req.body.discription;
-        product.brand = req.body.brand;
-        product.stockQuantity = req.body.stockQuantity;
+        const newProductImage = req.files;
 
-        if (req.files && req.files.length > 0) {
-            const newProductImages = req.files;
-            console.log(req.files);
+        // console.log(newProductImage);
+
+        // const existingImageUrls=JSON.parse(req.body.existingImageUrls)
+        // console.log(existingImageUrls)
+        // if(newProductImage.length>0){
             const imageUrls = [];
-            for (const image of newProductImages) {
+            for (const image of newProductImage) {
                 const result = await cloudinary.uploader.upload(image.path);
+    
                 imageUrls.push(result.secure_url);
             }
             product.productImage = imageUrls;
-        }
+        // }else{
+            // product.productImage=existingImageUrls
+        // }
+        
 
-        await product.save();
-        res.redirect('/admin/productlist');
-    } catch (error) {
-        console.log('Product not updated:', error);
-        res.status(500).send('Internal server error');
+        await product.save()
+        res.redirect('/admin/productlist')
+    }catch(error){
+        console.log('product not updated now also');
+        res.status(400).send('internal server error')
     }
+
 }
 
-
-// let editProductPostPage=async(req,res)=>{
-
-//     try{
-//         let categoryId=req.params.id
-//         const product=await Products.findById(categoryId)
-//         if(!product){
-//             res.send('product not found')
-//             return 
-//         }
-       
-//         product.productId=req.body.productId
-//         product.productName=req.body.productName
-//         product.productPrice=req.body.productPrice
-//         product.categoryName=req.body.categoryName
-//         product.discription=req.body.discription
-//         product.brand=req.body.brand
-//         product.stockQuantity=req.body.stockQuantity
-
-//         const newProductImages = req.files;
-//         const imageUrls = [];
-//         for (const image of newProductImages) {
-//             const result = await cloudinary.uploader.upload(image.path);
-//             imageUrls.push(result.secure_url);
-//         }
-//         product.productImage = imageUrls;
-
-//         await product.save()
-//         res.redirect('/admin/productlist')
-//     }catch(error){
-//         console.log('product not updated now also');
-//         res.status(400).send('internal server error')
-//     }
-
-// }
 let addCoupon=async(req,res)=>{
     const {couponCode,couponType,discountValue,endDate,couponStatus}=req.body
     try{
@@ -397,20 +409,34 @@ let couponEditGetPage=async(req,res)=>{
     res.render('admin/editCoupon',{coupon})
 }
 
-let couponEditPostPage=async(req,res)=>{
-      console.log('the edit request is here')
-    // let editCouponId=req.params.id
-try{
-    console.log(editCouponId);
-    let admin=await Admin.findOne()
-    // let coupon=admin.coupon.find(coupon=>coupon.id===editCouponId)
-    console.log(admin)
-    // res.redirect('/admin/coupon')
-}catch(error){
-    console.error(error)
-    res.status(500).send('coupon not updated')
-}    
+let couponEditPostPage = async (req, res) => {
+    let editCouponId = req.params.id;
+    try {
+        let admin = await Admin.findOne();
+        let coupon = admin.coupon.find(coupon => coupon.id === editCouponId);
+        if (!coupon) {
+            return res.status(404).send('Coupon not found');
+        }
+ 
+        coupon.couponCode = req.body.couponCode;
+        coupon.couponType = req.body.couponType;
+        coupon.discountValue = req.body.discountValue;
+        coupon.endDate = req.body.endDate;
+        coupon.couponStatus = req.body.couponStatus;
+
+        await admin.save();
+        console.log('Coupon updated successfully');
+        res.redirect('/admin/coupon');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Coupon not updated');
+    }
 }
+
+let orderManagement=async(req,res)=>{
+    res.render('admin/orders')
+}
+
 module.exports={
     adminLogin,
     adminPostLogin,
@@ -434,6 +460,7 @@ module.exports={
     addCoupon,
     deleteCoupon,
     couponEditGetPage,
-    couponEditPostPage
+    couponEditPostPage,
+    orderManagement
     
 }

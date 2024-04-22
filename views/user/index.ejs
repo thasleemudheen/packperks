@@ -39,6 +39,7 @@
         .container {
             text-align: center;
             margin: 20px auto;
+
             width: 80%;
         }
 
@@ -308,124 +309,98 @@
     <div class="container">
         <!-- <div class="tab-filter-wrap mb-60"> -->
             <div class="product-tab-list-2 nav">
-                <!-- <a class="active" href="#product-1" data-toggle="tab" > -->
-                    <!-- <h4>New Arrivals  </h4> -->
-                <!-- </a> -->
-                <!-- <a  href="#product-2" data-toggle="tab">
+                <!-- <a class="active" href="#product-1" data-toggle="tab" >
+                    <h4>New Arrivals  </h4>
+                </a>
+                <a  href="#product-2" data-toggle="tab">
                     <h4>best sellers</h4>
-                </a> -->
-                <!-- <a href="#product-3" data-toggle="tab">
+                </a>
+                <a href="#product-3" data-toggle="tab">
                     <h4>top Selling</h4>
                 </a> -->
-            <!-- </div> -->
-            <!-- <div class="filter-active"> -->
-                <!-- <a href="#"><i class="fa fa-plus"></i> filter</a> -->
-            <!-- </div> -->
-        <!-- </div> -->
-        <!-- <div class="product-filter-wrapper">
-            <div class="row"> -->
-                <!-- Product Filter -->
-                <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-30">
-                    <div class="product-filter">
-                        <h5>Sort by</h5>
-                        <ul class="sort-by">
-                            <li><a href="#">Default</a></li>
-                            <li><a href="#">Popularity</a></li>
-                            <li><a href="#">Average rating</a></li>
-                            <li><a href="#">Newness</a></li>
-                            <li><a href="#">Price: Low to High</a></li>
-                            <li><a href="#">Price: High to Low</a></li>
-                        </ul>
+           
+       
+                <div class="container d-flex" style="justify-content: space-around;">
+                    <div id="latestProducts" class="row" style="cursor: pointer;">
+                        <h2 class="heading" style="display: inline-block;display: flex; justify-content: flex-start;">Latest products</h2>
                     </div>
-                </div> -->
-                <!-- Product Filter -->
-                <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-30">
-                    <div class="product-filter">
-                        <h5>color filters</h5>
-                        <ul class="color-filter">
-                            <li><input type="checkbox" value=""> <a href="#">Black</a></li>
-                            <li><input type="checkbox" value=""> <a href="#">Brown</a></li>
-                            <li><input type="checkbox" value=""> <a href="#">Orange</a></li>
-                            <li><input type="checkbox" value=""> <a href="#">red</a></li>
-                            <li><input type="checkbox" value=""> <a href="#">Yellow</a></li>
-                            <li><input type="checkbox" value=""> <a href="#">purple</a></li>
-                        </ul>
+                    <div>
+                        <%categoryName.forEach(category=>{%>
+                            <h4 class="category-link" style="display: inline-block; margin: 10px 0 0 10px ; cursor: pointer;" data-category="<%=category%>"><%=category%></h4>
+                        <% })%>
                     </div>
-                </div> -->
-                <!-- Product Filter -->
-                <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-30">
-                    <div class="product-filter">
-                        <h5>product tags</h5>
-                        <div class="product-tags">
-                            <ul>
-                                <li><a href="#">New</a></li>
-                                <li><a href="#">brand</a></li>
-                                <li><a href="#">black</a></li>
-                                <li><a href="#">white</a></li>
-                                <li><a href="#">chire</a></li>
-                                <li><a href="#">table</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div> -->
-                <!-- Product Filter -->
-                <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-30">
-                    <div class="product-filter">
-                        <h5>Filter by price</h5>
-                        <div class="price-filter mt-25">
-                            <div class="price-slider-amount">
-                                <input type="text" id="amount" name="price"  placeholder="Add Your Price" />
-                            </div>
-                            <div id="slider-range"></div>
+                </div>
+                <div class="underline mb-5"></div>
+                
+                <div class="">
+                    <div class="tab-pane" id="product-1">
+                        <div class="row" id="product-list">
+                            <% products.forEach(product => { %>
+                                <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6 product-category" data-category="<%=product.categoryName%>">
+                                    <div class="product-wrap-2 mb-25">
+                                        <div class="product-img">
+                                            <a href="/singleProduct/<%=product._id%>">
+                                                <img class="default-img <%= product.isDisabled ? 'disabled' : '' %>" src="<%=product.productImage[0]%>" alt="">
+                                                <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
+                                            </a>
+                                            <% if (product.isDisabled) { %>
+                                                <div class="product-action-2">
+                                                    <span class="out-of-stock">Out of Stock</span>
+                                                </div>
+                                            <% } else { %>
+                                                <div class="product-action-2">
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        <div class="product-content-2 d-flex justify-content-center" >
+                                            <div class="title-price-wrap-2" >
+                                                <h3><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
+                                                <div class="price-2">
+                                                    <span>₹: <%=product.productPrice%></span>
+                                                </div> 
+                                            </div>                                      
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div> -->
-        <div class="container">
-            <h2 class="heading">products</h2>
-            <div class="underline"></div>
-        </div>
-        <div class="">
-            <div class="tab-pane" id="product-1">
-                <div class="row ">
-                    <% products.forEach(product => { %>
-                        <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6">
-                            <div class="product-wrap-2 mb-25">
-                                <div class="product-img ">
-                                    <a href="/singleProduct/<%=product._id%>">
-                                        <img class="default-img <%= product.isDisabled ? 'disabled' : '' %>" src="<%=product.productImage[0]%>" alt="">
-                                        <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
-                                    </a>
-                                    <% if (product.isDisabled) { %>
-                                        <div class="product-action-2">
-                                            <span class="out-of-stock">Out of Stock</span>
-                                        </div>
-                                    <% } else { %>
-                                        <div class="product-action-2">
-                                            <!-- <a title="Add To Cart" href="#"><i class="fa fa-shopping-cart"></i></a>
-                                            <a title="Quick View" href="#" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-eye"></i></a>
-                                            <a title="Compare" href="#"><i class="fa fa-retweet"></i></a> -->
-                                        </div>
-                                    <% } %>
-                                </div>
-                                <div class="product-content-2  " style="background-color: blue;" >
-                                    <div class="title-price-wrap-2 " style="background-color: aqua;">
-                                        <h3  ><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
-                                        <div class="price-2 ">
-                                            <span>₹: <%=product.productPrice%></span>
-                                        </div>   
-                                    </div>                                      
-                                    
-                                </div>
 
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            </div>
-        </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+    const categoryLinks = document.querySelectorAll('.category-link');
+    const products = document.querySelectorAll('.product-category');
 
+    function showAllProducts() {
+            products.forEach(product => {
+                product.style.display = 'block';
+            });
+        }
+
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            const category = this.dataset.category;
+            products.forEach(product => {
+                if (product.dataset.category === category) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        });
+    });
+    document.getElementById('latestProducts').addEventListener('click', function() {
+            showAllProducts();
+        });
+});
+
+
+
+
+
+                </script>
       
         
         
