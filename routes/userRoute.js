@@ -69,4 +69,6 @@ router.get('/checkOutPage',userController.checkOutGetPage)
 
 router.get('/product/category/:categoryName',userController.showProductBasedOnCategory)
 
+router.post('/couponApply',userController.applyCouponCode)
+
 module.exports=router

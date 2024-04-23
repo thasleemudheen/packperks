@@ -8,7 +8,7 @@ const preventBack = (req, res, next) => {
       if (err) {
         next();
       } else {
-        res.redirect('/'); // Redirect to home page or another appropriate page
+        res.redirect('/'); 
       }
     });
   } else {

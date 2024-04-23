@@ -299,8 +299,12 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                     <td><%= coupon.couponType %></td>
                     <td><%= coupon.discountValue %></td>
                     <td><%= coupon.endDate %></td>
-                    <td><%= coupon.couponStatus %></td>
-                    <td> <a href="/editCoupon/<%= coupon._id %>" class="btn btn-primary btn-sm">
+                    <td>
+                        <span class="badge <%= coupon.couponStatus === 'active' ? 'bg-success' : 'bg-danger' %>">
+                            <%= coupon.couponStatus %>
+                        </span>
+                    </td>
+                                        <td> <a href="/editCoupon/<%= coupon._id %>" class="btn btn-primary btn-sm">
                         <i class="fas fa-edit"></i>
                         
                     </a>

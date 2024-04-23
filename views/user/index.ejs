@@ -370,31 +370,32 @@
                 
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
-    const categoryLinks = document.querySelectorAll('.category-link');
-    const products = document.querySelectorAll('.product-category');
+                    const categoryLinks = document.querySelectorAll('.category-link');
+                    const products = document.querySelectorAll('.product-category');
 
-    function showAllProducts() {
-            products.forEach(product => {
-                product.style.display = 'block';
-            });
-        }
+                    function showAllProducts() {
+                            products.forEach(product => {
+                                product.style.display = 'block';
+                            });
+                        }
 
-    categoryLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            const category = this.dataset.category;
-            products.forEach(product => {
-                if (product.dataset.category === category) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
+                    categoryLinks.forEach(link => {
+                        link.addEventListener('click', function() {
+                            const category = this.dataset.category;
+                            products.forEach(product => {
+                                if (product.dataset.category === category) {
+                                    product.style.display = 'block';
+                                } else {
+                                    product.style.display = 'none';
+                                }
+                            });
+                        });
+                    });
+                    
+                document.getElementById('latestProducts').addEventListener('click', function() {
+                        showAllProducts();
+                    });
             });
-        });
-    });
-    document.getElementById('latestProducts').addEventListener('click', function() {
-            showAllProducts();
-        });
-});
 
 
 
@@ -439,7 +440,7 @@
     </div>
 </div>
 <!-------------------- swiper to show the wishlist products------------------ -->
-<% if (isAuthenticated && wishlistProducts && wishlistProducts.wishlist && wishlistProducts.wishlist.length > 0) { %>
+<% if (isAuthenticated && wishlistProducts && wishlistProducts.wishlist && wishlistProducts.wishlist.length > 3) { %>
     <div style="display: flex; justify-content: center; text-align: center; width: 100%;" id="favourite_products">
         <h2>Your favourite products</h2>
     </div>

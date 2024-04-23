@@ -28,6 +28,10 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <!-- Modernizer JS -->
     <script src="/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 
 <body>
@@ -108,15 +112,8 @@
                             </div> 
                         </div>
                         <div class="same-style account-satting">
-                            <a class="account-satting-active" href="#"><i class="pe-7s-user-female"></i></a>
-                            <div class="account-dropdown">
-                                <ul>
-                                    <li><a href="login-register.html">Login</a></li>
-                                    <li><a href="login-register.html">Register</a></li>
-                                    <li><a href="wishlist.html">Wishlist  </a></li>
-                                    <li><a href="my-account.html">my account</a></li>
-                                </ul>
-                            </div>
+                            <a class="account-satting-active" href="/profile"><i class="pe-7s-user-female"></i></a>
+                           
                         </div>
                         <div class="same-style header-wishlist">
                             <a href="/wishlist"><i class="pe-7s-like"></i></a>
@@ -208,15 +205,15 @@
                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Add Address</button>
 
 
-                      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h1 class="modal-title fs-5" id="exampleModalLabel">ADD NEW ADDRESS</h1>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              <form action="/addAddress " method="post">
+                      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  >
+                        <div class="modal-dialog modal-dialog-centered "  style="max-width: 500px; max-height: 80vh; margin: auto;">
+                          <div class="modal-content" >
+                            <div class="modal-header "  >
+                                <h1 class="modal-title fs-5 text-center " id="exampleModalLabel" style=" margin: auto;"><strong> ADD NEW ADDRESS </strong></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>                            
+                            <div class="modal-body" >
+                              <form action="/addAddress " method="post" style="margin: 4px; height: 420px;">
                                 <div class="mb-3">
                                   <label for="name" class="col-form-label">name</label>
                                   <input type="text" class="form-control" id="name" name="name">
@@ -419,94 +416,162 @@
                                 </ul>
                             </div>
                         </div>
-                        <div>
-                            <p>if you have coupon enter coupon code</p>
-                        </div>
-                        <div>
-                            <div class="coupon-apply">
-                                <form action="/couponApply" method="post">
-                                    <input type="text" name="couponCode" id="couponCode" placeholder="enter coupon code">
-                                    <select name="couponApply" id="couponApply" onchange="updateCouponCode()">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate">
+                            <label class="form-check-label" for="flexCheckIndeterminate">
+                              Do you have coupon
+                            </label>
+                          </div>
+                        <div id="coupon-part" style="display: none;">
+                            <div class="coupon-apply"  >
+                                <form id="couponApplyForm" action="/couponApply" method="post">
+                                         <input type="hidden" id="checkout-price" name="totalValue"  class="" value="<%=cartTotal%>" style="text-align: end; width: 50%; ">
+                                    <div style="display: flex;">
+                                    <input type="text" name="couponCode" id="couponCode" placeholder="enter coupon code" style="width: 50%;" >
+                                    <select name="couponId" id="couponId"  onchange="updateCouponCode()" style="width: 50%;">
+                                        <option hidden >select coupon</option>
                                         <% coupon.forEach(coupon=>{%>
-                                        <option value="<%=coupon._id%>"><%=coupon.couponCode%></option>
+                                            
+                                        <option id="couponOption" value="<%=coupon._id%>"><%=coupon.couponCode%></option>
                                         <% })%>
                                     </select>
-                                    <button type="submit" class=" btn-primary " >apply coupon</button>
+                                </div>
+                                    <button type="submit" id="applyCouponbtn" class=" btn-primary" onclick="applyCoupon()" >apply coupon</button>
                                 </form>
                             </div>
+                            <div style="display: none; justify-content: space-between; margin-top: 10px; border-bottom: 1px solid grey;" id="discounted">
+                                <span><h4>discountValue</h4></span>
+                                <span><h4 id="discountValue"></h4></span>
+                            </div>
     
-                            <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">
-                                <span><h4> order Total </h4></span>
-                                <span> <h4> 3000 </h4></span>
-                            </div>
+                            <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">    
+                               <span><h4> order Total </h4></span>
+                                <span> <h4 id="totalAmount"> <%=cartTotal%> </h4></span>
+                               
 
-                        </div>
-                       <script>
-
-                        function updateCouponCode(){
-                        const select=document.getElementById('couponApply')
-                        const input=document.getElementById('couponCode')
-                        input.value=select.options[select.selectIndex].text;
-                        }
-                        
-                       </script>
-                        <!-- <div class="payment-method">
-                            <div class="payment-accordion element-mrg">
-                                <div class="panel-group" id="accordion">
-                                    <div class="panel payment-accordion">
-                                        <div class="panel-heading" id="method-one">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#method1">
-                                                    Direct bank transfer
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="method1" class="panel-collapse collapse show">
-                                            <div class="panel-body">
-                                                <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel payment-accordion">
-                                        <div class="panel-heading" id="method-two">
-                                            <h4 class="panel-title">
-                                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#method2">
-                                                    Check payments
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="method2" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel payment-accordion">
-                                        <div class="panel-heading" id="method-three">
-                                            <h4 class="panel-title">
-                                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#method3">
-                                                    Cash on delivery
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="method3" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
+                           </div>
+                          <div id="couponMessage" ></div>
+                     
+                       
+                    </div>
+                    <div style="border-top: 1px solid lightgray;">
+                        <h4>payment-method</h4>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                              COD
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                              ONLINE PAYMENT
+                            </label>
+                          </div>
                     </div>
                     <div class="Place-order mt-25">
-                        <a class="btn-hover" href="#">Proceed To Payment</a>
+                        <a class="btn-hover" href="#">PLACE ORDER</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+                        
+<script>
+
+    const couponCheckbox = document.getElementById('flexCheckIndeterminate');
+    const couponPartDiv = document.getElementById('coupon-part');
+
+    couponCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            couponPartDiv.style.display = 'block';
+        } else {
+            couponPartDiv.style.display = 'none';
+        }
+    });
+
+    // removign and applying coupon from ordering 
+
+      
+   const applyCoupon = async () => {
+    const select = document.getElementById('couponId');
+    const couponId = select.value;
+    if (!couponId) {
+        document.getElementById('couponMessage').textContent = 'Please select a coupon.';
+        document.getElementById('couponMessage').style.color = 'red';
+        return;
+    }
+
+    const totalValue = document.getElementById('checkout-price').value;
+
+    const response = await fetch('/couponApply', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponId, totalValue }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+        document.getElementById('totalAmount').textContent = data.discountedPrice;
+        document.getElementById('discountValue').textContent = data.discountValue;
+        document.getElementById('discounted').style.display = 'block flex';
+        document.getElementById('couponMessage').textContent = data.message;
+        document.getElementById('couponMessage').style.color = 'green';
+
+        const couponbtn = document.getElementById('applyCouponbtn');
+        couponbtn.textContent = 'remove coupon';
+        couponbtn.style.backgroundColor = 'red';
+        couponbtn.onclick = removeCoupon;
+    } else {
+        document.getElementById('couponMessage').textContent = data.error;
+        document.getElementById('couponMessage').style.color = 'red';
+    }
+};
+
+const removeCoupon = async(event)=>{
+        event.preventDefault()
+
+    document.getElementById('totalAmount').textContent = ' <%=cartTotal%> ';
+    document.getElementById('couponCode').value = '';
+
+    document.getElementById('couponMessage').textContent = '';
+    document.getElementById('couponMessage').style.color = '';
+    document.getElementById('discounted').style.display = 'none';
+    // document.getElementById('couponOption').textContent=''
+
+    const applyCouponButton = document.getElementById('applyCouponbtn');
+        applyCouponButton.textContent = 'Apply Coupon';
+        applyCouponButton.style.backgroundColor = '';
+        applyCouponButton.onclick = applyCoupon;
+
+        const couponSelect=document.getElementById('couponId')
+        couponSelect.selectedIndex=0
+
+   }
+
+ 
+        function updateCouponCode() {
+            const select = document.getElementById('couponId');
+            const input = document.getElementById('couponCode');
+            var selectedOption = select.options[select.selectedIndex];
+
+            if(selectedOption && selectedOption.text){
+                input.value = selectedOption.text; 
+            }
+        }
+
+        document.getElementById('couponApplyForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await applyCoupon();
+        });
+
+    </script>
+    
 <footer class="footer-area bg-gray pt-100 pb-70">
     <div class="container">
         <div class="row">

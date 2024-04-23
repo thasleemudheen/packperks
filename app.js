@@ -9,7 +9,7 @@ require('dotenv').config()
 const passportSetUp=require('./helpers/passport')
 
 const app = express();
-
+ app.use(express.json())
 app.use((req,res,next)=>{
     res.setHeader('Cache-Control','no store');
     next();

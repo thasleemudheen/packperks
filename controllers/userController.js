@@ -318,14 +318,12 @@ let verifyOtpForSignup=async(req,res)=>{
         const token=jwt.sign({userId:newUser._id},'Pack_perks',{expiresIn:'24h'})
 
         res.cookie('token',token,{httpOnly:true,expires:new Date(Date.now()+24*60*60*1000)})
-        res.redirect('/')
+        res.redirect('/login')
     }catch(error){
         console.error(error)
         res.status(500).send('internal server error')
     }
 }
-
-
 
 // google authentication
 let successGoogleLogin = async (req, res) => {
@@ -468,8 +466,10 @@ let shopPage=async(req,res)=>{
     }
    
     let products=await Products.find()
+    let categoryName=await Products.distinct('categoryName')
+    // console.log(categoryName)
 
-        res.render('user/shop',{products,user})
+        res.render('user/shop',{products,user,categoryName})
     }catch(error){
         console.error(error)
         res.status(500).send('internal server error')
@@ -793,8 +793,8 @@ let productAddedToWishlist=async(req,res)=>{
         let admin=await Admin.findOne()
         // console.log(admin)
         let coupon=admin.coupon
-        // let couponCode=coupon.find(couponCode)
-        // console.log(couponCode)
+
+        let discountedPrice=user.cart.discountedPrice
 
         let address=user.address
         // console.log(address);
@@ -802,7 +802,7 @@ let productAddedToWishlist=async(req,res)=>{
         let cart=user.cart.product
         let cartTotal=user.cart.total
 
-        res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal,coupon:coupon})
+        res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal,coupon:coupon,discountedPrice})
     } catch (error) {
         
     }
@@ -833,10 +833,7 @@ let productAddedToWishlist=async(req,res)=>{
  
        }
        
-        // if(productsSearch.length===0){
-        //     return res.status(404).json({message:'sorry no result found'})
-        // }
-        // console.log(productsSearch)
+       
         res.status(200).json({message:'productsSearch',productsSearch,user})
        
     } catch (error) {
@@ -848,18 +845,62 @@ let productAddedToWishlist=async(req,res)=>{
  }
 
  let showProductBasedOnCategory=async(req,res)=>{
-    // let categoryName=await Products.distinct('categoryName')
     const categoryName=req.params.categoryName
-    console.log(categoryName)
     try{
           const product=await Products.find({categoryName:categoryName})
-          console.log(product)
     }catch(error){
         console.error(error)
         res.status(500).send('internal server error')
     }
     
  }
+
+ let applyCouponCode=async(req,res)=>{
+           const {couponId,totalValue}=req.body
+           console.log(couponId)
+         console.log(req.body)
+ 
+           try{
+            const admin=await Admin.findOne()
+
+            
+            const token=req.cookies.user_jwt
+            const decode=jwt.verify(token,process.env.JWT_SECRET)
+            const userId=decode.id
+            const user=await User.findById(userId)
+         const coupon = admin.coupon.find(coupon=>coupon._id.toString()===couponId)
+        //  console.log(coupon)
+
+         if (!coupon) {
+             return res.status(404).json({ error: "Coupon not found" });
+         }
+        //  console.log(coupon.endDate)
+
+        if(!coupon || coupon.couponStatus==='inactive' || coupon.endDate>Date.now){
+            return res.status(400).json({error:'coupon is not valid'})
+        }
+         let discountedPrice=0;
+        
+         if(coupon.couponType==='fixedAmount'){
+             discountedPrice=totalValue-coupon.discountValue
+             discountValue=coupon.discountValue
+             return res.status(200).json({message:'coupon applied ',discountedPrice:discountedPrice,discountValue})
+         }else if(coupon.couponType==='percentage'){
+             discountedPrice=totalValue- totalValue*coupon.discountValue/100;
+             discountValue=totalValue*coupon.discountValue/100
+            return res.status(200).json({message:'coupon applied',discountedPrice:discountedPrice,discountValue})
+         }
+         console.log(discountedPrice)
+            //    res.redirect('/checkOutPage')
+            //  res.status(200).json({discountedPrice:discountedPrice})
+
+           }catch(error){
+            res.status(500).send('internal server error')
+            console.error(error)
+           }
+          
+ }
+
 module.exports={
     homePage,
     signUpPage,
@@ -891,6 +932,7 @@ module.exports={
     editAddressPost,
     deleteAddress,
     searchForProducts,
-    showProductBasedOnCategory
+    showProductBasedOnCategory,
+    applyCouponCode
 
 }

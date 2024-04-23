@@ -48,6 +48,7 @@
             font-weight: bold;
             z-index: 1;
         }
+        
     </style>
 </head>
 
@@ -266,12 +267,22 @@
                     </div>
                     <div class="shop-tab nav">
                         <a class="active" href="#shop-1" data-toggle="tab">
-                            <i class="fa fa-table"></i>
+                            <!-- <i class="fa fa-table"></i> -->
                         </a>
+                        <div class="categoryFilter" id="filterCategory" style="cursor: pointer;">
+                            <h4><strong> filter </strong></h4>
+                            <div style="display: flex ; flex-direction: column;" >
+                                <% categoryName.forEach(category => { %>
+                                    <h5 class="category-link" style="cursor: pointer;" data-category="<%= category %>"><%= category %></h5>
+                                <% }) %>
+                            </div>
+                            
+                        </div>
                         <a href="#shop-2" data-toggle="tab">
                             <!-- <i class="fa fa-list-ul"></i> -->
                         </a>
                     </div>
+                   
                 </div>
                 <div class="shop-bottom-area mt-35">
                     <div class="tab-content jump">
@@ -280,7 +291,7 @@
                                 <%products.forEach(product=>{%>
 
                                 
-                                <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6">
+                                <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6 product-category" data-category="<%=product.categoryName%>" >
                                     <div class="product-wrap mb-25 scroll-zoom">
                                         <div class="product-img">
                                             <a href="/singleProduct/<%=product._id%>">
@@ -375,6 +386,57 @@
                             });
                 }
                 
+
+                // filtering based on the category
+
+
+                const filterCategory = document.getElementById('filterCategory');
+                        const categoryLinks = filterCategory.querySelectorAll('.category-link');
+                    
+                        categoryLinks.forEach(link => {
+                            link.style.display = 'none'; 
+                        });
+                    
+                        filterCategory.addEventListener('click', () => {
+                            categoryLinks.forEach(link => {
+                                if (link.style.display === 'none') {
+                                    link.style.display = 'inline-block'; 
+                                } else {
+                                    link.style.display = 'none'; 
+                                }
+                            });
+                        });
+
+
+                        document.addEventListener('DOMContentLoaded', function() {
+                    const categoryLinks = document.querySelectorAll('.category-link');
+                    
+                    const products = document.querySelectorAll('.product-category');
+
+                    function showAllProducts() {
+                            products.forEach(product => {
+                                product.style.display = 'block';
+                            });
+                        }
+
+                    categoryLinks.forEach(link => {
+                        link.addEventListener('click', function() {
+                            const category = this.dataset.category;
+                            products.forEach(product => {
+                                if (product.dataset.category === category) {
+                                    console.log(product.length)
+
+                                    product.style.display = 'block';
+                                } else {
+                                    product.style.display = 'none';
+                                }
+                            });
+                        });
+                    });
+                    
+               
+            });
+
                         </script>
 
             <div class="col-lg-3">
@@ -391,6 +453,8 @@
                         </div>
                     </div>
 
+                    
+                    
                     <div class="sidebar-widget">
                         <h4 class="pro-sidebar-title">Refine By </h4>
                         <div class="sidebar-widget-list mt-30">
@@ -416,6 +480,10 @@
                             </ul>
                         </div>
                     </div>
+
+
+
+
                     <div class="sidebar-widget mt-45">
                         <h4 class="pro-sidebar-title">Filter By Price </h4>
                         <div class="price-filter mt-10">
