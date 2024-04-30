@@ -71,4 +71,8 @@ router.get('/product/category/:categoryName',userController.showProductBasedOnCa
 
 router.post('/couponApply',userController.applyCouponCode)
 
+router.post('/order',userController.orderProduct)
+
+router.get('/ordersGet',userController.ordersGetPage)
+
 module.exports=router

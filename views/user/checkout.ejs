@@ -29,6 +29,7 @@
     <!-- Modernizer JS -->
     <script src="/assets/js/vendor/modernizr-2.8.3.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -145,19 +146,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li><a href="shop.html">Collection</a></li>
-                            <li><a href="#">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">about us</a></li>
-                                    <li><a href="cart-page.html">cart page</a></li>
-                                    <li><a href="checkout.html">checkout </a></li>
-                                    <li><a href="wishlist.html">wishlist </a></li>
-                                    <li><a href="my-account.html">my account</a></li>
-                                    <li><a href="login-register.html">login / register </a></li>
-                                    <li><a href="contact.html">contact us </a></li>
-                                    <li><a href="404.html">404 page </a></li>
-                                </ul>
-                            </li>
+                            
                             
                             <li><a href="about.html">About us</a></li>
                             <li><a href="contact.html">Contact</a></li>
@@ -181,205 +170,29 @@
     </div>
 </div>
 <div class="checkout-area pt-95 pb-100">
+    <form id="checkOutForm" action="/order" method="post">
     <div class="container">
         <div class="row">
             <div class="col-lg-7">
                 <div class="billing-info-wrap">
                     <h3>SELECT ADDRESS FOR DELIVERY</h3>
-
                     <% user.address.forEach((address, index) => { %>
                         <div style="display:flex; align-items: center; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px;">
-                          <div style="position: relative; margin-right: 10px;  top: -2px;">
-                            <input type="radio" name="addressCheckOut" id="addressCheckOut<%= index %>" value="<%= address._id %>">
-                          </div>
-                          <div>
-
-                            <label for="addressCheckOut<%= index %>">
-                              <span> <strong>  <%= address.name %> , </strong>  <%= address.houseNumber %>, <%= address.street %> .....    </span>
-                              <!-- <p><%= address.city %>, <%= address.pincode %></p> -->
-                            </label>
-                          </div>
+                            <div style="position: relative; margin-right: 10px;  top: -2px;">
+                                <input type="radio" name="addressId" id="addressCheckOut<%= index %>" value="<%= address._id %>">
+                            </div>
+                            <div>
+                                <label for="addressCheckOut<%= index %>">
+                                    <span> <strong> <%= address.name %> , </strong> <%= address.houseNumber %>, <%= address.street %> ..... </span>
+                                </label>
+                            </div>
                         </div>
-                      <% }); %>
-
+                    <% }); %>
                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Add Address</button>
 
 
-                      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  >
-                        <div class="modal-dialog modal-dialog-centered "  style="max-width: 500px; max-height: 80vh; margin: auto;">
-                          <div class="modal-content" >
-                            <div class="modal-header "  >
-                                <h1 class="modal-title fs-5 text-center " id="exampleModalLabel" style=" margin: auto;"><strong> ADD NEW ADDRESS </strong></h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>                            
-                            <div class="modal-body" >
-                              <form action="/addAddress " method="post" style="margin: 4px; height: 420px;">
-                                <div class="mb-3">
-                                  <label for="name" class="col-form-label">name</label>
-                                  <input type="text" class="form-control" id="name" name="name">
-                                </div>
-                                <div class="mb-3">
-                                  <label for="houseNumber" class="col-form-label">house number</label>
-                                  <input type="text" class="form-control" id="houseNumber" name="houseNumber">
-                                  <label for="city" class="col-form-label">City</label>
-                                  <input type="text" class="form-control" id="city" name="city">
-                                  <label for="street" class="col-form-label">street Name</label>
-                                  <input type="text" class="form-control" id="street" name="street">
-                                  <label for="pincode" class="col-form-label">pin code</label>
-                                  <input type="number" class="form-control" id="pincode" name="pincode">
-                                  <label for="phoneNumber" class="col-form-label" >Phone Number</label>
-                                  <input type="number" class="form-control" id="phoneNumber" name="phoneNumber">
-                                </div>
-                              
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                              <button type="submit" class="btn btn-primary">save address</button>
-                            </div>
-                          </form>
-                          </div>
-                        </div>
-                      </div>
                       
-
-
-
-                    <!-- <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="billing-info mb-20">
-                                <label>First Name</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="billing-info mb-20">
-                                <label>Last Name</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="billing-info mb-20">
-                                <label>Company Name</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="billing-select mb-20">
-                                <label>Country</label>
-                                <select>
-                                    <option>Select a country</option>
-                                    <option>Azerbaijan</option>
-                                    <option>Bahamas</option>
-                                    <option>Bahrain</option>
-                                    <option>Bangladesh</option>
-                                    <option>Barbados</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="billing-info mb-20">
-                                <label>Street Address</label>
-                                <input class="billing-address" placeholder="House number and street name" type="text">
-                                <input placeholder="Apartment, suite, unit etc." type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="billing-info mb-20">
-                                <label>Town / City</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="billing-info mb-20">
-                                <label>State / County</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="billing-info mb-20">
-                                <label>Postcode / ZIP</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="billing-info mb-20">
-                                <label>Phone</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                    </div> -->
-                    <!-- <div class="different-address open-toggle mt-30">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-20">
-                                    <label>First Name</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-20">
-                                    <label>Last Name</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-info mb-20">
-                                    <label>Company Name</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-select mb-20">
-                                    <label>Country</label>
-                                    <select>
-                                        <option>Select a country</option>
-                                        <option>Azerbaijan</option>
-                                        <option>Bahamas</option>
-                                        <option>Bahrain</option>
-                                        <option>Bangladesh</option>
-                                        <option>Barbados</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-info mb-20">
-                                    <label>Street Address</label>
-                                    <input class="billing-address" placeholder="House number and street name" type="text">
-                                    <input placeholder="Apartment, suite, unit etc." type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-info mb-20">
-                                    <label>Town / City</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-20">
-                                    <label>State / County</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-20">
-                                    <label>Postcode / ZIP</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-20">
-                                    <label>Phone</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-20">
-                                    <label>Email Address</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
+                      
                 </div>
             </div>
             <div class="col-lg-5">
@@ -398,6 +211,7 @@
 
                                 
                                 <ul>
+                                    <input type="hidden" name="productId" value="<%=cartItem.productId%>">
                                     <li><span class="order-middle-left"><%=cartItem.productName%></span> <span class="order-price"><%=cartItem.productPrice%>*<%=cartItem.quantity%> = <%= parseInt(cartItem.productPrice) * parseInt(cartItem.quantity) %> </span></li>
                                     <!-- <li><span class="order-middle-left"><%=cartItem.productPrice%></span> <span class="order-price">$329 </span></li> -->
                                 </ul>
@@ -412,7 +226,7 @@
                             <div class="your-order-total">
                                 <ul>
                                     <li class="order-total">Total</li>
-                                    <li><%=cartTotal%></li>
+                                    <li> <input style="display: flex;justify-content: end;" type="number" name="cartTotal" value="<%=cartTotal%>"> </li>
                                 </ul>
                             </div>
                         </div>
@@ -424,9 +238,9 @@
                           </div>
                         <div id="coupon-part" style="display: none;">
                             <div class="coupon-apply"  >
-                                <form id="couponApplyForm" action="/couponApply" method="post">
+                                <form  id="couponApplyForm" action="/couponApply" method="post">
                                          <input type="hidden" id="checkout-price" name="totalValue"  class="" value="<%=cartTotal%>" style="text-align: end; width: 50%; ">
-                                    <div style="display: flex;">
+                                    <div style="display: flex;"> 
                                     <input type="text" name="couponCode" id="couponCode" placeholder="enter coupon code" style="width: 50%;" >
                                     <select name="couponId" id="couponId"  onchange="updateCouponCode()" style="width: 50%;">
                                         <option hidden >select coupon</option>
@@ -436,7 +250,7 @@
                                         <% })%>
                                     </select>
                                 </div>
-                                    <button type="submit" id="applyCouponbtn" class=" btn-primary" onclick="applyCoupon()" >apply coupon</button>
+                                    <button  id="applyCouponbtn" class=" btn-primary" onclick="applyCoupon()" >apply coupon</button>
                                 </form>
                             </div>
                             <div style="display: none; justify-content: space-between; margin-top: 10px; border-bottom: 1px solid grey;" id="discounted">
@@ -444,43 +258,90 @@
                                 <span><h4 id="discountValue"></h4></span>
                             </div>
     
-                            <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">    
-                               <span><h4> order Total </h4></span>
-                                <span> <h4 id="totalAmount"> <%=cartTotal%> </h4></span>
-                               
-
-                           </div>
+                        
                           <div id="couponMessage" ></div>
                      
                        
                     </div>
+
+                    <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">    
+                        <span><h4> order Total </h4></span>
+                         <span> <h4 id="totalAmount"> <input type="number" name="orderTotal" value="<%=cartTotal%>"> </h4></span>
+                    </div>
+
                     <div style="border-top: 1px solid lightgray;">
                         <h4>payment-method</h4>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                              COD
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD">
+                            <label class="form-check-label" for="cod">
+                                COD
                             </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                            <label class="form-check-label" for="flexRadioDefault2">
-                              ONLINE PAYMENT
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="onlinePayment" value="Online Payment">
+                            <label class="form-check-label" for="onlinePayment">
+                                ONLINE PAYMENT
                             </label>
-                          </div>
+                        </div>
                     </div>
+                    
                     <div class="Place-order mt-25">
-                        <a class="btn-hover" href="#">PLACE ORDER</a>
+                            <a  class="btn-hover" onclick="placeOrder()" href="#">PLACE ORDER</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+</form>
 
                         
 <script>
+   
+
+      function placeOrder(){
+
+        const address=document.querySelector('input[name="addressId"]:checked').value;
+        const paymentMethod=document.querySelector('input[name="paymentMethod"]:checked').value;
+        const orderTotal=document.querySelector('input[name="orderTotal"]').value;
+        const wihtOutDiscount=document.querySelector('input[name="totalValue"]').value;
+        const products=[]
+        document.querySelectorAll('input[name="productId"]').forEach(input=>{
+            const productId=input.value;
+            const quantity = parseInt(input.nextElementSibling.innerText.split('*')[1]);
+            // const total = parseInt(input.nextElementSibling.innerText.split('=')[1]);
+            products.push({productId,quantity})
+        })
+        const orderData={
+            addressId:address,
+            paymentMethod,
+            orderTotal,
+            products,
+            wihtOutDiscount,
+        }
+        axios.post('/order',orderData)
+        .then(response=>{
+            if(response.status==200){
+                Swal.fire({
+                title: "Order placed successfully!",
+                text: "Successfully placed the order!",
+                icon: "success",
+                timer: 3000, 
+                showConfirmButton: false 
+            }).then(()=>{
+                window.location.href='/ordersGet';
+            })
+            }
+        }).catch(error=>{
+            console.error(error)
+        })
+        // document.getElementById('checkOutForm').submit();
+      }
+
+
+
+
+
 
     const couponCheckbox = document.getElementById('flexCheckIndeterminate');
     const couponPartDiv = document.getElementById('coupon-part');
@@ -496,7 +357,8 @@
     // removign and applying coupon from ordering 
 
       
-   const applyCoupon = async () => {
+    const applyCoupon = async (event) => {
+        event.preventDefault()
     const select = document.getElementById('couponId');
     const couponId = select.value;
     if (!couponId) {
@@ -507,36 +369,44 @@
 
     const totalValue = document.getElementById('checkout-price').value;
 
-    const response = await fetch('/couponApply', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ couponId, totalValue }),
-    });
+    try {
+        const response = await fetch('/couponApply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ couponId, totalValue }),
+        });
 
-    const data = await response.json();
-    if (response.ok) {
-        document.getElementById('totalAmount').textContent = data.discountedPrice;
-        document.getElementById('discountValue').textContent = data.discountValue;
-        document.getElementById('discounted').style.display = 'block flex';
-        document.getElementById('couponMessage').textContent = data.message;
-        document.getElementById('couponMessage').style.color = 'green';
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('totalAmount').innerHTML = `<input type="number" name="orderTotal" value="${data.discountedPrice}">`;
+            document.getElementById('discountValue').textContent = data.discountValue;
+            document.getElementById('discounted').style.display = 'block';
+            document.getElementById('couponMessage').textContent = data.message;
+            document.getElementById('couponMessage').style.color = 'green';
 
-        const couponbtn = document.getElementById('applyCouponbtn');
-        couponbtn.textContent = 'remove coupon';
-        couponbtn.style.backgroundColor = 'red';
-        couponbtn.onclick = removeCoupon;
-    } else {
-        document.getElementById('couponMessage').textContent = data.error;
+            const couponbtn = document.getElementById('applyCouponbtn');
+            couponbtn.textContent = 'Remove Coupon';
+            couponbtn.style.backgroundColor = 'red';
+            couponbtn.onclick = removeCoupon;
+        } else {
+            const data = await response.json();
+            document.getElementById('couponMessage').textContent = data.error;
+            document.getElementById('couponMessage').style.color = 'red';
+        }
+    } catch (error) {
+        console.error(error);
+        document.getElementById('couponMessage').textContent = 'Error applying coupon.';
         document.getElementById('couponMessage').style.color = 'red';
     }
 };
 
+
 const removeCoupon = async(event)=>{
         event.preventDefault()
-
-    document.getElementById('totalAmount').textContent = ' <%=cartTotal%> ';
+     let orderedAmount= document.getElementById('totalAmount').value = '<%=cartTotal%>'
+    //  document.getElementById('totalAmount').value=orderedAmount
     document.getElementById('couponCode').value = '';
 
     document.getElementById('couponMessage').textContent = '';
@@ -552,6 +422,8 @@ const removeCoupon = async(event)=>{
         const couponSelect=document.getElementById('couponId')
         couponSelect.selectedIndex=0
 
+        window.location.reload();
+
    }
 
  
@@ -565,12 +437,52 @@ const removeCoupon = async(event)=>{
             }
         }
 
-        document.getElementById('couponApplyForm').addEventListener('submit', async (event) => {
+        document.getElementById('applyCouponbtn').addEventListener('click',applyCoupon)
+
+        document.getElementById('couponApplyForm').addEventListener('click', async (event) => {
             event.preventDefault();
             await applyCoupon();
         });
 
     </script>
+
+    <!-- modal for adding a new address in the checkout page -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"  >
+    <div class="modal-dialog modal-dialog-centered "  style="max-width: 500px; max-height: 80vh; margin: auto;">
+      <div class="modal-content" >
+        <div class="modal-header "  >
+            <h1 class="modal-title fs-5 text-center " id="exampleModalLabel" style=" margin: auto;"><strong> ADD NEW ADDRESS </strong></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>                            
+        <div class="modal-body" >
+          <form action="/addAddress " method="post" style="margin: 4px; height: 420px;">
+            <div class="mb-3">
+              <label for="name" class="col-form-label">name</label>
+              <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="mb-3">
+              <label for="houseNumber" class="col-form-label">house number</label>
+              <input type="text" class="form-control" id="houseNumber" name="houseNumber">
+              <label for="city" class="col-form-label">City</label>
+              <input type="text" class="form-control" id="city" name="city">
+              <label for="street" class="col-form-label">street Name</label>
+              <input type="text" class="form-control" id="street" name="street">
+              <label for="pincode" class="col-form-label">pin code</label>
+              <input type="number" class="form-control" id="pincode" name="pincode">
+              <label for="phoneNumber" class="col-form-label" >Phone Number</label>
+              <input type="number" class="form-control" id="phoneNumber" name="phoneNumber">
+            </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">save address</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
     
 <footer class="footer-area bg-gray pt-100 pb-70">
     <div class="container">

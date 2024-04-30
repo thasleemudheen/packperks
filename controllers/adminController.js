@@ -434,7 +434,9 @@ let couponEditPostPage = async (req, res) => {
 }
 
 let orderManagement=async(req,res)=>{
-    res.render('admin/orders')
+    const usersWithOrders = await User.find({ 'orders.0': { $exists: true } });
+    console.log(usersWithOrders)
+    res.render('admin/orders',{usersWithOrders})
 }
 
 module.exports={

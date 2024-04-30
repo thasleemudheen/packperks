@@ -33,6 +33,9 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
      <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -43,34 +46,6 @@
       body {
         background-color: #fdfdfd;
         font-family: Arial, sans-serif;
-      }
-      .profile-container {
-        max-width: 600px;
-        margin: 20px auto;
-        background-color: #ddebff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-      }
-      .profile-header {
-        padding: 20px;
-        text-align: center;
-        border-bottom: 1px solid #3a454f;
-        margin-bottom: 20px;
-      }
-      .profile-picture {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 20px;
-      }
-      .profile-header h2 {
-        margin-bottom: 10px;
-        color: #333;
-      }
-      .profile-header p {
-        color: #666;
       }
       .options {
         margin-top: 20px;
@@ -89,21 +64,43 @@
         background-color: #11171d;
         color: white;
       }
+      .sidebar {
+        background-color: #4e494f83; 
+        border-radius: 5px;
+        height:45vh;
+        min-width: 17%;
+      
+                
+    }
+    .profilebtn{
+      min-width: 100%;
+      /* background-color: green; */
+    }
+    .nav-link{
+      color: black;
+      min-width: 100%;
+      background-color: gray;
+      /* border-bottom: 1px solid black; */
+    }
+    
+   
+   
+    
     </style>
   
 
 </head>
 
 <body>
-<header class="header-area header-in-container clearfix">
+<header class="header-area header-in-container clearfix  ">
     
-    <div class="header-bottom sticky-bar header-res-padding">
+    <div class="header-bottom sticky-bar header-res-padding ">
         <div class="container">
             <div class="row">
                 <div class="col-xl-2 col-lg-2 col-md-6 col-4">
                     <div class="logo">
                         <a href="index.html">
-                            <img src="/assets/img/logo/logo.png" alt=" ">
+                            <!-- <img style="height: 80px;width: 150px;" src="/assets/img/logo/logo.png" alt=" "> -->
                         </a>
                     </div>
                 </div>
@@ -194,225 +191,199 @@
     </div>
 </header>
 
+<div class="container" style=" height: 60vh; background-color: rgba(221, 217, 217, 0.708); border: 1px solid; border-radius: 10px; "> 
 
-<div class="d-flex align-items-start">
-  <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</button>
-    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</button>
-    <button class="nav-link" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">Disabled</button>
-    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+  <div class="d-flex justify-content-start" style="text-align: center; align-items: center; ">
+    
+    <div class="nav flex-column justify-content-center align-items-center nav-pills mt-5 sidebar"  id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <div class="profilebtn" >
+        <button class="nav-link active btn-secondary" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">PROFILE</button>
+        <button class="nav-link btn-secondary"  onclick="toggleAddress()" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">ADDRESS  MANAGEMENT</button>
+        <button class="nav-link btn-secondary"   id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">ORDERS</button>
+        <!-- <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"><a href="/logOut"><i class="fas fa-sign-out-alt"></i> Logout</a></button> -->
+        <button class="nav-link   btn-secondary" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+      </div>
   </div>
-  <div class="tab-content" id="v-pills-tabContent">
-    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0"> <div class="profile-header">
-     <h1>Hello: <%=user.username%></h1>
-     <p><%=user.email%></p>
-    </div></div>
-    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">... Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quas aut animi quidem quis reiciendis. Quibusdam at, eos ipsum veniam a corporis commodi rerum alias, est rem atque. Aspernatur, minima laborum! </div>
-    <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0">... Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab quaerat neque laudantium. Aut ex quod ab nesciunt autem reprehenderit expedita repudiandae debitis ipsa. Omnis atque culpa a, amet non voluptas.</div>
-    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
-    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
-  </div>
-</div>
 
-
-<div class="container profile-container">
   
-  <div class="options">
-    <a href="/wishlist"><i class="fas fa-heart"></i> Wishlist</a>
-    <a href="#" onclick="toggleAddress()"><i class="fas fa-map-marker-alt"></i>ADDRESS</a>
-    <div id="address" style="display: none;">
-      <!-- <button>Add Adress</button> -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Add Address</button>
+  <div class="tab-content d-flex" style="justify-content: center;min-width: 80%;" id="v-pills-tabContent">
+    <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0" >
+       
 
+            <h1>Hello: <%=user.username%></h1>
+            <p><%=user.email%></p>
+            <p class="phone"><%=user.phonenumber%></p>
+            <p> nem commodi doloremque vero error.</p>
+       
+    </div>
 
-      
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">ADD NEW ADDRESS</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="/addAddress " method="post">
-                <div class="mb-3">
-                  <label for="name" class="col-form-label">name</label>
-                  <input type="text" class="form-control" id="name" name="name">
+      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0" style="min-width: 90%;">
+
+          <div class="d-flex justify-content-end ">
+            
+          <button type="button" style="margin-bottom: 1vh;" class="  btn-address btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" ><i class="fas fa-plus"></i>ADDRESS</button>
+          
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">ADD NEW ADDRESS</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-3">
-                  <label for="houseNumber" class="col-form-label">house number</label>
-                  <input type="text" class="form-control" id="houseNumber" name="houseNumber">
-                  <label for="city" class="col-form-label">City</label>
-                  <input type="text" class="form-control" id="city" name="city">
-                  <label for="street" class="col-form-label">street Name</label>
-                  <input type="text" class="form-control" id="street" name="street">
-                  <label for="pincode" class="col-form-label">pin code</label>
-                  <input type="number" class="form-control" id="pincode" name="pincode">
-                  <label for="phoneNumber" class="col-form-label" >Phone Number</label>
-                  <input type="number" class="form-control" id="phoneNumber" name="phoneNumber">
+                <div class="modal-body" style="text-align: start;">
+                  <form action="/addAddress " method="post">
+                    <div class="mb-3">
+                      <label for="name" class="col-form-label">name</label>
+                      <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="houseNumber" class="col-form-label">house number & house name</label>
+                      <input type="text" class="form-control" id="houseNumber" name="houseNumber">
+                      <label for="city" class="col-form-label">City</label>
+                      <input type="text" class="form-control" id="city" name="city">
+                      <label for="street" class="col-form-label">Adress(area & street)</label>
+                      <input type="text" class="form-control" id="street" name="street">
+                      <label for="pincode" class="col-form-label">pin code</label>
+                      <input type="number" class="form-control" id="pincode" name="pincode">
+                      <label for="phoneNumber" class="col-form-label" >Phone Number</label>
+                      <input type="number" class="form-control" id="phoneNumber" name="phoneNumber">
+                    </div>
+                  
                 </div>
-              
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">save address</button>
+                </div>
+              </form>
+              </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">save address</button>
-            </div>
-          </form>
           </div>
-        </div>
-      </div>
-      
+          
+    
 
+          </div>
 
-  <div  >
-    <% user.address.forEach(address=>{%>
-      <div id="userProfile" style="border: 2px solid gray; display: flex ; justify-content: space-between; margin-bottom: 10px;" >
-        <div>
-        <span><h6><%=address.name%> <span> <br> <%=address.phonenumber%> </span> </h6> </span>
-        <span> <%=address.houseNumber%> </span>
-        <span> <%=address.city%>  </span>
-        <span> <%=address.street%>  </span><br>
-        <span>PIN: <%=address.pincode%> </span><br>
-      </div>
-      
-      <div  >
-
-         <a href="/editAddress/<%=address._id%>" ><i style="color: blue;" class="fas fa-edit"></i></a> 
-        <!-- Edit Address Modal -->
-        <form action="/deleteAddress/<%=address._id%>" method="post">
-          <button type="submit" style="background: none; border: none;">
-              <i style="color: red;" class="fas fa-trash-alt delete-icon"></i>
-          </button>
-      </form>         
-      </div>
-    </div>
-   <%})%>
-  </div>
-
-
-    </div>
-    <!-- <a href="#"><i class="fas fa-lock"></i> Change Password</a> -->
-    <a href="/logOut"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    <a href="/"><i class="fas fa-home"></i>Home</a>
-  </div>
-</div>
-
-<script>
-
-      // const editbtn=document.getElementsByClassName('btn-delete').addEventListerner
-
-
-  function toggleAddress() {
-    var address = document.getElementById("address");
-    if (address.style.display === "none") {
-      address.style.display = "block";
-    } else {
-      address.style.display = "none";
-    }
-  }
-
-
-
-  </script>
-  
-
-
-                      
 
     
-<footer class="footer-area bg-gray pt-100 pb-70">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-2 col-md-4 col-sm-4">
-                <div class="copyright mb-30">
-                    <div class="footer-logo">
-                        <a href="index.html">
-                            <!-- <img alt="" src="/assets/img/logo/logo.png"> -->
-                        </a>
-                    </div>
-                    <p>© 2020 <a href="#">Flone</a>.<br> All Rights Reserved</p>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-4 col-sm-4">
-                <div class="footer-widget mb-30 ml-30">
-                    <div class="footer-title">
-                        <h3>ABOUT US</h3>
-                    </div>
-                    <div class="footer-list">
-                        <ul>
-                            <li><a href="about.html">About us</a></li>
-                            <li><a href="#">Store location</a></li>
-                            <li><a href="contact.html">Contact</a></li>
-                            <li><a href="#">Orders tracking</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-4 col-sm-4">
-                <div class="footer-widget mb-30 ml-50">
-                    <div class="footer-title">
-                        <h3>USEFUL LINKS</h3>
-                    </div>
-                    <div class="footer-list">
-                        <ul>
-                            <li><a href="#">Returns</a></li>
-                            <li><a href="#">Support Policy</a></li>
-                            <li><a href="#">Size guide</a></li>
-                            <li><a href="#">FAQs</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <div class="footer-widget mb-30 ml-75">
-                    <div class="footer-title">
-                        <h3>FOLLOW US</h3>
-                    </div>
-                    <div class="footer-list">
-                        <ul>
-                            <li><a href="#">Facebook</a></li>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">Instagram</a></li>
-                            <li><a href="#">Youtube</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="footer-widget mb-30 ml-70">
-                    <div class="footer-title">
-                        <h3>SUBSCRIBE</h3>
-                    </div>
-                    <div class="subscribe-style">
-                        <p>Get E-mail updates about our latest shop and special offers.</p>
-                        <div id="mc_embed_signup" class="subscribe-form">
-                            <form id="mc-embedded-subscribe-form" class="validate" novalidate="" target="_blank" name="mc-embedded-subscribe-form" method="post" action="http://devitems.us11.list-manage.com/subscribe/post?u=6bbb9b6f5827bd842d9640c82&amp;id=05d85f18ef">
-                                <div id="mc_embed_signup_scroll" class="mc-form">
-                                    <input class="email" type="email" required="" placeholder="Enter your email here.." name="EMAIL" value="">
-                                    <div class="mc-news" aria-hidden="true">
-                                        <input type="text" value="" tabindex="-1" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef">
-                                    </div>
-                                    <div class="clear">
-                                        <input id="mc-embedded-subscribe" class="button" type="submit" name="subscribe" value="Subscribe">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div  >
+        <% user.address.forEach(address=>{%>
+          <div id="userProfile" style=" border-radius: 5px; border: 2px solid gray; display: flex ; justify-content: space-between; margin-bottom: 10px; " >
+            <div style="text-align: start;">
+           <span> <span><strong><%=address.name%></strong> </span><strong><%=address.phonenumber%></strong> </span> <br>
+           <span><%=address.houseNumber%>,</span>
+           <span><%=address.city%>,</span>
+           <span><%=address.street%></span><br>
+           <span> <strong>PIN:<%=address.pincode%></strong></span>
+          </div>
+          
+          <div>
+    
+             <a href="/editAddress/<%=address._id%>" ><i class="bi bi-pencil-square"></i></a> 
+            <!-- Edit Address Modal -->
+            <form action="/deleteAddress/<%=address._id%>" method="post">
+              <button type="submit" style="background: none; border: none;">
+                <i class="bi bi-trash3" style="color: red;"></i>
+              </button>
+          </form>         
+          </div>
         </div>
+       <%})%>
+      </div>
+    
+    
+        </div>
+      
+      <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0">... Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab quaerat neque laudantium. Aut ex quod ab nesciunt autem reprehenderit expedita repudiandae debitis ipsa. Omnis atque culpa a, amet non voluptas.</div>
+      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0"></div>
+      <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
     </div>
+  </div>
+</div>
+  
+<footer class="footer-area bg-gray pt-100 pb-70">
+  <div class="container">
+      <div class="row">
+          <div class="col-lg-2 col-md-4 col-sm-4">
+              <div class="copyright mb-30">
+                  <div class="footer-logo">
+                      <a href="index.html">
+                          <!-- <img alt="" src="/assets/img/logo/logo.png"> -->
+                      </a>
+                  </div>
+                  <p>© 2020 <a href="#">Flone</a>.<br> All Rights Reserved</p>
+              </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-4">
+              <div class="footer-widget mb-30 ml-30">
+                  <div class="footer-title">
+                      <h3>ABOUT US</h3>
+                  </div>
+                  <div class="footer-list">
+                      <ul>
+                          <li><a href="about.html">About us</a></li>
+                          <li><a href="#">Store location</a></li>
+                          <li><a href="contact.html">Contact</a></li>
+                          <li><a href="#">Orders tracking</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-4">
+              <div class="footer-widget mb-30 ml-50">
+                  <div class="footer-title">
+                      <h3>USEFUL LINKS</h3>
+                  </div>
+                  <div class="footer-list">
+                      <ul>
+                          <li><a href="#">Returns</a></li>
+                          <li><a href="#">Support Policy</a></li>
+                          <li><a href="#">Size guide</a></li>
+                          <li><a href="#">FAQs</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-2 col-md-6 col-sm-6">
+              <div class="footer-widget mb-30 ml-75">
+                  <div class="footer-title">
+                      <h3>FOLLOW US</h3>
+                  </div>
+                  <div class="footer-list">
+                      <ul>
+                          <li><a href="#">Facebook</a></li>
+                          <li><a href="#">Twitter</a></li>
+                          <li><a href="#">Instagram</a></li>
+                          <li><a href="#">Youtube</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="footer-widget mb-30 ml-70">
+                  <div class="footer-title">
+                      <h3>SUBSCRIBE</h3>
+                  </div>
+                  <div class="subscribe-style">
+                      <p>Get E-mail updates about our latest shop and special offers.</p>
+                      <div id="mc_embed_signup" class="subscribe-form">
+                          <form id="mc-embedded-subscribe-form" class="validate" novalidate="" target="_blank" name="mc-embedded-subscribe-form" method="post" action="http://devitems.us11.list-manage.com/subscribe/post?u=6bbb9b6f5827bd842d9640c82&amp;id=05d85f18ef">
+                              <div id="mc_embed_signup_scroll" class="mc-form">
+                                  <input class="email" type="email" required="" placeholder="Enter your email here.." name="EMAIL" value="">
+                                  <div class="mc-news" aria-hidden="true">
+                                      <input type="text" value="" tabindex="-1" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef">
+                                  </div>
+                                  <div class="clear">
+                                      <input id="mc-embedded-subscribe" class="button" type="submit" name="subscribe" value="Subscribe">
+                                  </div>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </footer>
-
-
-
-
-
-
-
-
 
 <!-- JS
 ============================================ -->

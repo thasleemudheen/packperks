@@ -8,6 +8,7 @@ const cookieparser=require('cookie-parser')
 require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
+const mongoose=require('mongoose')
 
 let homePage = async (req, res) => {
     try {
@@ -857,8 +858,8 @@ let productAddedToWishlist=async(req,res)=>{
 
  let applyCouponCode=async(req,res)=>{
            const {couponId,totalValue}=req.body
-           console.log(couponId)
-         console.log(req.body)
+        //    console.log(couponId)
+        //  console.log(req.body)
  
            try{
             const admin=await Admin.findOne()
@@ -890,7 +891,7 @@ let productAddedToWishlist=async(req,res)=>{
              discountValue=totalValue*coupon.discountValue/100
             return res.status(200).json({message:'coupon applied',discountedPrice:discountedPrice,discountValue})
          }
-         console.log(discountedPrice)
+        //  console.log(discountedPrice)
             //    res.redirect('/checkOutPage')
             //  res.status(200).json({discountedPrice:discountedPrice})
 
@@ -899,6 +900,97 @@ let productAddedToWishlist=async(req,res)=>{
             console.error(error)
            }
           
+ }
+
+ let orderProduct=async(req,res)=>{
+    const { addressId, paymentMethod, orderTotal, products,wihtOutDiscount } = req.body;
+    // console.log(wihtOutDiscount)
+    // console.log(products)
+try {
+    let token=req.cookies.user_jwt
+    let decoded=jwt.verify(token,process.env.JWT_SECRET)
+    let userId=decoded.id
+    let user=await User.findById(userId)
+    let address=user.address.find(addr=>addr._id.toString()===addressId)
+    if(!address){
+     return res.status(400).send('address not found')
+    }
+    // let products=await Products.find()
+    let orderDate=new Date()
+    let deliveryDate=new Date(orderDate)
+    deliveryDate.setDate(deliveryDate.getDate()+4)
+    // console.log(products)
+    let productIds=products.map(product=>product.productId)
+    let productDetails=[]
+   
+    for(let i=0;i<productIds.length;i++){
+        let cartProduct = user.cart.product.find(cartItem => cartItem.productId.toString() === productIds[i])
+        if(!cartProduct){
+            return res.status(400).send('product not found')
+             }
+        let productDetail = await Products.findById(cartProduct.productId);
+        if (!productDetail) {
+            return res.status(400).send(`Product details for ID ${productIds[i]} not found`);
+        }
+            productDetails.push({
+                productId:cartProduct._id,
+                productName:cartProduct.productName,
+                productPrice:cartProduct.productPrice,
+                productImage:cartProduct.productImage,
+                categoryName:productDetail.categoryName,
+                quantity:cartProduct.quantity,
+                orderStatus:'pending',
+                cancelReason:null
+            })
+        
+        // console.log(product)
+    }
+
+    let newOrder={
+      orderId:new mongoose.Types.ObjectId(),
+      orderDate:orderDate,
+      totalAmount:orderTotal,
+      products:productDetails,
+      shippingAddress:{
+          name:address.name,
+          houseNumber:address.houseNumber,
+          city:address.city,
+          street:address.street,
+          pincode:address.pincode,
+          phonenumber:address.phonenumber,
+      },
+      paymentMethod,
+      expectedDelivery:deliveryDate,
+      wihtOutDiscount, 
+    }
+    user.orders.push(newOrder)
+    console.log(newOrder)
+    await user.save()
+    res.status(200).json({message:'order placed successfully ', newOrder:newOrder})
+} catch (error) {
+    console.error(error)
+    res.status(500).send('order not placed')
+}
+
+ }
+
+ let ordersGetPage=async(req,res)=>{
+      let token=req.cookies.user_jwt
+      let decoded=jwt.verify(token,process.env.JWT_SECRET)
+      let userId=decoded.id
+      let user=await User.findById(userId)
+      let orders=user.orders
+
+      let allProducts=[]
+
+      orders.forEach(order=>{
+        order.products.forEach(product=>{
+            allProducts.push(product)
+
+        })
+      })
+      console.log(allProducts)
+    res.render('user/orders',{orders,allProducts})
  }
 
 module.exports={
@@ -933,6 +1025,8 @@ module.exports={
     deleteAddress,
     searchForProducts,
     showProductBasedOnCategory,
-    applyCouponCode
+    applyCouponCode,
+    orderProduct,
+    ordersGetPage
 
 }

@@ -62,8 +62,6 @@ const userSchema=new mongoose.Schema({
         productPrice:{
             type:String
         },
-        
-
     }],
     address:[{
         name:{
@@ -90,6 +88,86 @@ const userSchema=new mongoose.Schema({
             type:Number,
             required:true
         }
+    }],
+    orders:[{
+        orderId:{
+            type:String,
+            required:true,
+            unique:true
+        },
+        orderDate:{
+            type:Date,
+            default:Date.now
+        },
+        totalAmount:{
+            type:Number,
+            required:true
+        },
+        shippingAddress:{
+            name:{
+                type:String,
+            },
+            houseNumber:{
+                type:String
+            },
+            city:{
+                type:String
+            },
+            street:{
+                type:String
+            },
+            pincode:{
+                type:Number
+            },
+            phonenumber:{
+                type:Number
+            },
+        },
+        paymentMethod:{
+            type:String,
+            required:true
+        },
+        expectedDelivery:{
+            type:String,
+        },
+        products:[{
+            productId:{
+                type:mongoose.Schema.ObjectId,
+                ref:'product'
+            },
+            productName:{
+                type:String
+            },
+            productPrice:{
+                type:String
+            },
+            productImage:{
+                type:[String]
+            },
+            categoryName:{
+                type:String
+            },
+           quantity:{
+            type:Number
+
+           },  
+           orderStatus:{
+            type:String,
+            default:'pending'
+           },
+           cancelReason:{
+            type:String,
+            default:'null'
+           }
+        }],
+        wihtOutDiscount:{
+            type:Number,
+            required:false
+
+        },
+       
+
+
     }]
 });
 
