@@ -298,14 +298,14 @@
             <div class="col-lg-9">
                 <div class="shop-top-bar">
                     <div class="select-shoing-wrap">
-                        <div class="shop-select">
+                        <!-- <div class="shop-select">
                             <select>
                                 <option value="">Sort by newness</option>
                                 <option value="">A to Z</option>
                                 <option value=""> Z to A</option>
                                 <option value="">In stock</option>
                             </select>
-                        </div>
+                        </div> -->
                         <p id="productRange"></p>
                     </div>
                     <div class="shop-tab nav">
@@ -333,11 +333,12 @@
                 <div class="shop-bottom-area mt-35">
                     <div class="tab-content jump">
                         <div id="shop-1" class="tab-pane active">
+
                             <div class="row" id="productDisplay">
                                 <%products.forEach(product=>{%>
 
                                 
-                                <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6 product-category" data-category="<%=product.categoryName%>" >
+                                <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6 product-category" data-brand="<%=product.brand%>"   data-category="<%=product.categoryName%>" >
                                     <div class="product-wrap mb-25 scroll-zoom">
                                         <div class="product-img">
                                             <a href="/singleProduct/<%=product._id%>">
@@ -409,7 +410,7 @@
             const startIndex = (currentPage - 1) * itemsPerPage + 1;
             let endIndex = startIndex + itemsPerPage - 1;
             endIndex = endIndex > totalProducts ? totalProducts : endIndex;
-            document.getElementById('productRange').innerText = `Showing ${startIndex}-${endIndex} of ${totalProducts} result`;
+            // document.getElementById('productRange').innerText = `Showing ${startIndex}-${endIndex} of ${totalProducts} result`;
         }
 
 
@@ -542,33 +543,40 @@
                     <div class="sidebar-widget">
                         <h4 class="pro-sidebar-title">Refine By </h4>
                         <div class="sidebar-widget-list mt-30">
-                            <ul>
+                            <select name="refineBy" id="refineBy" onchange="handleSortChange()">
+                                <option  selected disabled value="select">select</option>
+                                <option value="priceLowToHigh">price low high</option>
+                                <option value="priceLowToHigh">price high low</option>
+                                <option value="priceLowToHigh">A to Z</option>
+                                <option value="priceLowToHigh">Z to A</option>
+                            </select>
+                            <!-- <ul>
                                 <li>
                                     <div class="sidebar-widget-list-left">
-                                        <input type="checkbox"> <a href="#">On Sale <span>4</span> </a> 
+                                        <input type="radio"> <a href="#">Price low to high </a> 
                                         <span class="checkmark"></span>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="sidebar-widget-list-left">
-                                        <input type="checkbox" value=""> <a href="#">New <span>4</span></a> 
+                                        <input type="radio" value=""> <a href="#">A to Z</a> 
                                         <span class="checkmark"></span>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="sidebar-widget-list-left">
-                                        <input type="checkbox" value=""> <a href="#">In Stock <span>4</span> </a>
+                                        <input type="radio" value=""> <a href="#">Z to A </a>
                                         <span class="checkmark"></span>
                                     </div>
                                 </li>
-                            </ul>
+                            </ul> -->
                         </div>
                     </div>
 
 
 
 
-                    <div class="sidebar-widget mt-45">
+                    <!-- <div class="sidebar-widget mt-45">
                         <h4 class="pro-sidebar-title">Filter By Price </h4>
                         <div class="price-filter mt-10">
                             <div class="price-slider-amount">
@@ -576,7 +584,7 @@
                             </div>
                             <div id="slider-range"></div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="sidebar-widget mt-50">
                         <h4 class="pro-sidebar-title">Colour </h4>
                         <div class="sidebar-widget-list mt-20">
@@ -609,36 +617,60 @@
                         </div>
                     </div> -->
                     <div class="sidebar-widget mt-40">
-                        <h4 class="pro-sidebar-title">Size </h4>
+                        <h4 class="pro-sidebar-title">brand </h4>
                         <div class="sidebar-widget-list mt-20">
-                            <ul>
-                                <li>
-                                    <div class="sidebar-widget-list-left">
-                                        <input type="checkbox" value=""> <a href="#">XL</a>
-                                        <span class="checkmark"></span> 
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="sidebar-widget-list-left">
-                                        <input type="checkbox" value=""> <a href="#">L</a>
-                                        <span class="checkmark"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="sidebar-widget-list-left">
-                                        <input type="checkbox" value=""> <a href="#">SM</a>
-                                        <span class="checkmark"></span> 
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="sidebar-widget-list-left">
-                                        <input type="checkbox" value=""> <a href="#">XXL</a>
-                                        <span class="checkmark"></span> 
-                                    </div>
-                                </li>
-                            </ul>
+                            <select name="brandFilter" id="brandFilter">
+                                <option value="" disabled selected>Select a brand</option>
+                                <% brands.forEach(brand => { %>
+                                    <option value="<%= brand %>" class="category-link"><%= brand %></option>
+                                <% }) %>
+                            </select>
                         </div>
                     </div>
+
+                    <script>
+
+
+                        function handleSortChange(){
+                            const selectedOption=document.getElementById('refineBy').value;
+                            window.location.href=`/sortedProducts?sortBy=${selectedOption}`;
+                        }
+
+
+
+
+
+
+
+                        document.getElementById('brandFilter').addEventListener('change', function() {
+                            var selectedBrand = this.value; 
+                    
+                            document.querySelectorAll('.product-category').forEach(function(product) {
+                                var productBrand = product.getAttribute('data-brand');
+                                if (selectedBrand === '' || productBrand === selectedBrand) {
+                                    product.style.display = 'block';
+                                } else {
+                                    product.style.display = 'none';
+                                }
+                            });
+                        });
+                    </script>
+                    
+                    
+                            <!-- <ul>
+                                <li>
+                                    <% brands.forEach(brand=>{%>
+
+                                   
+                                    <div class="sidebar-widget-list-left">
+                                        <input type="checkbox" value=""> <a href="#"><%=brand%></a>
+                                        <span class="checkmark"></span> 
+                                    </div>
+                                    <% })%>
+                                </li>
+                               
+                            </ul> -->
+                       
                     <!-- <div class="sidebar-widget mt-50">
                         <h4 class="pro-sidebar-title">Tag </h4>
                         <div class="sidebar-widget-tag mt-25">

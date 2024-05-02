@@ -340,6 +340,8 @@
                                     <div class="product-wrap-2 mb-25">
                                         <div class="product-img">
                                             <a href="/singleProduct/<%=product._id%>">
+
+
                                                 <img class="default-img <%= product.isDisabled ? 'disabled' : '' %>" src="<%=product.productImage[0]%>" alt="">
                                                 <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
                                             </a>
@@ -481,27 +483,6 @@
       },
     });
 </script>
-<!-- 
-<script>
-    document.addEventListener('DOMContentLoaded',function(){
-        var swiper = new Swiper(".card_slider", {
-      slidesPerView:4,
-      centeredSlides: true,
-      spaceBetween: 30,
-      pagination: {
-        el: ".swiper-pagination",
-        // type: "fraction",
-        clickable:true,
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    })
-    })
-    
-</script> -->
-
 
 
 <div class="testimonial-area pb-95">

@@ -70,6 +70,48 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+<style>
+    .modal-content {
+        background-color: #f8f9fa; /* Set background color */
+        color: #212529; /* Set text color */
+    }
+
+    .modal-body {
+        padding: 20px; /* Add padding */
+    }
+
+    .modal-title {
+        color: #007bff; /* Set title color */
+    }
+
+    .modal-dialog {
+        max-width: 500px; /* Set maximum width of the modal */
+        margin: 30px auto; /* Center the modal horizontally */
+    }
+
+    /* Style for shipping address */
+    .shipping-address {
+        margin-top: 20px;
+    }
+
+    /* Style for product details */
+    .product-details {
+        margin-top: 20px;
+    }
+
+    /* Set a border between sections */
+    .section-divider {
+        border-top: 1px solid #dee2e6;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    /* Close button style */
+    .modal-footer {
+        justify-content: center; /* Center the close button */
+    }
+
+</style>
 
 </head>
 
@@ -221,50 +263,73 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
 
 
 
-
 <table id="myTableCoupon" class="table table-striped">
     <thead>
         <tr>
-            <th>productImage</th>
+            <th>order:ID</th>
             <th>productName</th>
             <th>price</th>
             <th>userName</th>
             <th>status</th>
+            <th>status updation</th>
             <th>View</th>
         </tr>
     </thead>
     <tbody>
-       <% usersWithOrders.forEach(user=>{%>
-        <% user.orders.forEach((orders,orderIndex)=>{%>
-            <% orders.products.forEach(product=>{%>
-
+       <% usersWithOrders.forEach(user => { %>
+        <% user.orders.forEach((orders, orderIndex) => { %>
+            <% orders.products.forEach((product, productIndex) => { %>
           
             <tr>
-                <td><img style="width: 100px; height: 100px;" src="<%=product.productImage[0]%>" alt=""></td>
-                <td><%=product.productName%></td>
-                <td><%=product.productPrice%></td>
-                <td><%=user.username%></td>
-                <td><%=product.orderStatus%></td>
-                <td> <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <td><%= orders._id %></td>
+                <td><%= product.productName %></td>
+                <td><%= product.productPrice %></td>
+                <td><%= user.username %></td>
+                <td class="
+                    <% if (product.orderStatus === 'cancelled') { %>
+                        text-danger
+                    <% } else if (product.orderStatus === 'pending') { %>
+                        text-warning
+                    <% } else if (product.orderStatus === 'delivered') { %>
+                        text-success
+                    <% } %>"
+                >
+                    <%= product.orderStatus %>
+                </td>
+                <td>
+                    <form action="" id="updateOrderForm-<%=orders._id%>-<%=orderIndex%>" method="post">
+                        <select name="status" id="" class="form-select" onchange="updateOrderStatus(event,'<%=orders._id%>','<%=product.productId%>','<%=orderIndex%>')">
+                            <option value="Pending" <%= product.orderStatus === "Pending" ? "selected" : "" %> class="<%= product.orderStatus === 'Pending' ? 'text-warning' : '' %>"> Pending</option>
+                            <option value="delivered" <%= product.orderStatus === "delivered" ? "selected" : "" %> class="<%= product.orderStatus === 'delivered' ? 'text-success' : '' %>"> delivered</option>
+                            <% if (product.orderStatus !== 'delivered') { %>
+                                <option value="cancelled" <%= product.orderStatus === "cancelled" ? "selected" : "" %> class="<%= product.orderStatus === 'cancelled' ? 'text-danger' : '' %>"> cancelled</option>
+                            <% } %>
+                        </select>
+                    </form>
+                    
+                    
+                </td>
+                
+                
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= productIndex %>">
                         View
                     </button>
                     
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="exampleModal<%= productIndex %>" tabindex="-1" aria-labelledby="exampleModalLabel<%= productIndex %>" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel<%= productIndex %>">Product Details</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <!-- <h2>Order <%= orderIndex + 1 %></h2> -->
                                     <p><strong>Order ID:</strong> <%= orders._id %></p>
-                                    <p><strong>Order Date:</strong> <%= orders.orderDate %></p>
-                                    <p><strong>Delivery Date:</strong> <%= orders.expectedDelivery %></p>
+                                    <p><strong>Order Date:</strong> <%= new Date(orders.orderDate).toLocaleDateString()  %></p>
+                                    <p><strong>Delivery Date:</strong> <%= new Date(orders.expectedDelivery).toLocaleDateString()  %></p>
                                     <p><strong>Total Price:</strong> <%= orders.totalAmount %></p>
-                                    <p><strong>withOutDiscount:</strong> <%= orders.wihtOutDiscount %></p>
+                                    <p><strong>withOutDiscount:</strong> <%= orders.withoutDiscount %></p>
                                     
                                     <hr>
                                     <% if (orders.shippingAddress) { %>
@@ -278,33 +343,49 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                                     <h3>Product Details</h3>
                                     <p><strong>Name:</strong> <%= product.productName %></p>
                                     <p><strong>Price:</strong> <%= product.productPrice %></p>
-                                    <p><strong>orderStatus:</strong><%=product.orderStatus%></p>
+                                    <p><strong>Order Status:</strong><%= product.orderStatus %></p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
-                    </div></td>
+                    </div>
+                </td>
             </tr>
-            <% })%>
-
-            <%})%>
-    
-           <%})%>
-        
+            <% }) %>
+            <% }) %>
+           <% }) %>
     </tbody>
-    
 </table>
 
 
 
-
     </div>
-  
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
     
      
     <script>
+
+function updateOrderStatus(event,orderId,productId,index){
+ event.preventDefault()
+ console.log(orderId,productId)
+ const form=document.querySelector(`#updateOrderForm-${orderId}-${index}`)
+ const status=form.querySelector('select[name="status"]').value;
+
+ axios.post(`/updateOrderStatus/${orderId}/${productId}`,{status})
+ .then(response=>{
+    console.log(response.data)
+ }).catch(error=>{
+    console.log(error)
+ })
+}
+
+
+
+
+
     $(document).ready(function(){
         $('#myTableCoupon').dataTable();
     });

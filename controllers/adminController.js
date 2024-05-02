@@ -435,8 +435,38 @@ let couponEditPostPage = async (req, res) => {
 
 let orderManagement=async(req,res)=>{
     const usersWithOrders = await User.find({ 'orders.0': { $exists: true } });
-    console.log(usersWithOrders)
+    // console.log(usersWithOrders)
     res.render('admin/orders',{usersWithOrders})
+}
+
+let updateOrderStatus=async(req,res)=>{
+            let {productId,orderId}=req.params
+            let {status}=req.body
+            console.log(productId,orderId)
+            console.log(req.body)
+try {
+    let user=await User.findOne({'orders._id':orderId})
+    console.log(user)
+    if(!user){
+        return res.status(400).send('user not found')
+    }
+    let orderIndex=user.orders.findIndex(order=>order._id.toString()===orderId)
+    console.log(orderIndex)
+    if(orderIndex === -1){
+        return res.status(400).send('order not found')
+    }
+    let productIndex=user.orders[orderIndex].products.findIndex(product=>product.productId.toString()===productId)
+    if(productIndex === -1){
+        return res.status(400).send('product not found in the orders')
+    }
+    user.orders[orderIndex].products[productIndex].orderStatus=status
+    await user.save()
+    res.status(200).json({message:'order status updated successfully'})
+} catch (error) {
+    res.status(500).send('order status not updated')
+    console.error(error)
+}
+           
 }
 
 module.exports={
@@ -463,6 +493,7 @@ module.exports={
     deleteCoupon,
     couponEditGetPage,
     couponEditPostPage,
-    orderManagement
+    orderManagement,
+    updateOrderStatus
     
 }

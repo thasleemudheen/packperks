@@ -201,11 +201,13 @@
         <button class="nav-link btn-secondary"  onclick="toggleAddress()" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">ADDRESS  MANAGEMENT</button>
         <button class="nav-link btn-secondary"   id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">ORDERS</button>
         <!-- <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"><a href="/logOut"><i class="fas fa-sign-out-alt"></i> Logout</a></button> -->
-        <button class="nav-link   btn-secondary" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+        <button class="nav-link   btn-secondary" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><a style="color: #333;" href="/logout">
+          <i  class="fas fa-sign-out-alt"></i> Logout
+        </a></button>
       </div>
   </div>
 
-  
+
   <div class="tab-content d-flex" style="justify-content: center;min-width: 80%;" id="v-pills-tabContent">
     <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0" >
        
@@ -221,7 +223,7 @@
 
           <div class="d-flex justify-content-end ">
             
-          <button type="button" style="margin-bottom: 1vh;" class="  btn-address btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" ><i class="fas fa-plus"></i>ADDRESS</button>
+          <button type="button" style="margin-bottom: 1vh;" class="  btn-address btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" ><i class="fas fa-plus"></i>ADDRESS</button>
           
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -293,7 +295,7 @@
     
         </div>
       
-      <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0">... Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab quaerat neque laudantium. Aut ex quod ab nesciunt autem reprehenderit expedita repudiandae debitis ipsa. Omnis atque culpa a, amet non voluptas.</div>
+      <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0"></div>
       <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0"></div>
       <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
     </div>

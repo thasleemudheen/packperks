@@ -74,5 +74,7 @@ router.post('/couponApply',userController.applyCouponCode)
 router.post('/order',userController.orderProduct)
 
 router.get('/ordersGet',userController.ordersGetPage)
+router.post('/cancelOrder',userController.cancelOrder)
+router.get('/sortedProducts',userController.productSorting)
 
 module.exports=router

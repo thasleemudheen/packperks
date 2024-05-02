@@ -77,6 +77,10 @@ let addAddressPage=async(req,res)=>{
             let userId=decoded.id
             let user=await User.findById(userId)
 
+            if (user.address.length >= 3) {
+                return res.status(400).send('maximum limit is reached');
+              }
+
             user.address.push({
                 name:name,
                 houseNumber:houseNumber,
@@ -85,7 +89,7 @@ let addAddressPage=async(req,res)=>{
                 pincode:pincode,
                phonenumber:phoneNumber
             })
-            console.log('details are here');
+            // console.log('details are here');
             await user.save()
             console.log('new address saved')
             res.status(200)
@@ -468,9 +472,11 @@ let shopPage=async(req,res)=>{
    
     let products=await Products.find()
     let categoryName=await Products.distinct('categoryName')
+    let brands=await Products.distinct('brand')
+    // console.log(brands)
     // console.log(categoryName)
 
-        res.render('user/shop',{products,user,categoryName})
+        res.render('user/shop',{products,user,categoryName,brands})
     }catch(error){
         console.error(error)
         res.status(500).send('internal server error')
@@ -891,10 +897,7 @@ let productAddedToWishlist=async(req,res)=>{
              discountValue=totalValue*coupon.discountValue/100
             return res.status(200).json({message:'coupon applied',discountedPrice:discountedPrice,discountValue})
          }
-        //  console.log(discountedPrice)
-            //    res.redirect('/checkOutPage')
-            //  res.status(200).json({discountedPrice:discountedPrice})
-
+    
            }catch(error){
             res.status(500).send('internal server error')
             console.error(error)
@@ -933,7 +936,7 @@ try {
             return res.status(400).send(`Product details for ID ${productIds[i]} not found`);
         }
             productDetails.push({
-                productId:cartProduct._id,
+                productId:cartProduct.productId,
                 productName:cartProduct.productName,
                 productPrice:cartProduct.productPrice,
                 productImage:cartProduct.productImage,
@@ -989,10 +992,67 @@ try {
 
         })
       })
-      console.log(allProducts)
+    //   console.log(allProducts)
     res.render('user/orders',{orders,allProducts})
  }
 
+ let cancelOrder=async(req,res)=>{
+    const {orderId,productId,cancelReason}=req.body
+    console.log(req.body)
+    let token=req.cookies.user_jwt
+    let decoded=jwt.verify(token,process.env.JWT_SECRET)
+    let userId=decoded.id
+
+    try {
+        let user=await User.findById(userId)
+    // console.log(user)
+
+    let order=user.orders.id(orderId)
+    if(!order){
+        return res.status(400).send('order not found')
+    }
+        
+    // console.log(order)
+   let product=order.products.id(productId)
+   order.totalAmount -= product.productPrice
+   order.wihtOutDiscount -=product.productPrice
+   product.orderStatus='cancelled'
+   product.cancelReason=cancelReason
+    await user.save()
+    console.log('order cancelled successfully')
+    console.log(product)
+    res.status(200).redirect('/ordersGet')
+        
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('order not cancelled')
+    }
+    
+
+ }
+
+ let productSorting=async(req,res)=>{
+    let sortBy=req.query.sortBy  
+
+    let sortQuery = {};
+    switch (sortBy) {
+        case 'priceLowToHigh':
+            sortQuery = { productPrice: 1 };
+            break;
+        case 'priceHighToLow':
+            sortQuery = { productPrice: -1 };
+            break;
+        case 'nameAToZ':
+            sortQuery = { productName: 1 };
+            break;
+        case 'nameZToA':
+            sortQuery = { productName: -1 };
+            break;
+        default:
+            sortQuery = {}; // No sorting
+    }
+    console.log(sortQuery)
+ }
 module.exports={
     homePage,
     signUpPage,
@@ -1027,6 +1087,8 @@ module.exports={
     showProductBasedOnCategory,
     applyCouponCode,
     orderProduct,
-    ordersGetPage
+    ordersGetPage,
+    cancelOrder,
+    productSorting
 
 }
