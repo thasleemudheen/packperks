@@ -5,6 +5,7 @@ const jwt=require('jsonwebtoken')
 const cloudinary=require('../config/cloudinary')
 const multer=require('multer')
 const upload = multer({ dest: 'uploads/' }); 
+const mongoose=require('mongoose')
 
 require('dotenv').config()
 
@@ -59,13 +60,52 @@ let adminLogoutpage=async(req,res)=>{
 
 }
 
-let adminDashBoard=(req,res)=>{
-    res.render('admin/index')
+let adminDashBoard=async(req,res)=>{
+
+    const totalUser = await User.countDocuments()
+    // console.log(totalUser)
+    const totalOrders = await User.aggregate([
+        { $match: { orders: { $exists: true, $ne: [] } } },
+        { $project: { totalOrders: { $size: '$orders' } } },
+        { $group: { _id: null, total: { $sum: '$totalOrders' } } }
+    ]);
+    
+    // Extract the total count from the result
+    const totalCount = totalOrders.length > 0 ? totalOrders[0].total : 0;
+    
+    // console.log('Total orders:', totalCount);
+
+    const totalOrderedProducts = await User.aggregate([
+        { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
+        { $unwind: '$orders' }, // Deconstruct the orders array
+        { $unwind: '$orders.products' }, // Deconstruct the products array within each order
+        { $group: { _id: null, total: { $sum: '$orders.products.quantity' } } } // Calculate the total quantity of products
+    ]);
+    
+    // Extract the total count from the result
+    const totalOrderedProduct = totalOrderedProducts.length > 0 ? totalOrderedProducts[0].total : 0;
+    
+    // console.log('Total ordered products:', totalOrderedProduct);
+    
+    const distinctCategories = await User.aggregate([
+        { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
+        { $unwind: '$orders' }, // Deconstruct the orders array
+        { $unwind: '$orders.products' }, // Deconstruct the products array within each order
+        { $group: { _id: '$orders.products.categoryName' } }, // Group by category name
+        { $match: { _id: { $ne: null } } } // Exclude null categories
+    ]);
+    
+    const categories = distinctCategories.map(item => item._id);
+    
+    console.log('Distinct categories:', categories);
+    
+
+
+
+    res.render('admin/index',{categories})
 }
 
-// let productsGetPage=async(req,res)=>{
-//     res.render('admin/products')
-// }
+
 
 let UserGetPage=async(req,res)=>{
     let users =await User.find()

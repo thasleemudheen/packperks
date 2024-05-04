@@ -147,7 +147,7 @@
                                 <i class="pe-7s-shopbag"></i>
                                 <!-- <span class="count-style"></span> -->
                             </button>
-                            <div class="shopping-cart-content">
+                            <!-- <div class="shopping-cart-content">
                                 <ul>
                                     <li class="single-shopping-cart">
                                         <div class="shopping-cart-img">
@@ -184,7 +184,7 @@
                                     <a class="default-btn" href="/cart">view cart</a>
                                     <a class="default-btn" href="checkout.html">checkout</a>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -316,7 +316,7 @@
                             </div>
                            
                             <h4 class="grand-totall-title">Grand Total  <span id="cartTotalPrice" ><%=cartTotal%></span></h4>
-                            <a href="/checkOutPage">Proceed to Checkout</a>
+                            <a href="/checkOutPage" onclick="checkCart(event)">Proceed to Checkout</a>
                         </div>
                     </div>
                 </div>
@@ -326,6 +326,32 @@
 </div>
  
 <script>
+//   const item=[]
+function checkCart(event) {
+    let tbody=document.querySelector('tbody')
+    // Assuming you have a cartItems array that contains the items in the cart
+    if (tbody.rows.length===0) {
+        console.log(tbody.rows.length)
+        Toastify({
+            text: "Your cart is empty",
+            duration: 3000, 
+            close: true,
+            gravity: "top", 
+            position: 'center', 
+            backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)", 
+            stopOnFocus: true, 
+        }).showToast();
+        event.preventDefault(); 
+        
+    }else{
+        window.location.href='/checkOutPage'
+    }
+    
+}
+
+
+
+
     function quantityPlus(productId){
         axios.post('/quantityPlus/'+productId)
         .then(response =>{

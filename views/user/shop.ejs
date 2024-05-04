@@ -543,12 +543,12 @@
                     <div class="sidebar-widget">
                         <h4 class="pro-sidebar-title">Refine By </h4>
                         <div class="sidebar-widget-list mt-30">
-                            <select name="refineBy" id="refineBy" onchange="handleSortChange()">
+                            <select name="refineBy" id="refineBy" onchange="sortProducts()">
                                 <option  selected disabled value="select">select</option>
                                 <option value="priceLowToHigh">price low high</option>
-                                <option value="priceLowToHigh">price high low</option>
-                                <option value="priceLowToHigh">A to Z</option>
-                                <option value="priceLowToHigh">Z to A</option>
+                                <option value="priceHighToLow">price high low</option>
+                                <option value="nameAtoZ">A to Z</option>
+                                <option value="nameZtoA">Z to A</option>
                             </select>
                             <!-- <ul>
                                 <li>
@@ -631,9 +631,60 @@
                     <script>
 
 
-                        function handleSortChange(){
-                            const selectedOption=document.getElementById('refineBy').value;
-                            window.location.href=`/sortedProducts?sortBy=${selectedOption}`;
+                        function sortProducts(){
+                            const sortBy=document.getElementById('refineBy').value;
+
+                            fetch(`/sortedProducts?sortBy=${sortBy}`)
+                            .then(response=>response.json())
+                            // console.log(response)
+                            .then(data=>{
+                                // console.log(data)
+                                
+                                const products=data.products
+                                const user=data.user
+                                const productDisplay=document.getElementById('productDisplay')
+                                productDisplay.innerHTML=''
+
+                                products.forEach(product=>{
+                                    const productElement=document.createElement('div');
+                                    productElement.classList.add('col-xl-4', 'col-md-6', 'col-lg-6', 'col-sm-6', 'product-category')
+                                    productElement.dataset.brand=product.brand
+                                    productElement.dataset.category=product.categoryName;
+
+                                    productElement.innerHTML=`
+                    <div class="product-wrap mb-25 scroll-zoom">
+                        <div class="product-img">
+                            <a href="/singleProduct/${product._id}">
+                                <img class="default-img ${product.isDisabled ? 'disabled' : ''}" src="${product.productImage[0]}" alt="">
+                                <img class="hover-img" src="${product.productImage[1]}" alt="">
+                            </a>
+                            ${product.isDisabled ? '<div class="error-message">Out of Stock</div>' : ''}
+                            <div class="product-action">
+                                <div class=""></div>
+                                <div class=""></div>
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <div class="product-content text-center">
+                            <h3><a href="/singleProduct/${product._id}">${product.productName}</a></h3>
+                            <div class="product-price">
+                                <span>₹: ${product.productPrice}</span>
+                            </div>
+                            <div id="wishlist_${product._id}" class="pro-details-wishlist">
+                                <button onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" style="border: none; background-color: white;">
+                                    ${user && user.wishlist.some(prd => prd.productId.toString() === product._id.toString()) ?
+                                        `<i id="red_heart_${product._id}" class="fa fa-heart fa-2x" style="color: red;"></i>` :
+                                        `<i id="plain_heart_${product._id}" class="fa fa-heart-o fa-2x"></i>`}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                productDisplay.appendChild(productElement)
+                                })
+                            }).catch(error=>{
+                                console.error(error)
+                            })
                         }
 
 

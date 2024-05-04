@@ -77,4 +77,6 @@ router.get('/ordersGet',userController.ordersGetPage)
 router.post('/cancelOrder',userController.cancelOrder)
 router.get('/sortedProducts',userController.productSorting)
 
+router.post('/razorPay/order',userController.razorpayPayment)
+
 module.exports=router

@@ -33,6 +33,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 </head>
 
 <body>
@@ -278,8 +281,8 @@
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="onlinePayment" value="Online Payment">
-                            <label class="form-check-label" for="onlinePayment">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="prepaid" value="prepaid">
+                            <label class="form-check-label" for="prepaid">
                                 ONLINE PAYMENT
                             </label>
                         </div>
@@ -295,14 +298,34 @@
 </div>
 </form>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                         
 <script>
    
 
       function placeOrder(){
 
-        const address=document.querySelector('input[name="addressId"]:checked').value;
-        const paymentMethod=document.querySelector('input[name="paymentMethod"]:checked').value;
+        const addressElement=document.querySelector('input[name="addressId"]:checked');
+
+        const paymentMethodElement=document.querySelector('input[name="paymentMethod"]:checked');
+
+        if (!addressElement || !paymentMethodElement) {
+        // Show toast message using a library like Toastify
+        Toastify({
+            text: "Please select an address and a payment method",
+            duration: 3000, 
+            close: true,
+            gravity: "top",
+            position: 'center', 
+            backgroundColor: "red",
+            stopOnFocus: true, 
+        }).showToast();
+        return;
+    }
+        const addressId=addressElement.value;
+        const paymentMethod=paymentMethodElement.value;
+        // console.log(paymentMethod)
+
         const orderTotal=document.querySelector('input[name="orderTotal"]').value;
         const wihtOutDiscount=document.querySelector('input[name="totalValue"]').value;
         const products=[]
@@ -312,16 +335,20 @@
             // const total = parseInt(input.nextElementSibling.innerText.split('=')[1]);
             products.push({productId,quantity})
         })
+       
         const orderData={
-            addressId:address,
+            addressId,
             paymentMethod,
             orderTotal,
             products,
             wihtOutDiscount,
         }
-        axios.post('/order',orderData)
+        console.log(paymentMethod)
+        if(paymentMethod==='COD'){
+            axios.post('/order',orderData)
         .then(response=>{
             if(response.status==200){
+                // console.log(response)
                 Swal.fire({
                 title: "Order placed successfully!",
                 text: "Successfully placed the order!",
@@ -335,13 +362,91 @@
         }).catch(error=>{
             console.error(error)
         })
-        // document.getElementById('checkOutForm').submit();
+      }else if(paymentMethod==='prepaid'){
+        handleRazorpayPayment(addressId,paymentMethod,orderTotal,wihtOutDiscount,products,orderData)
       }
 
+        }
+        
+        async function handleRazorpayPayment(addressId, paymentMethod, orderTotal, wihtOutDiscount, orderData) {
+    // console.log(addressId, paymentMethod, orderTotal, wihtOutDiscount);
+    // console.log(products)
+    const products = [];
+            document.querySelectorAll('input[name="productId"]').forEach(input => {
+                const productId = input.value;
+                const quantity = parseInt(input.nextElementSibling.innerText.split('*')[1]);
+                products.push({ productId, quantity });
+            });
+    try {
+        const response = await axios.post('/razorPay/order', {
+            orderTotal: orderTotal
+        });
+        console.log('response', response.data);
 
+        const razorPayOrderId = response.data.razorpayResponse.id;
+        const keyid = response.data.key_id;
+        console.log(keyid);
+        console.log('order id', razorPayOrderId);
 
+        const razorpayOptions = {
+            key: '',
+            amount: orderTotal * 100,
+            currency: 'INR',
+            name: 'pack perks',
+            discription: 'order details with the order id',
+            order_id: razorPayOrderId,
+            handler: async function (response) {
+    try {
+        const orderResponse = await axios.post('/order', {
+            addressId,
+            orderTotal,
+            paymentMethod,
+            wihtOutDiscount,
+            products
+        });
+        if (orderResponse.status === 200) {
+            Swal.fire({
+                title: "Order placed successfully!",
+                text: "Successfully placed the order!",
+                icon: "success",
+                timer: 3000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = '/ordersGet';
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.fire({
+            title: "Error",
+            text: "An error occurred while placing the order.",
+            icon: "error",
+            timer: 3000,
+            showConfirmButton: false
+        });
+    }
+},
 
+            prefill: {
+                name: 'thasleemudheen',
+                email: 'thasleemtrk@gmail.com',
+                phone: '9846861102'
+            },
+            theme: {
+                color: '#F37254'
+            }
+        };
 
+        console.log(razorpayOptions);
+        const razorPaymentObject = new Razorpay(razorpayOptions);
+        razorPaymentObject.open();
+    } catch (error) {
+        console.log(error);
+       
+    }
+}
+
+// coppon applying login in the frontend
 
     const couponCheckbox = document.getElementById('flexCheckIndeterminate');
     const couponPartDiv = document.getElementById('coupon-part');

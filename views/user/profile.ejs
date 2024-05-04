@@ -45,6 +45,7 @@
       /* Custom Styles */
       body {
         background-color: #fdfdfd;
+        /* background-color: green; */
         font-family: Arial, sans-serif;
       }
       .options {
@@ -79,7 +80,8 @@
     .nav-link{
       color: black;
       min-width: 100%;
-      background-color: gray;
+      /* background-color: gray; */
+      /* background-color: green; */
       /* border-bottom: 1px solid black; */
     }
     
@@ -191,7 +193,7 @@
     </div>
 </header>
 
-<div class="container" style=" height: 60vh; background-color: rgba(221, 217, 217, 0.708); border: 1px solid; border-radius: 10px; "> 
+<div class="container" style="  background-color: rgba(234, 230, 230, 0.938); border: 1px solid; border-radius: 10px; "> 
 
   <div class="d-flex justify-content-start" style="text-align: center; align-items: center; ">
     
@@ -208,8 +210,8 @@
   </div>
 
 
-  <div class="tab-content d-flex" style="justify-content: center;min-width: 80%;" id="v-pills-tabContent">
-    <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0" >
+  <div class="tab-content d-flex" style="justify-content: center;min-width: 80%; height: 70vh; align-items: center;" id="v-pills-tabContent">
+    <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0"  >
        
 
             <h1>Hello: <%=user.username%></h1>
@@ -221,9 +223,9 @@
 
       <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0" style="min-width: 90%;">
 
-          <div class="d-flex justify-content-end ">
+          <div class="d-flex justify-content-end" >
             
-          <button type="button" style="margin-bottom: 1vh;" class="  btn-address btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" ><i class="fas fa-plus"></i>ADDRESS</button>
+          <button type="button" style="margin-bottom: 1vh; height: 5vh;" class="  btn-address btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" ><i class="fas fa-plus"></i>ADDRESS</button>
           
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -295,7 +297,122 @@
     
         </div>
       
-      <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0"></div>
+        <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0"  >
+          <div class="container my-5 d-sm-flex" style="height: 55vh; border: 2px solid rgb(191, 175, 206);" >
+            <div style="overflow-y: scroll;  scrollbar-width: none; -ms-overflow-style: none;">
+              <% orders.forEach((order, orderIndex) => { %>
+                <% order.products.forEach((product, productIndex) => { %>
+                    <div class="col-sm-12 col-lg-12 col-md-12">
+                        <div class="card px-2 my-3">
+                            <div class="card-header bg-white">
+                                <div class="row justify-content-between">
+                                    <div class="col">
+                                        <p class="text-muted"> Order ID <span class="font-weight-bold text-dark"><%= order._id %></span></p>
+                                        <p class="text-muted"> Place On <span class="font-weight-bold text-dark"><%= new Date(order.orderDate).toLocaleDateString()  %></span> </p>
+                                    </div>
+                                    <div class="flex-col my-auto">
+                                        <h6 class="ml-auto mr-3">
+                                            <a href="#">View Details</a>
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= orderIndex %>-<%= productIndex %>">
+                                                View
+                                            </button>
+                                            
+                                            <div class="modal fade" id="exampleModal<%= orderIndex %>-<%= productIndex %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 9999;">
+                                                <div class="modal-dialog" style="max-width: 600px; ">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body" style="padding: 20px;background-color:#beccea ;">
+                                                            <% if (product.orderStatus !== 'cancelled' && product.orderStatus !== 'delivered') { %>
+                                                                <div style="margin-bottom: 20px;">
+                                                                    <form action="/cancelOrder" method="post">
+                                                                        <input type="hidden" value="<%= product._id %>" name="productId">
+                                                                        <input type="hidden" value="<%= order._id %>" name="orderId">
+                                                                        <select style="width: 100%; font-size: 18px; padding: 5px;" name="cancelReason" id="cancelReason">
+                                                                            <option selected disabled value="changeMyMind">Reason for cancel</option>
+                                                                            <option value="changeMyMind">change my mind</option>
+                                                                            <option value="over priced">over priced</option>
+                                                                            <option value="damaged product">damaged product</option>
+                                                                        </select>
+                                                                        <button class="btn-sm bg-danger" style="border: none; color: white; margin-top: 10px;">cancel order</button>
+                                                                    </form>
+                                                                </div>
+                                                            <% } %>
+                                                            
+                                                        
+                                                            <p style="margin-bottom: 10px;"><strong>Order ID:</strong> <%= order._id %></p>
+                                                            <p style="margin-bottom: 10px;"><strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString()  %></p>
+                                                            <p style="margin-bottom: 10px;"><strong>Delivery Date:</strong> <%= new Date(order.expectedDelivery).toLocaleDateString()  %></p>
+                                                            
+                                                            <% if (product.orderStatus !== 'cancelled') { %>
+                                                                <p style="margin-bottom: 10px;"><strong>Discounted:</strong> <%= order.totalAmount %></p>
+                                                            <% } %>
+                                                            
+                                                            <p style="margin-bottom: 10px;"><strong>Order Total:</strong> <%= order.wihtOutDiscount %></p>
+                                                            
+                                                            <hr style="margin-top: 20px; margin-bottom: 20px;">
+                                                        
+                                                            <% if (order.shippingAddress) { %>
+                                                                <h3 style="margin-bottom: 10px;">Shipping Address</h3>
+                                                                <p><strong>Name:</strong> <%= order.shippingAddress.name %></p>
+                                                                <p><strong>House Number:</strong> <%= order.shippingAddress.houseNumber %></p>
+                                                                <p><strong>Street:</strong> <%= order.shippingAddress.street %></p>
+                                                                <p><strong>City:</strong> <%= order.shippingAddress.city %></p>
+                                                                <p><strong>PIN:</strong> <%= order.shippingAddress.pincode %></p>
+                                                            <% } %>
+                                                        
+                                                            <h3 style="margin-top: 20px; margin-bottom: 10px;">Product Details</h3>
+                                                            <p><strong>Name:</strong> <%= product.productName %></p>
+                                                            <p><strong>Price:</strong> <%= product.productPrice %></p>
+                                                            <p><strong>Order Status:</strong> <%= product.orderStatus %></p>
+                                                            <p><strong>Product ID:</strong> <%= product._id %></p>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="media flex-column flex-sm-row">
+                                    <div class="media-body ">
+                                        <h5 class="bold"><%= product.productName %></h5>
+                                        <p class="text-muted">Quantity: <%= product.quantity %></p>
+                                        <h4 class="mt-3 mb-4 bold"> <span class="mt-5">&#x20B9;</span>Price: <%= product.productPrice %><span class="small text-muted"> paymentMethod: <%= order.paymentMethod %></span></h4>
+                                        <h5 class="
+                                        <% if (product.orderStatus === 'cancelled') { %>
+                                            text-danger
+                                        <% } else if (product.orderStatus === 'pending') { %>
+                                            text-warning
+                                        <% } else if (product.orderStatus === 'delivered') { %>
+                                            text-success
+                                        <% } %>"
+                                    >
+                                        <%= product.orderStatus %>
+                                    </h5>
+                                                                    <% if (product.cancelReason) { %>
+                                            <p><strong>Cancel Reason:</strong> <%= product.cancelReason %></p>
+                                        <% } %>
+                                    </div>
+                                    <img class="align-self-center img-fluid" src="<%= product.productImage[0] %>" width="180" height="180">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% }); %>
+            </div>
+          </div>
+          
+          </div>
+          
       <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0"></div>
       <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
     </div>

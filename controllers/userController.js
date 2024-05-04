@@ -9,6 +9,15 @@ require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 const mongoose=require('mongoose')
+const razorpay=require('../helpers/razorpay')
+
+const Razorpay = require('razorpay');
+const instance = new Razorpay({
+    key_id: process.env.RAZORPAY_ID,
+    key_secret: process.env.RAZORPAY_SECRET_KEY,
+});
+
+
 
 let homePage = async (req, res) => {
     try {
@@ -25,12 +34,13 @@ let homePage = async (req, res) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
             const user = await User.findById(userId);
+            // console.log(user)
 
             wishlistProducts = await User.findById(userId, 'wishlist').populate('wishlist').lean();
         }
 
         res.render('user/index', { isAuthenticated, products, user: req.user, wishlistProducts,categoryName });
-
+                //   console.log(req.user)
     } catch (error) {
         console.log('Home page is not found');
         res.status(400).send('Home page not found');
@@ -47,7 +57,17 @@ let profile = async (req, res) => {
     if (!user) {
         return res.status(400).send('User not found');
     }
-    res.render('user/profile', {user});
+    let orders=user.orders
+
+      let allProducts=[]
+
+      orders.forEach(order=>{
+        order.products.forEach(product=>{
+            allProducts.push(product)
+
+        })
+      })
+    res.render('user/profile', {user,orders,allProducts});
 }
 
 let addAddressPage=async(req,res)=>{
@@ -806,7 +826,9 @@ let productAddedToWishlist=async(req,res)=>{
         let address=user.address
         // console.log(address);
         // let shippingCharge=45
-        let cart=user.cart.product
+        // let cart=user.cart.product
+        let cart = user.cart.product.filter(item => !item.isDisabled);
+
         let cartTotal=user.cart.total
 
         res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal,coupon:coupon,discountedPrice})
@@ -907,6 +929,8 @@ let productAddedToWishlist=async(req,res)=>{
 
  let orderProduct=async(req,res)=>{
     const { addressId, paymentMethod, orderTotal, products,wihtOutDiscount } = req.body;
+    // console.log(req.body)
+    console.log(products)
     // console.log(wihtOutDiscount)
     // console.log(products)
 try {
@@ -914,7 +938,10 @@ try {
     let decoded=jwt.verify(token,process.env.JWT_SECRET)
     let userId=decoded.id
     let user=await User.findById(userId)
+   
+
     let address=user.address.find(addr=>addr._id.toString()===addressId)
+    // console.log(address)
     if(!address){
      return res.status(400).send('address not found')
     }
@@ -928,6 +955,7 @@ try {
    
     for(let i=0;i<productIds.length;i++){
         let cartProduct = user.cart.product.find(cartItem => cartItem.productId.toString() === productIds[i])
+        console.log(cartProduct)
         if(!cartProduct){
             return res.status(400).send('product not found')
              }
@@ -935,6 +963,8 @@ try {
         if (!productDetail) {
             return res.status(400).send(`Product details for ID ${productIds[i]} not found`);
         }
+     console.log(productDetail)
+
             productDetails.push({
                 productId:cartProduct.productId,
                 productName:cartProduct.productName,
@@ -967,7 +997,7 @@ try {
       wihtOutDiscount, 
     }
     user.orders.push(newOrder)
-    console.log(newOrder)
+    // console.log(newOrder)
     await user.save()
     res.status(200).json({message:'order placed successfully ', newOrder:newOrder})
 } catch (error) {
@@ -977,11 +1007,37 @@ try {
 
  }
 
+ let razorpayPayment=async(req,res)=>{
+    const { orderTotal } = req.body;
+
+    try {
+        const options = {
+            amount: orderTotal * 100, // Amount in paise
+            currency: 'INR',
+            receipt: 'orderId'
+        };
+
+        instance.orders.create(options, function (err, order) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            } else {
+                res.status(200).json({ razorpayResponse: order,key_id: process.env.RAZORPAY_ID });
+                // console.log(order)
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+ }
+
  let ordersGetPage=async(req,res)=>{
       let token=req.cookies.user_jwt
       let decoded=jwt.verify(token,process.env.JWT_SECRET)
       let userId=decoded.id
       let user=await User.findById(userId)
+      
       let orders=user.orders
 
       let allProducts=[]
@@ -1032,26 +1088,39 @@ try {
  }
 
  let productSorting=async(req,res)=>{
-    let sortBy=req.query.sortBy  
+    let sortBy=req.query.sortBy || 'select'
 
-    let sortQuery = {};
-    switch (sortBy) {
+    let sortQuery={}
+
+    switch(sortBy){
         case 'priceLowToHigh':
-            sortQuery = { productPrice: 1 };
+            sortQuery={productPrice:1};
             break;
         case 'priceHighToLow':
-            sortQuery = { productPrice: -1 };
+            sortQuery={productPrice:-1};
             break;
-        case 'nameAToZ':
-            sortQuery = { productName: 1 };
+        case 'nameAtoZ':
+            sortQuery={productName:1}
             break;
-        case 'nameZToA':
-            sortQuery = { productName: -1 };
+        case 'nameZtoA':
+            sortQuery={productName:-1}
             break;
         default:
-            sortQuery = {}; // No sorting
+            sortQuery={}            
     }
-    console.log(sortQuery)
+    try {
+        const token=req.cookies.user_jwt
+        const decoded=jwt.verify(token,process.env.JWT_SECRET)
+        const userId=decoded.id
+        const user=await User.findById(userId)
+        let products=await Products.find({}).sort(sortQuery)
+        // console.log(products)
+        // console.log(user)
+        res.json({products,user})
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('internal server error')
+    }
  }
 module.exports={
     homePage,
@@ -1089,6 +1158,7 @@ module.exports={
     orderProduct,
     ordersGetPage,
     cancelOrder,
-    productSorting
+    productSorting,
+    razorpayPayment
 
 }
