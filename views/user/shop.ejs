@@ -154,7 +154,7 @@
                                     
                                 </li>
                                 <!-- <li><a href="shop.html">Collection</a></li> -->
-                                <li><a href="#"> Pages <i class="fa fa-angle-down"></i></a>
+                                <!-- <li><a href="#"> Pages <i class="fa fa-angle-down"></i></a>
                                     <ul class="submenu">
                                         <li><a href="about.html">about us</a></li>
                                         <li><a href="/cart">cart page</a></li>
@@ -165,7 +165,7 @@
                                         <li><a href="contact.html">contact us </a></li>
                                         <li><a href="404.html">404 page </a></li>
                                     </ul>
-                                </li>
+                                </li> -->
                               
                                 </li>
                                 <li><a href="about.html"> About </a></li>
@@ -345,7 +345,7 @@
                                                 <img class="default-img <%= product.isDisabled ? 'disabled' : '' %> " src="<%=product.productImage[0]%>" alt="">
                                                 <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
                                             </a>
-                                            <% if (product.isDisabled) { %>
+                                            <% if (product.isDisabled || product.stockQuantity===0) { %>
                                                 <div class="error-message">Out of Stock</div>
                                             <% } %>
                                             <div class="product-action">

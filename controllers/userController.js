@@ -581,6 +581,9 @@ let addProductCart=async(req,res)=>{
 
     const existingItemIndex=user.cart.product.findIndex(item=>item.productId.toString()===productId)
     if(existingItemIndex!= -1){
+        if (user.cart.product[existingItemIndex].quantity >= product.stockQuantity) {
+            return res.status(400).send('Cannot add more of this product to cart, stock quantity exceeded')
+        }
         user.cart.product[existingItemIndex].quantity++;
     }else{
         user.cart.product.push({
@@ -663,7 +666,17 @@ let quantityPlus=async(req,res)=>{
         if(!cartItem){
             return res.status(400).send('product not found in the cart')
         }
+        const product = await Products.findById(productId);
+        if (!product) {
+            return res.status(400).send('Product not found')
+        }
+
+        if (cartItem.quantity >= product.stockQuantity) {
+            return res.status(400).json({message:'Cannot increase quantity, stock quantity exceeded'})
+        }
          cartItem.quantity++;
+        
+
 
          let cartTotal=user.cart.product.reduce((acc,item)=>acc+(parseInt(item.productPrice)*parseInt(item.quantity)),0)
          user.cart.total=cartTotal.toString()
@@ -821,17 +834,43 @@ let productAddedToWishlist=async(req,res)=>{
         // console.log(admin)
         let coupon=admin.coupon
 
-        let discountedPrice=user.cart.discountedPrice
+        let discountedPrice=0
 
         let address=user.address
         // console.log(address);
         // let shippingCharge=45
         // let cart=user.cart.product
-        let cart = user.cart.product.filter(item => !item.isDisabled);
+        let cart = user.cart.product
+        // console.log(cart)
+         let productId=cart.map(item=>item.productId)
 
-        let cartTotal=user.cart.total
+          let validCart = [];
+          let cartTotal=0
 
-        res.render('user/checkout',{user:user,address:address,cart:cart,cartTotal,coupon:coupon,discountedPrice})
+        // Filter out disabled products
+        for (let item of cart) {
+            let product = await Products.findById(item.productId);
+            if (!product.isDisabled && product.stockQuantity > 0) {
+                validCart.push(item);
+                cartTotal += item.productPrice * item.quantity;
+                discountedPrice += (item.productPrice - (item.productPrice * coupon.discount / 100)) * item.quantity;
+
+            }
+        }
+        // console.log(discountedPrice)
+
+         // Assuming Products is the model for your products
+        // let productDetails = await Promise.all(productId.map(async (id) => {
+        //     return await Products.findById(id);
+        // }));
+        
+        // productDetails = productDetails.filter(product => !product.isDisabled);
+        // console.log(productDetails)
+
+        //  console.log(productId)
+        //  cartTotal=user.cart.total
+
+        res.render('user/checkout',{user:user,address:address,cart:validCart,cartTotal,coupon:coupon,discountedPrice})
     } catch (error) {
         
     }
@@ -905,8 +944,8 @@ let productAddedToWishlist=async(req,res)=>{
          }
         //  console.log(coupon.endDate)
 
-        if(!coupon || coupon.couponStatus==='inactive' || coupon.endDate>Date.now){
-            return res.status(400).json({error:'coupon is not valid'})
+        if (!coupon || coupon.couponStatus === 'inactive' || new Date(coupon.endDate) < Date.now()) {
+            return res.status(400).json({ error: 'Coupon is not valid' });
         }
          let discountedPrice=0;
         
@@ -930,7 +969,7 @@ let productAddedToWishlist=async(req,res)=>{
  let orderProduct=async(req,res)=>{
     const { addressId, paymentMethod, orderTotal, products,wihtOutDiscount } = req.body;
     // console.log(req.body)
-    console.log(products)
+    // console.log(products)
     // console.log(wihtOutDiscount)
     // console.log(products)
 try {
@@ -955,7 +994,7 @@ try {
    
     for(let i=0;i<productIds.length;i++){
         let cartProduct = user.cart.product.find(cartItem => cartItem.productId.toString() === productIds[i])
-        console.log(cartProduct)
+        // console.log(cartProduct)
         if(!cartProduct){
             return res.status(400).send('product not found')
              }
@@ -963,8 +1002,7 @@ try {
         if (!productDetail) {
             return res.status(400).send(`Product details for ID ${productIds[i]} not found`);
         }
-     console.log(productDetail)
-
+    //  console.log(productDetail)
             productDetails.push({
                 productId:cartProduct.productId,
                 productName:cartProduct.productName,
@@ -998,7 +1036,15 @@ try {
     }
     user.orders.push(newOrder)
     // console.log(newOrder)
+    user.cart.product = []; // Empty the cart
+
     await user.save()
+    for (let i = 0; i < productIds.length; i++) {
+        await Products.updateOne(
+            { _id: productIds[i] },
+            { $inc: { stockQuantity: -products[i].quantity } }
+        );
+    }
     res.status(200).json({message:'order placed successfully ', newOrder:newOrder})
 } catch (error) {
     console.error(error)
@@ -1040,21 +1086,22 @@ try {
       
       let orders=user.orders
 
-      let allProducts=[]
+    //   let allProducts=[]
 
-      orders.forEach(order=>{
-        order.products.forEach(product=>{
-            allProducts.push(product)
+    //   orders.forEach(order=>{
+    //     order.products.forEach(product=>{
+    //         allProducts.push(product)
 
-        })
-      })
+    //     })
+    //   })
     //   console.log(allProducts)
-    res.render('user/orders',{orders,allProducts})
+    // allProducts.reverse()
+    res.render('user/orders',{orders})
  }
 
  let cancelOrder=async(req,res)=>{
     const {orderId,productId,cancelReason}=req.body
-    console.log(req.body)
+    // console.log(req.body)
     let token=req.cookies.user_jwt
     let decoded=jwt.verify(token,process.env.JWT_SECRET)
     let userId=decoded.id
@@ -1074,9 +1121,17 @@ try {
    order.wihtOutDiscount -=product.productPrice
    product.orderStatus='cancelled'
    product.cancelReason=cancelReason
+
+   let prdId=product.productId
+//    console.log(prdId)
+   let findProduct=await Products.findById(prdId)
+//    console.log(findProduct)
+   findProduct.stockQuantity +=product.quantity
+   await findProduct.save()
+
     await user.save()
     console.log('order cancelled successfully')
-    console.log(product)
+    // console.log(product)
     res.status(200).redirect('/ordersGet')
         
     } catch (error) {

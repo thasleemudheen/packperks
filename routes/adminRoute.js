@@ -38,5 +38,6 @@ router.post('/editCouponData/:id',adminController.couponEditPostPage)
 
 router.get('/admin/order',adminController.orderManagement)
 router.post('/updateOrderStatus/:orderId/:productId',adminController.updateOrderStatus)
+router.post('/orderReport',adminController.orderReport)
 
 module.exports = router

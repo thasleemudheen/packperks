@@ -361,7 +361,7 @@
                                                 
 
                                             </a>
-                                            <% if (product.isDisabled) { %>
+                                            <% if (product.isDisabled || product.stockQuantity===0) { %>
                                                 <div class="product-action-2">
                                                     <span class="out-of-stock">Out of Stock</span>
                                                 </div>

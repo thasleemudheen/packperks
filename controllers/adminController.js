@@ -6,6 +6,9 @@ const cloudinary=require('../config/cloudinary')
 const multer=require('multer')
 const upload = multer({ dest: 'uploads/' }); 
 const mongoose=require('mongoose')
+const Excel=require('exceljs')
+const path=require('path')
+const fs=require('fs')
 
 require('dotenv').config()
 
@@ -63,7 +66,7 @@ let adminLogoutpage=async(req,res)=>{
 let adminDashBoard=async(req,res)=>{
 
     const totalUser = await User.countDocuments()
-    // console.log(totalUser)
+    // console.log('total users',totalUser)
     const totalOrders = await User.aggregate([
         { $match: { orders: { $exists: true, $ne: [] } } },
         { $project: { totalOrders: { $size: '$orders' } } },
@@ -71,9 +74,9 @@ let adminDashBoard=async(req,res)=>{
     ]);
     
     // Extract the total count from the result
-    const totalCount = totalOrders.length > 0 ? totalOrders[0].total : 0;
+    const totalOrder = totalOrders.length > 0 ? totalOrders[0].total : 0;
     
-    // console.log('Total orders:', totalCount);
+    // console.log('Total orders:', totalOrder);
 
     const totalOrderedProducts = await User.aggregate([
         { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
@@ -87,22 +90,62 @@ let adminDashBoard=async(req,res)=>{
     
     // console.log('Total ordered products:', totalOrderedProduct);
     
-    const distinctCategories = await User.aggregate([
+    const categoryOrders = await User.aggregate([
         { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
         { $unwind: '$orders' }, // Deconstruct the orders array
         { $unwind: '$orders.products' }, // Deconstruct the products array within each order
-        { $group: { _id: '$orders.products.categoryName' } }, // Group by category name
+        { $group: { _id: '$orders.products.categoryName', count: { $sum: 1 } } }, // Group by category name and count orders
         { $match: { _id: { $ne: null } } } // Exclude null categories
     ]);
     
-    const categories = distinctCategories.map(item => item._id);
+    const latestOrders = await User.aggregate([
+        { $match: { orders: { $exists: true, $ne: null } }  }, 
+        {  $unwind: "$orders" },
+        { $project: {
+                _id: "$orders._id",
+                userId: "$_id",
+                paymentMethod: "$orders.paymentMethod",
+                orderDate: "$orders.orderDate",
+                shippingAddress: "$orders.shippingAddress",
+                products: "$orders.products",
+                totalAmount: "$orders.totalAmount",
+                orderStatus: "$orders.orderStatus"
+            } },
+        {$sort: { orderDate: -1 } },
+        { $limit: 10  }
+    ]);
     
-    console.log('Distinct categories:', categories);
+    // console.log(latestOrders.length)
+    const totalOrderValue = await User.aggregate([
+        { $match: { orders: { $exists: true, $ne: null } } }, // Match documents with non-empty orders array
+        { $unwind: "$orders" }, // Deconstruct the orders array
+        { $group: { _id: null, total: { $sum: "$orders.totalAmount" } } } // Group by null to calculate total across all documents
+    ]);
     
+    // Extract the total value from the result
+    const totalValue = totalOrderValue.length > 0 ? totalOrderValue[0].total : 0;
+    // console.log('Total Order Value:', totalValue);
 
-
-
-    res.render('admin/index',{categories})
+    const monthlyOrders = await User.aggregate([
+        {$unwind: '$orders' },
+        {  $match: {'orders.orderDate': { $exists: true } }},
+        { $group: {  _id: {   year: { $year: '$orders.orderDate' }, month: { $month: '$orders.orderDate' }   },
+         totalOrders: { $sum: 1 }   } },
+        { $sort: { '_id.year': 1, '_id.month': 1 } },
+        {  $project: {
+            _id: 0,
+            month: '$_id.month',
+            year: '$_id.year',
+            totalOrders: 1
+          }
+        }
+      ]);
+      
+      console.log(monthlyOrders);
+      
+    
+    
+    res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders})
 }
 
 
@@ -238,7 +281,8 @@ let addProductPostPage=async(req,res)=>{
         const result = await cloudinary.uploader.upload(image.path);
         imageUrls.push(result.secure_url);
     }));
-       console.log("result ::",result);
+    //    console.log("result ::",result);
+
 
 
       const newProduct= new Products({
@@ -474,10 +518,68 @@ let couponEditPostPage = async (req, res) => {
 }
 
 let orderManagement=async(req,res)=>{
-    const usersWithOrders = await User.find({ 'orders.0': { $exists: true } });
+    const usersWithOrders = await User.find({ 'orders.0': { $exists: true } }).sort({'orders.orderDate':-1})
     // console.log(usersWithOrders)
     res.render('admin/orders',{usersWithOrders})
 }
+
+let orderReport = async (req, res) => {
+    let { startDate, endDate } = req.body;
+    let result = await User.aggregate([
+        { $unwind: "$orders" },
+        {
+            $match: {
+                "orders.orderDate": {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            }
+        }
+    ]);
+
+    let orderDetails = result.map(user => user.orders);
+
+    let workbook = new Excel.Workbook();
+    let worksheet = workbook.addWorksheet('sales report');
+
+    worksheet.columns = [
+        { header: 'Order ID', key: '_id', width: 25 },
+        {header:'orderDate',key:'orderDate',widht:15},
+        {header:'orderAmount',key:'totalAmount',width:15},
+        {header:'paymentMethod',key:'paymentMethod',width:20},
+        {header:'productName',key:'productName',width:20},
+        {header:'productPrice',key:'productPrice',width:15}
+
+        // Add more columns as needed
+    ];
+
+    orderDetails.forEach(order => {
+        order.products.forEach(product=>{
+            worksheet.addRow({
+                _id: order._id,
+                orderDate:order.orderDate.toLocaleDateString(),
+                totalAmount:order.totalAmount,
+                paymentMethod:order.paymentMethod,
+                productName:product.productName,
+                productPrice:product.productPrice,
+                // Add more data as needed
+            });
+        })
+        
+    });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment;filename=sales_report.xlsx');
+
+    workbook.xlsx.write(res)
+    .then(() => {
+        res.end();
+    })
+    .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error in generating Excel');
+    });
+};
 
 let updateOrderStatus=async(req,res)=>{
             let {productId,orderId}=req.params
@@ -486,12 +588,12 @@ let updateOrderStatus=async(req,res)=>{
             console.log(req.body)
 try {
     let user=await User.findOne({'orders._id':orderId})
-    console.log(user)
+    // console.log(user)
     if(!user){
         return res.status(400).send('user not found')
     }
     let orderIndex=user.orders.findIndex(order=>order._id.toString()===orderId)
-    console.log(orderIndex)
+    // console.log(orderIndex)
     if(orderIndex === -1){
         return res.status(400).send('order not found')
     }
@@ -499,6 +601,17 @@ try {
     if(productIndex === -1){
         return res.status(400).send('product not found in the orders')
     }
+
+    let product = user.orders[orderIndex].products[productIndex];
+    if (status === 'cancelled' && product.orderStatus !== 'cancelled') {
+        let findProduct = await Products.findById(productId);
+        console.log(findProduct);
+        if (findProduct) {
+            findProduct.stockQuantity += product.quantity;
+            await findProduct.save();
+        }
+    }
+
     user.orders[orderIndex].products[productIndex].orderStatus=status
     await user.save()
     res.status(200).json({message:'order status updated successfully'})
@@ -534,6 +647,7 @@ module.exports={
     couponEditGetPage,
     couponEditPostPage,
     orderManagement,
-    updateOrderStatus
+    updateOrderStatus,
+    orderReport
     
 }

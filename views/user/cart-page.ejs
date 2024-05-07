@@ -235,6 +235,9 @@
 </div>
 <div class="cart-main-area pt-90 pb-100">
     <div class="container">
+        <% if (user.cart.product.length === 0) { %>
+            <h1  style="text-align: center; background-color: rgb(223, 228, 228); font-weight: 800;padding:10% 0 10% 0;">Your cart is empty</h1>
+        <% } else { %>
         <h3 class="cart-page-title">Your cart items</h3>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-12">
@@ -323,6 +326,7 @@
             </div>
         </div>
     </div>
+    <% } %>
 </div>
  
 <script>
@@ -375,6 +379,15 @@ function checkCart(event) {
             let cartTotal = parseFloat(cartTotalElement.textContent);
             cartTotal += price;
             cartTotalElement.textContent = cartTotal.toFixed(2);
+        }else if(response.status===400){
+            console.log('toastify',response)
+            Toastify({
+                    text: 'maximum limit is reached',
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'center',
+                    backgroundColor: 'darkGrey'
+                }).showToast();
         }
         })
         

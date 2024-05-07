@@ -110,6 +110,40 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
     .modal-footer {
         justify-content: center; /* Center the close button */
     }
+    #showFormBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        
+    }
+
+    #reportForm {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        width: fit-content;
+    }
+
+    #reportForm label,
+    #reportForm input,
+    #reportForm button {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    #reportForm button {
+        padding: 8px 16px;
+        font-size: 14px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
 
 </style>
 
@@ -258,9 +292,61 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
 <div class="container-fluid"> 
 <h1>order listing</h1>  
 <!-- Button trigger modal -->
+<div style="display: flex;justify-content: center;">
+    <button id="showFormBtn">Sales Report</button>
+    <form id="reportForm" action="/orderReport" method="post" style="display: none;">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate">
+        <button type="button" onclick="getReport()">Get Report</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
+<script>
+
+    function getReport(){
+        let startDate=document.getElementById('startDate').value;
+        let endDate=document.getElementById('endDate').value;
+
+        axios.post('/orderReport',{
+            startDate,
+            endDate
+        },
+    {
+     responseType:'blob'
+    }).then(response=>{
+            const url=window.URL.createObjectURL(new Blob([response.data]))
+            const link=document.createElement('a')
+            link.href=url;
+            link.setAttribute('download','sales_report.xlsx')
+            document.body.appendChild(link)
+            link.click()
+           console.log(response)
+        }).catch(error=>{
+            console.log(error)
+        })
+
+    }
 
 
 
+
+    const showFormBtn = document.getElementById('showFormBtn');
+    const reportForm = document.getElementById('reportForm');
+
+    showFormBtn.addEventListener('click', () => {
+        if (reportForm.style.display === 'none') {
+            reportForm.style.display = 'block';
+        } else {
+            reportForm.style.display = 'none';
+        }
+    });
+
+    
+</script>
 
 
 <table id="myTableCoupon" class="table table-striped">

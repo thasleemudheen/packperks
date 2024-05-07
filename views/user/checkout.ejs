@@ -210,7 +210,7 @@
                                 </ul>
                             </div>
                             <div class="your-order-middle">
-                                <% user.cart.product.forEach(cartItem=>{%>
+                                <% cart.forEach(cartItem=>{%>
 
                                 
                                 <ul>
@@ -229,7 +229,7 @@
                             <div class="your-order-total">
                                 <ul>
                                     <li class="order-total">Total</li>
-                                    <li> <input style="display: flex;justify-content: end;" type="number" name="cartTotal" value="<%=cartTotal%>"> </li>
+                                    <li > <input style="text-align: end;" type="number" name="cartTotal" value="<%=cartTotal%>"> </li>
                                 </ul>
                             </div>
                         </div>
@@ -258,7 +258,7 @@
                             </div>
                             <div style="display: none; justify-content: space-between; margin-top: 10px; border-bottom: 1px solid grey;" id="discounted">
                                 <span><h4>discountValue</h4></span>
-                                <span><h4 id="discountValue"></h4></span>
+                                <span><h4  id="discountValue"></h4></span>
                             </div>
     
                         
@@ -269,7 +269,7 @@
 
                     <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">    
                         <span><h4> order Total </h4></span>
-                         <span> <h4 id="totalAmount"> <input type="number" name="orderTotal" value="<%=cartTotal%>"> </h4></span>
+                         <span > <h4 id="totalAmount"> <input type="number" name="orderTotal" value="<%=cartTotal%>" style="text-align: right;" > </h4></span>
                     </div>
 
                     <div style="border-top: 1px solid lightgray;">
@@ -446,7 +446,7 @@
     }
 }
 
-// coppon applying login in the frontend
+// coppon applying login in the fronten
 
     const couponCheckbox = document.getElementById('flexCheckIndeterminate');
     const couponPartDiv = document.getElementById('coupon-part');
