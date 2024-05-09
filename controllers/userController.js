@@ -22,11 +22,13 @@ const instance = new Razorpay({
 let homePage = async (req, res) => {
     try {
         let isAuthenticated = false;
-        let wishlistProducts = [];
-
+        // let wishlistProducts = [];
+        let wishlist;
         const products = await Products.find().sort({ createdAt: -1 }).limit(8);
 
         let categoryName=await Products.distinct('categoryName')
+        let product=await Products.find()
+        // console.log(product)
 
         if (req.cookies.user_jwt) {
             isAuthenticated = true;
@@ -34,12 +36,15 @@ let homePage = async (req, res) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
             const user = await User.findById(userId);
-            // console.log(user)
+            // console.log(user.wishlist)
+            // console.log("here user loged in..")
+            wishlist = await User.findById(userId, 'wishlist').populate('wishlist');
+        //  console.log("wii",wishlist)
+        // console.log(products)
 
-            wishlistProducts = await User.findById(userId, 'wishlist').populate('wishlist').lean();
         }
 
-        res.render('user/index', { isAuthenticated, products, user: req.user, wishlistProducts,categoryName });
+        res.render('user/index', { isAuthenticated, products, user: req.user, wishlist,categoryName,product });
                 //   console.log(req.user)
     } catch (error) {
         console.log('Home page is not found');
@@ -57,7 +62,7 @@ let profile = async (req, res) => {
     if (!user) {
         return res.status(400).send('User not found');
     }
-    let orders=user.orders
+    let orders = user.orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 
       let allProducts=[]
 
@@ -555,7 +560,7 @@ let addProductCart=async(req,res)=>{
     const token=req.cookies.user_jwt
     // console.log(token);
     if(!token){
-        return res.redirect('/login')
+        return res.status(202).json({message:'please login'})
     }
     const decoded=jwt.verify(token,process.env.JWT_SECRET)
     console.log(decoded);
@@ -672,7 +677,7 @@ let quantityPlus=async(req,res)=>{
         }
 
         if (cartItem.quantity >= product.stockQuantity) {
-            return res.status(400).json({message:'Cannot increase quantity, stock quantity exceeded'})
+            return res.status(400).json({message:'Cannot increase quantity'})
         }
          cartItem.quantity++;
         
@@ -758,10 +763,13 @@ let wishListPage=async(req,res)=>{
 let productAddedToWishlist=async(req,res)=>{
        try {
         const token=req.cookies.user_jwt
+        // console.log("token",token)
+        
         if(!token){
-            return res.redirect('/login')
+            return res.status(202).json({message:'please login'})
         }
         const decoded=jwt.verify(token,process.env.JWT_SECRET)
+        // console.log("decodeddd",decoded)
         const userId=decoded.id
         const user=await User.findById(userId)
 
@@ -777,7 +785,7 @@ let productAddedToWishlist=async(req,res)=>{
             user.wishlist=user.wishlist.filter(item=>item.productId.toString()!==productId)
            await user.save()
            return res.status(201).json({message:'product removed from the wishlist'})
-            // Product already exists in the wishlist
+            // Product already exists in the wishlistn
             // user.wishlist.splice(existingProductIndex,1)
 
             // await user.save()
@@ -859,13 +867,6 @@ let productAddedToWishlist=async(req,res)=>{
         }
         // console.log(discountedPrice)
 
-         // Assuming Products is the model for your products
-        // let productDetails = await Promise.all(productId.map(async (id) => {
-        //     return await Products.findById(id);
-        // }));
-        
-        // productDetails = productDetails.filter(product => !product.isDisabled);
-        // console.log(productDetails)
 
         //  console.log(productId)
         //  cartTotal=user.cart.total
@@ -1084,18 +1085,9 @@ try {
       let userId=decoded.id
       let user=await User.findById(userId)
       
-      let orders=user.orders
-
-    //   let allProducts=[]
-
-    //   orders.forEach(order=>{
-    //     order.products.forEach(product=>{
-    //         allProducts.push(product)
-
-    //     })
-    //   })
-    //   console.log(allProducts)
-    // allProducts.reverse()
+      let orders = user.orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+      console.log(orders)
+ 
     res.render('user/orders',{orders})
  }
 
@@ -1177,6 +1169,8 @@ try {
         res.status(500).send('internal server error')
     }
  }
+
+ 
 module.exports={
     homePage,
     signUpPage,
@@ -1214,6 +1208,6 @@ module.exports={
     ordersGetPage,
     cancelOrder,
     productSorting,
-    razorpayPayment
+    razorpayPayment,
 
 }

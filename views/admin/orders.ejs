@@ -67,6 +67,7 @@ href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
 src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" 
 src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
@@ -172,26 +173,18 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                 <div class="navbar-nav w-100">
                     <a href="/admin/dashboard" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
                     <div class="nav-item dropdown">
-                        <a href="/admin/productlist" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>product</a>
+                        <a href="/admin/productlist" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"><i class="fa fa-tachometer-alt me-2">b</i>products</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="/admin/productlist" class="dropdown-item">product</a>
-                            <a href="/admin/categorylist" class="dropdown-item">categorylist</a>
-                            <!-- <a href="element.html" class="dropdown-item">Other Elements</a> -->
+                            <a href="/admin/productlist" class="dropdown-item">Product List</a>
+                            <a href="/admin/productlist" class="dropdown-item">products</a>
+                            <a href="/admin/categorylist" class="dropdown-item">category</a>
                         </div>
                     </div>
                     <a href="/admin/user" class="nav-item nav-link"><i class="fa fa-th me-2"></i>users</a>
                     <a href="/admin/coupon" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>coupon</a>
                     <a href="/admin/order" class="nav-item nav-link active"><i class="fa fa-table me-2"></i>orders</a>
-                    <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
-                        </div>
-                    </div>
+                    <a href="/banner" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+                   
                 </div>
             </nav>
         </div>
@@ -378,18 +371,26 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                         text-warning
                     <% } else if (product.orderStatus === 'delivered') { %>
                         text-success
-                    <% } %>"
+                    <% } else if(product.orderStatus==='shipped'){%>
+                        text-primary
+                    <%}%>"
                 >
                     <%= product.orderStatus %>
                 </td>
                 <td>
                     <form action="" id="updateOrderForm-<%=orders._id%>-<%=orderIndex%>" method="post">
                         <select name="status" id="" class="form-select" onchange="updateOrderStatus(event,'<%=orders._id%>','<%=product.productId%>','<%=orderIndex%>')">
+                            <% if(product.orderStatus!=='cancelled'){%>
+
+                            
                             <option value="Pending" <%= product.orderStatus === "Pending" ? "selected" : "" %> class="<%= product.orderStatus === 'Pending' ? 'text-warning' : '' %>"> Pending</option>
                             <option value="delivered" <%= product.orderStatus === "delivered" ? "selected" : "" %> class="<%= product.orderStatus === 'delivered' ? 'text-success' : '' %>"> delivered</option>
+                            <option value="shipped" <%= product.orderStatus === "shipped" ? "selected" : "" %> class="<%= product.orderStatus === 'shipped' ? 'text-primary' : '' %>"> shipped</option>
+                            <%}%>
                             <% if (product.orderStatus !== 'delivered') { %>
                                 <option value="cancelled" <%= product.orderStatus === "cancelled" ? "selected" : "" %> class="<%= product.orderStatus === 'cancelled' ? 'text-danger' : '' %>"> cancelled</option>
                             <% } %>
+                            
                         </select>
                     </form>
                     
@@ -463,6 +464,7 @@ function updateOrderStatus(event,orderId,productId,index){
  axios.post(`/updateOrderStatus/${orderId}/${productId}`,{status})
  .then(response=>{
     console.log(response.data)
+    window.location.reload()
  }).catch(error=>{
     console.log(error)
  })
@@ -495,7 +497,8 @@ function updateOrderStatus(event,orderId,productId,index){
 <script src="./js/addons/datatables.min.js"></script>
 
 
-                         
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- JavaScript Libraries -->
     <script src="../../code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="../../cdn.jsdelivr.net/npm/bootstrap%405.0.0/dist/js/bootstrap.bundle.min.js"></script>

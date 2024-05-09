@@ -82,11 +82,11 @@ let adminDashBoard=async(req,res)=>{
         { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
         { $unwind: '$orders' }, // Deconstruct the orders array
         { $unwind: '$orders.products' }, // Deconstruct the products array within each order
-        { $group: { _id: null, total: { $sum: '$orders.products.quantity' } } } // Calculate the total quantity of products
+        { $group: { _id: '$orders.products', total: { $sum: 1 } } } // Count the total number of products for each productId
     ]);
     
     // Extract the total count from the result
-    const totalOrderedProduct = totalOrderedProducts.length > 0 ? totalOrderedProducts[0].total : 0;
+    const totalOrderedProduct = totalOrderedProducts.reduce((total, product) => total + product.total, 0);
     
     // console.log('Total ordered products:', totalOrderedProduct);
     
@@ -141,11 +141,36 @@ let adminDashBoard=async(req,res)=>{
         }
       ]);
       
-      console.log(monthlyOrders);
-      
+    //   console.log(monthlyOrders);
+    const orderStatusCounts = await User.aggregate([
+        { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
+        { $unwind: '$orders' }, // Deconstruct the orders array
+        { $unwind: '$orders.products' }, // Deconstruct the products array within each order
+        { 
+            $group: { 
+                _id: { productId: '$orders.products.productId', status: '$orders.products.orderStatus' }, 
+                count: { $sum: 1 } 
+            } 
+        }, // Group by productId and orderStatus, and count the number of products for each status
+        { 
+            $group: { 
+                _id: '$_id.status', 
+                totalCount: { $sum: '$count' } 
+            } 
+        } // Group by status and calculate the total count for each status
+    ]);
+    
+    // Construct the result object
+    const statusCounts = {};
+    orderStatusCounts.forEach(status => {
+        statusCounts[status._id] = status.totalCount;
+    });
+    
+    // Now, statusCounts will contain the count of each status
+    console.log(statusCounts);
     
     
-    res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders})
+    res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders,statusCounts})
 }
 
 
@@ -584,8 +609,8 @@ let orderReport = async (req, res) => {
 let updateOrderStatus=async(req,res)=>{
             let {productId,orderId}=req.params
             let {status}=req.body
-            console.log(productId,orderId)
-            console.log(req.body)
+            // console.log(productId,orderId)
+            // console.log(req.body)
 try {
     let user=await User.findOne({'orders._id':orderId})
     // console.log(user)
@@ -605,7 +630,7 @@ try {
     let product = user.orders[orderIndex].products[productIndex];
     if (status === 'cancelled' && product.orderStatus !== 'cancelled') {
         let findProduct = await Products.findById(productId);
-        console.log(findProduct);
+        // console.log(findProduct);
         if (findProduct) {
             findProduct.stockQuantity += product.quantity;
             await findProduct.save();
@@ -620,6 +645,10 @@ try {
     console.error(error)
 }
            
+}
+
+let changeHomePageImage=async(req,res)=>{
+    res.render('admin/banner')
 }
 
 module.exports={
@@ -648,6 +677,7 @@ module.exports={
     couponEditPostPage,
     orderManagement,
     updateOrderStatus,
-    orderReport
+    orderReport,
+    changeHomePageImage
     
 }

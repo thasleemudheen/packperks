@@ -243,7 +243,7 @@ small{
                                 <li><a href="/">Home </a>
                                     
                                 </li>
-                                <li><a href="/shop"> Shop <i class="fa fa-angle-down"></i> </a>
+                                <li><a href="/shop"> Shop </a>
                                     
                                 </li>
                                
@@ -418,7 +418,9 @@ small{
                                     text-warning
                                 <% } else if (product.orderStatus === 'delivered') { %>
                                     text-success
-                                <% } %>"
+                                <% } else if(product.orderStatus==='shipped'){%>
+                                      text-primary
+                                <%} %>"
                             >
                                 <%= product.orderStatus %>
                             </h5>

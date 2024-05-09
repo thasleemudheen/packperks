@@ -132,18 +132,7 @@
                                     
                                 </li>
                                 <!-- <li><a href="shop.html">Collection</a></li> -->
-                                <li><a href="#"> Pages <i class="fa fa-angle-down"></i></a>
-                                    <ul class="submenu">
-                                        <li><a href="about.html">about us</a></li>
-                                        <li><a href="/cart">cart page</a></li>
-                                        <li><a href="checkout.html">checkout </a></li>
-                                        <li><a href="wishlist.html">wishlist </a></li>
-                                        <li><a href="my-account.html">my account</a></li>
-                                        <li><a href="login-register.html">login / register </a></li>
-                                        <li><a href="contact.html">contact us </a></li>
-                                        <li><a href="404.html">404 page </a></li>
-                                    </ul>
-                                </li>
+                               
                               
                                 <li><a href="about.html"> About </a></li>
                                 <li><a href="contact.html"> Contact</a></li>
@@ -153,7 +142,7 @@
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-6 col-8">
                        <div class="header-right-wrap">
-                        <div class="same-style header-search">
+                        <!-- <div class="same-style header-search">
                             <a class="search-active" href="#"><i class="pe-7s-search"></i></a>
                             <div class="search-content">
                                 <form action="#">
@@ -161,17 +150,17 @@
                                     <button class="button-search"><i class="pe-7s-search"></i></button>
                                 </form>
                             </div> 
-                        </div>
+                        </div> -->
                         <div class="same-style account-satting">
-                            <a class="account-satting-active" href="#"><i class="pe-7s-user-female"></i></a>
-                            <div class="account-dropdown">
+                            <!-- <a class="account-satting-active" href="/profile"><i class="pe-7s-user-female"></i></a> -->
+                            <!-- <div class="account-dropdown">
                                 <ul>
                                     <li><a href="login-register.html">Login</a></li>
                                     <li><a href="login-register.html">Register</a></li>
                                     <li><a href="wishlist.html">Wishlist  </a></li>
                                     <li><a href="my-account.html">my account</a></li>
                                 </ul>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="same-style header-wishlist">
                             <a href="/wishlist"><i class="pe-7s-like"></i></a>
@@ -241,19 +230,7 @@
                                 </ul>
                             </li>
                             <!-- <li><a href="shop.html">Collection</a></li> -->
-                            <li><a href="#">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">about us</a></li>
-                                    <li><a href="cart-page.html">cart page</a></li>
-                                    <li><a href="checkout.html">checkout </a></li>
-                                    <li><a href="wishlist.html">wishlist </a></li>
-                                    <li><a href="my-account.html">my account</a></li>
-                                    <li><a href="login-register.html">login / register </a></li>
-                                    <li><a href="contact.html">contact us </a></li>
-                                    <li><a href="404.html">404 page </a></li>
-                                </ul>
-                            </li>
-                            
+                           
                             <li><a href="about.html">About us</a></li>
                             <li><a href="contact.html">Contact</a></li>
                         </ul>
@@ -483,7 +460,16 @@
                 position :"center",
                 backgroundColor: "darkGrey",
                 }).showToast()
+            }else if(response.status === 202){
+                Toastify({
+                    text: 'Please login to add cart',
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'center',
+                    backgroundColor: 'red'
+                }).showToast();
             }
+
            
         })
         .catch(error => {

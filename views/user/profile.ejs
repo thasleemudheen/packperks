@@ -44,7 +44,7 @@
     <style>
       /* Custom Styles */
       body {
-        background-color: #fdfdfd;
+        background-color: #c4b8b8;
         /* background-color: green; */
         font-family: Arial, sans-serif;
       }
@@ -193,33 +193,46 @@
     </div>
 </header>
 
-<div class="container" style="  background-color: rgba(234, 230, 230, 0.938); border: 1px solid; border-radius: 10px; "> 
+<div class="container" style="  background-color: rgba(255, 255, 255, 0.938); border: 1px solid; border-radius: 10px; "> 
 
   <div class="d-flex justify-content-start" style="text-align: center; align-items: center; ">
+     <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-md-12 col-lg-12">
+                <div class="nav flex-column justify-content-center align-items-center nav-pills mt-5 sidebar"  id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <div class="profilebtn" >
+                       <button class="nav-link active btn-secondary" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">PROFILE</button>
+                       <button class="nav-link btn-secondary"  onclick="toggleAddress()" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">ADDRESS  MANAGEMENT</button>
+                       <button class="nav-link btn-secondary"   id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">ORDERS</button>
+                       <button class="nav-link   btn-secondary" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><a style="color: #333;" href="/logout">
+                           <i  class="fas fa-sign-out-alt"></i> Logout
+                       
+                         </a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
     
-    <div class="nav flex-column justify-content-center align-items-center nav-pills mt-5 sidebar"  id="v-pills-tab" role="tablist" aria-orientation="vertical">
-      <div class="profilebtn" >
-        <button class="nav-link active btn-secondary" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">PROFILE</button>
-        <button class="nav-link btn-secondary"  onclick="toggleAddress()" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">ADDRESS  MANAGEMENT</button>
-        <button class="nav-link btn-secondary"   id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">ORDERS</button>
-        <!-- <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"><a href="/logOut"><i class="fas fa-sign-out-alt"></i> Logout</a></button> -->
-        <button class="nav-link   btn-secondary" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><a style="color: #333;" href="/logout">
-          <i  class="fas fa-sign-out-alt"></i> Logout
-        </a></button>
-      </div>
-  </div>
 
 
   <div class="tab-content d-flex" style="justify-content: center;min-width: 80%; height: 70vh; align-items: center;" id="v-pills-tabContent">
-    <div class="tab-pane fade show active " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0"  >
-       
-
-            <h1>Hello: <%=user.username%></h1>
-            <p><%=user.email%></p>
-            <p class="phone"><%=user.phonenumber%></p>
-            <p> nem commodi doloremque vero error.</p>
-       
+    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
+        <div class="container">
+            <div class="row">
+                <div class=" col-lg-12 col-md-6 col-sm-3">
+                    <h1>Hello: <%=user.username%></h1>
+                    <p><%=user.email%></p>
+                    <p class="phone"><%=user.phonenumber%></p>
+                </div>
+                <div class=" col-lg-12 col-md-6 col-sm-3">
+                    <p>nem commodi doloremque vero error.</p>
+                </div>
+            </div>
+        </div>
     </div>
+    
 
       <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0" style="min-width: 90%;">
 
@@ -296,7 +309,7 @@
     
     
         </div>
-      
+
         <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0"  >
           <div class="container my-5 d-sm-flex" style="height: 55vh; border: 2px solid rgb(191, 175, 206);" >
             <div style="overflow-y: scroll;  scrollbar-width: none; -ms-overflow-style: none;">
@@ -312,7 +325,7 @@
                                     </div>
                                     <div class="flex-col my-auto">
                                         <h6 class="ml-auto mr-3">
-                                            <a href="#">View Details</a>
+                                            <!-- <a href="#">View Details</a> -->
                                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= orderIndex %>-<%= productIndex %>">
                                                 View
                                             </button>
@@ -376,6 +389,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </h6>
                                     </div>
                                 </div>
@@ -419,90 +433,7 @@
   </div>
 </div>
   
-<footer class="footer-area bg-gray pt-100 pb-70">
-  <div class="container">
-      <div class="row">
-          <div class="col-lg-2 col-md-4 col-sm-4">
-              <div class="copyright mb-30">
-                  <div class="footer-logo">
-                      <a href="index.html">
-                          <!-- <img alt="" src="/assets/img/logo/logo.png"> -->
-                      </a>
-                  </div>
-                  <p>© 2020 <a href="#">Flone</a>.<br> All Rights Reserved</p>
-              </div>
-          </div>
-          <div class="col-lg-2 col-md-4 col-sm-4">
-              <div class="footer-widget mb-30 ml-30">
-                  <div class="footer-title">
-                      <h3>ABOUT US</h3>
-                  </div>
-                  <div class="footer-list">
-                      <ul>
-                          <li><a href="about.html">About us</a></li>
-                          <li><a href="#">Store location</a></li>
-                          <li><a href="contact.html">Contact</a></li>
-                          <li><a href="#">Orders tracking</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-          <div class="col-lg-2 col-md-4 col-sm-4">
-              <div class="footer-widget mb-30 ml-50">
-                  <div class="footer-title">
-                      <h3>USEFUL LINKS</h3>
-                  </div>
-                  <div class="footer-list">
-                      <ul>
-                          <li><a href="#">Returns</a></li>
-                          <li><a href="#">Support Policy</a></li>
-                          <li><a href="#">Size guide</a></li>
-                          <li><a href="#">FAQs</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-6">
-              <div class="footer-widget mb-30 ml-75">
-                  <div class="footer-title">
-                      <h3>FOLLOW US</h3>
-                  </div>
-                  <div class="footer-list">
-                      <ul>
-                          <li><a href="#">Facebook</a></li>
-                          <li><a href="#">Twitter</a></li>
-                          <li><a href="#">Instagram</a></li>
-                          <li><a href="#">Youtube</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-6">
-              <div class="footer-widget mb-30 ml-70">
-                  <div class="footer-title">
-                      <h3>SUBSCRIBE</h3>
-                  </div>
-                  <div class="subscribe-style">
-                      <p>Get E-mail updates about our latest shop and special offers.</p>
-                      <div id="mc_embed_signup" class="subscribe-form">
-                          <form id="mc-embedded-subscribe-form" class="validate" novalidate="" target="_blank" name="mc-embedded-subscribe-form" method="post" action="http://devitems.us11.list-manage.com/subscribe/post?u=6bbb9b6f5827bd842d9640c82&amp;id=05d85f18ef">
-                              <div id="mc_embed_signup_scroll" class="mc-form">
-                                  <input class="email" type="email" required="" placeholder="Enter your email here.." name="EMAIL" value="">
-                                  <div class="mc-news" aria-hidden="true">
-                                      <input type="text" value="" tabindex="-1" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef">
-                                  </div>
-                                  <div class="clear">
-                                      <input id="mc-embedded-subscribe" class="button" type="submit" name="subscribe" value="Subscribe">
-                                  </div>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-</footer>
+
 
 <!-- JS
 ============================================ -->

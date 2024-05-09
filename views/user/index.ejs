@@ -120,7 +120,7 @@
             <div class="col-xl-2 col-lg-2 col-md-6 col-4">
                 <div class="logo">
                     <a href="index.html">
-                        <!-- <img alt="" src="/assets/img/logo/logo.png"> -->
+                        <img style="max-width: 200px;" alt="" src="/assets/img/logo/logos.png">
                     </a>
                 </div>
             </div>
@@ -346,22 +346,19 @@
                                     <div class="product-wrap-2 mb-25">
                                         <div class="product-img">
                                             <a href="/singleProduct/<%=product._id%>">
-
                                                 <img class="default-img <%= product.isDisabled ? 'disabled' : '' %>" src="<%=product.productImage[0]%>" alt="">
                                                 <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
-                                                <div id="wishlist_<%=product._id%>" class="pro-details-wishlist"  style="position: absolute; top: 10px; right: 10px; z-index: 2;" >
-                                                    <button onclick="toggleWishlist('<%=product._id%>')" id="wishlist-<%=product._id%>" style="border: none; background-color:transparent">
-                                                        <% if (user && user.wishlist.some( prd => prd.productId.toString() === product._id.toString() ))  { %>
-                                                            <i id="red_heart_<%=product._id%>" class="fa fa-heart fa-2x" style="color: red;"></i>
-                                                        <% } else { %>
-                                                            <i id="plain_heart_<%=product._id%>" class="fa fa-heart-o fa-2x"></i>
-                                                        <% } %>
-                                                    </button>
-                                                </div>
-                                                
-
                                             </a>
-                                            <% if (product.isDisabled || product.stockQuantity===0) { %>
+                                            <div id="wishlist_<%=product._id%>" class="pro-details-wishlist"  style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                                                <button onclick="toggleWishlist('<%=product._id%>')" id="wishlist-<%=product._id%>" style="border: none; background-color:transparent">
+                                                    <% if (wishlist!==undefined && wishlist.wishlist && wishlist.wishlist.some(prd => prd.productId.toString() === product._id.toString()))  { %>
+                                                        <i id="red_heart_<%=product._id%>" class="fa fa-heart fa-2x" style="color: red;"></i>
+                                                    <% } else { %>
+                                                        <i id="plain_heart_<%=product._id%>" class="fa fa-heart-o fa-2x"></i>
+                                                    <% } %>                                                            
+                                                  </button>
+                                            </div>
+                                            <% if (product.isDisabled || product.stockQuantity === 0) { %>
                                                 <div class="product-action-2">
                                                     <span class="out-of-stock">Out of Stock</span>
                                                 </div>
@@ -370,17 +367,18 @@
                                                 </div>
                                             <% } %>
                                         </div>
-                                        <div class="product-content-2 d-flex justify-content-center" >
-                                            <div class="title-price-wrap-2" >
+                                        <div class="product-content-2 d-flex justify-content-center">
+                                            <div class="title-price-wrap-2">
                                                 <h3><a href="/singleProduct/<%=product._id%>"><%=product.productName%></a></h3>
                                                 <div class="price-2">
                                                     <span>₹: <%=product.productPrice%></span>
-                                                </div> 
-                                            </div>                                      
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             <% }) %>
+                            
                         </div>
                     </div>
                 </div>
@@ -413,6 +411,14 @@
                                         gravity: 'top',
                                         position: 'center',
                                         backgroundColor: 'darkGrey'
+                                    }).showToast();
+                                } else if(response.status === 202){
+                                    Toastify({
+                                        text: 'Please login to get wishlist',
+                                        duration: 3000,
+                                        gravity: 'top',
+                                        position: 'center',
+                                        backgroundColor: 'red'
                                     }).showToast();
                                 }
 
@@ -497,14 +503,14 @@
     </div>
 </div>
 <!-------------------- swiper to show the wishlist products------------------ -->
-<% if (isAuthenticated && wishlistProducts && wishlistProducts.wishlist && wishlistProducts.wishlist.length > 3) { %>
+<% if (isAuthenticated && wishlist && wishlist.wishlist && wishlist.wishlist.length > 3) { %>
     <div style="display: flex; justify-content: center; text-align: center; width: 100%;" id="favourite_products">
         <h2>Your favourite products</h2>
     </div>
 
     <div #swiperRef="" class="swiper mySwiper">
         <div class="swiper-wrapper">
-            <% wishlistProducts.wishlist.forEach(wishlistItem => { %>
+            <% wishlist.wishlist.forEach(wishlistItem => { %>
                 <div class="swiper-slide">
                     <div class="img_box">
                        <a href=""> <img style="width: 260px; height: 280px; object-fit: cover;" src="<%= wishlistItem.productImage[0] %>" alt="<%= wishlistItem.productName %>"></a>
