@@ -9,7 +9,9 @@ require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 const mongoose=require('mongoose')
+const pdf=require('html-pdf')
 const razorpay=require('../helpers/razorpay')
+const ejs=require('ejs')
 
 const Razorpay = require('razorpay');
 const instance = new Razorpay({
@@ -1086,7 +1088,7 @@ try {
       let user=await User.findById(userId)
       
       let orders = user.orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-      console.log(orders)
+    //   console.log(orders)
  
     res.render('user/orders',{orders})
  }
@@ -1170,7 +1172,81 @@ try {
     }
  }
 
- 
+ let orderInvoice=async(req,res)=>{
+    // res.render('user/invoice')
+ }
+
+ let getOrderInvoice = async (req, res) => {
+    const { orderId, productId } = req.body;
+    console.log(productId)
+    try {
+        const token = req.cookies.user_jwt;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+        
+        const user = await User.findOne({ _id: userId, 'orders._id': orderId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const order = user.orders.find(order => order._id.toString() === orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        // console.log(order)
+        const product = order.products.find(product => product.productId.toString() === productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found in the order" });
+        }
+        if (product.orderStatus !== 'delivered') {
+            return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
+        }
+        console.error(product)
+
+        ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error rendering the invoice');
+            }
+            pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Error generating PDF');
+                }
+                // console.log('PDF Buffer:', buffer); // Log the PDF buffer
+
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
+                res.send(buffer);
+            });
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(400).send('Failed to download PDF');
+    }
+};
+
+
+let editProfilePost=async(req,res)=>{
+    console.log(req.body)
+    const {editname,editemail,editnumber}=req.body
+    try {
+         const token=req.cookies.user_jwt
+         const decoded=jwt.verify(token,process.env.JWT_SECRET)
+         const userId=decoded.id
+         const user = await User.findByIdAndUpdate(userId, {
+            username: editname,
+            email: editemail,
+            phonenumber: editnumber
+        }, { new: true });
+
+        res.status(200).json(user)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send('failed to update the user detials')
+    }
+}
 module.exports={
     homePage,
     signUpPage,
@@ -1209,5 +1285,8 @@ module.exports={
     cancelOrder,
     productSorting,
     razorpayPayment,
+    orderInvoice,
+    getOrderInvoice,
+    editProfilePost
 
 }

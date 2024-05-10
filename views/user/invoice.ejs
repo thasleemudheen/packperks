@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+    <style>
+       .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(243, 240, 240, 0.932);
+}
+table {
+    width: 100%;
+}
+
+table th,
+table td {
+    text-align: left;
+}
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.list-unstyled li {
+    margin-bottom: 10px;
+}
+
+
+
+.text-right {
+    text-align: right;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container bootstrap snippets bootdey">
+        <div class="panel panel-default">
+            <h2 style="text-align: center;">Order Invoice</h2>
+    
+            <div class="panel-body">
+                <div class="row" >
+                    <div class="col-md-6">
+                        <h4><strong>Client Details</strong></h4>
+                        <ul class="list-unstyled">
+                            <li><strong>First Name:</strong> <%= order.shippingAddress.name %></li>
+                            <li><strong>City:</strong> <%= order.shippingAddress.city %></li>
+                            <li><strong>Phone:</strong> <%= order.shippingAddress.phonenumber %></li>
+                        </ul>
+                    </div>
+                
+                    <div class="col-md-6 text-right">
+                        <h4><strong>Payment Details</strong></h4>
+                        <ul class="list-unstyled">
+                            <li><strong>Order ID:</strong> <%= order._id %></li>
+                            <li><strong>Payment Method:</strong> <%= order.paymentMethod %></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-condensed nomargin">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><%= product.productName %></td>
+                                <td><%= product.quantity %></td>
+                                <td><%= product.productPrice %></td>
+                                <td><%= order.totalAmount %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <hr class="nomargin-top">
+    
+                <div class="row" style="display: flex; justify-content: space-between;">
+                    <div class="col-md-6">
+                        <h4><strong>Contact Details</strong></h4>
+                        <address>
+                            <%= order.shippingAddress.name %> <br>
+                            <%= order.shippingAddress.city %> <br>
+                            <%= order.shippingAddress.street %> <br>
+                            <%= order.shippingAddress.phonenumber %> <br>
+                            <%= order.shippingAddress.pincode %> <br>
+                        </address>
+                    </div>
+    
+                    <div class="col-md-6 text-end">
+                        <h4><strong>Total Details</strong></h4>
+                        <ul class="list-unstyled">
+                            <li><strong>Sub - Total Amount:</strong> <%= order.wihtOutDiscount %></li>
+                            <li><strong>Discounted:</strong> <%= order.withoutDiscount - order.totalAmount %></li>
+                            <li><strong>Grand Total:</strong> <%= order.totalAmount %></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+</html>

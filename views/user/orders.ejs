@@ -332,6 +332,9 @@ small{
                     <div class="card-header bg-white">
                         <div class="row justify-content-between">
                             <div class="col">
+                                <% if (product.orderStatus === 'delivered') { %>
+                                    <button class="btn btn-primary" onclick="getInvoice('<%= order._id %>', '<%= product.productId %>')">Get Invoice</button>
+                                <% } %>
                                 <p class="text-muted"> Order ID <span class="font-weight-bold text-dark"><%= order._id %></span></p>
                                 <p class="text-muted"> Place On <span class="font-weight-bold text-dark"><%= new Date(order.orderDate).toLocaleDateString()  %></span> </p>
                             </div>
@@ -392,7 +395,7 @@ small{
                                                     <p><strong>Name:</strong> <%= product.productName %></p>
                                                     <p><strong>Price:</strong> <%= product.productPrice %></p>
                                                     <p><strong>Order Status:</strong> <%= product.orderStatus %></p>
-                                                    <p><strong>Product ID:</strong> <%= product._id %></p>
+                                                    <p><strong>Product ID:</strong> <%= product.productId %></p>
                                                 </div>
                                                 
                                                 <div class="modal-footer">
@@ -543,6 +546,26 @@ small{
 
 
 <script>
+
+
+function getInvoice(orderId,productId){
+    const data={orderId,productId};
+
+    axios.post('/getInvoice',data, { responseType: 'blob' })
+    .then(response=>{
+        console.log(response)
+        const url=window.URL.createObjectURL(new Blob([response.data]));
+        const link=document.createElement('a');
+        console.log('url',url)
+        console.log('link',link)
+        link.href=url;
+        link.setAttribute('download','order_summary.pdf');
+        document.body.appendChild(link);
+        link.click();
+    }).catch(error=>{
+        console.log('here also have errors',error)
+    })
+}
  // Assuming you have already included Axios in your project
 
 // Add an event listener to the select element

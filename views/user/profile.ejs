@@ -2,7 +2,6 @@
 <html class="no-js" lang="zxx">
 
 
-<!-- Mirrored from demo.hasthemes.com/flone-preview/flone/checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 06 Mar 2024 06:11:45 GMT -->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -39,52 +38,175 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
   <!-- Custom CSS -->
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Profile</title>
+    <link rel="stylesheet" href="assets/css/profile.css" />
     <style>
-      /* Custom Styles */
-      body {
-        background-color: #c4b8b8;
-        /* background-color: green; */
-        font-family: Arial, sans-serif;
-      }
-      .options {
-        margin-top: 20px;
-      }
-      .options a {
-        display: block;
-        padding: 10px 0;
-        color: #333;
-        text-decoration: none;
-        border-bottom: 1px solid #dee2e6;
-      }
-      .options a:last-child {
-        border-bottom: none;
-      }
-      .options a:hover {
-        background-color: #11171d;
-        color: white;
-      }
-      .sidebar {
-        background-color: #4e494f83; 
-        border-radius: 5px;
-        height:45vh;
-        min-width: 17%;
-      
-                
+       .list-group-item.active {
+    background: #957bc8 !important;
+}
+.bg-warning {
+    background: #e5eae7 !important;
+}
+.modal-content {
+        background-color: #fefefe;
+        margin: 4% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 70%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
+        /*transform: translateY(-100%);*/
     }
-    .profilebtn{
-      min-width: 100%;
-      /* background-color: green; */
+    .close {
+        float: right;
+        text-align: right;
+        font-size: 30px;
     }
-    .nav-link{
-      color: black;
-      min-width: 100%;
-      /* background-color: gray; */
-      /* background-color: green; */
-      /* border-bottom: 1px solid black; */
+    .modal-content h2 {
+        text-align: center;
+        margin-top: -35px;
+    }
+    .button_div {
+        justify-content: center;
+        text-align: center;
+    }
+    .button_div button {
+        margin-right: 10px;
+        background: #06c109;
+        border: 1px solid #06C167;
+        padding: 5px 15px;
+        color: #FFFFFF;
+        border-radius: 2px;
+    }
+    #addAddressForm input {
+        padding: 5px;
+    }
+    .nice-select {
+        padding: 0px !important;
+        height: 38px !important;
+        line-height: 38px !important;
     }
     
+    .add_address_button {
+        background: #957bc8;
+        border: 1px solid #957bc8;
+        padding: 5px 15px;
+        color: #FFFFFF;
+        border-radius: 2px;
+    }
+    
+    @media (max-width: 768px) {
+        .main_flex_div {
+            display: flex;
+            flex-direction: column;
+        }
+        .inner_flex_div {
+            min-width: 100% !important;
+        }
+        .modal-content {
+            padding: 10px 0px !important;
+            min-width: 95% !important;
+            height: 700px;
+            overflow: scroll;
+        }
+        .close {
+            margin-right: 10px;
+        }
+    }
+    .list-group-item.active {
+    background: #ffc107;
+}
+/* end common class */
+.top-status ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+}
+.top-status ul li {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border: 8px solid #ddd;
+    box-shadow: 1px 1px 10px 1px #ddd inset;
+    margin: 10px 5px;
+}
+.top-status ul li.active {
+    border-color: #079e0e;
+    box-shadow: 1px 1px 20px 1px #ffc107 inset;
+}
+/* end top status */
+
+ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+ul.timeline:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+ul.timeline > li {
+    margin: 20px 0;
+    padding-left: 30px;
+}
+ul.timeline > li:before {
+    content: '\2713';
+    background: #fff;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 0;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+    z-index: 400;
+    text-align: center;
+    line-height: 50px;
+    color: #d4d9df;
+    font-size: 24px;
+    border: 2px solid var(--ogenix-primary);
+}
+ul.timeline > li.active:before {
+    content: '\2713';
+    background: #36cb08;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 0;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+    z-index: 400;
+    text-align: center;
+    line-height: 50px;
+    color: #fff;
+    font-size: 30px;
+    border: 2px solid var(--ogenix-primary);
+}
+/* end timeline */
    
    
     
@@ -193,247 +315,438 @@
     </div>
 </header>
 
-<div class="container" style="  background-color: rgba(255, 255, 255, 0.938); border: 1px solid; border-radius: 10px; "> 
+<!-- profile start from here displaying in here kllllllllllllllll;ladl;a;lad;ladl; -->
 
-  <div class="d-flex justify-content-start" style="text-align: center; align-items: center; ">
-     <div class="container">
-        <div class="row">
-            <div class="col-sm-4 col-md-12 col-lg-12">
-                <div class="nav flex-column justify-content-center align-items-center nav-pills mt-5 sidebar"  id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <div class="profilebtn" >
-                       <button class="nav-link active btn-secondary" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">PROFILE</button>
-                       <button class="nav-link btn-secondary"  onclick="toggleAddress()" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">ADDRESS  MANAGEMENT</button>
-                       <button class="nav-link btn-secondary"   id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">ORDERS</button>
-                       <button class="nav-link   btn-secondary" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><a style="color: #333;" href="/logout">
-                           <i  class="fas fa-sign-out-alt"></i> Logout
-                       
-                         </a>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-     </div>
-    
-
-
-  <div class="tab-content d-flex" style="justify-content: center;min-width: 80%; height: 70vh; align-items: center;" id="v-pills-tabContent">
-    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
-        <div class="container">
+<section class="my-5">
+    <div class="container">
+        <div class="main-body">
             <div class="row">
-                <div class=" col-lg-12 col-md-6 col-sm-3">
-                    <h1>Hello: <%=user.username%></h1>
-                    <p><%=user.email%></p>
-                    <p class="phone"><%=user.phonenumber%></p>
-                </div>
-                <div class=" col-lg-12 col-md-6 col-sm-3">
-                    <p>nem commodi doloremque vero error.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-
-      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0" style="min-width: 90%;">
-
-          <div class="d-flex justify-content-end" >
-            
-          <button type="button" style="margin-bottom: 1vh; height: 5vh;" class="  btn-address btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" ><i class="fas fa-plus"></i>ADDRESS</button>
-          
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">ADD NEW ADDRESS</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="text-align: start;">
-                  <form action="/addAddress " method="post">
-                    <div class="mb-3">
-                      <label for="name" class="col-form-label">name</label>
-                      <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                    <div class="mb-3">
-                      <label for="houseNumber" class="col-form-label">house number & house name</label>
-                      <input type="text" class="form-control" id="houseNumber" name="houseNumber">
-                      <label for="city" class="col-form-label">City</label>
-                      <input type="text" class="form-control" id="city" name="city">
-                      <label for="street" class="col-form-label">Adress(area & street)</label>
-                      <input type="text" class="form-control" id="street" name="street">
-                      <label for="pincode" class="col-form-label">pin code</label>
-                      <input type="number" class="form-control" id="pincode" name="pincode">
-                      <label for="phoneNumber" class="col-form-label" >Phone Number</label>
-                      <input type="number" class="form-control" id="phoneNumber" name="phoneNumber">
-                    </div>
-                  
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">save address</button>
-                </div>
-              </form>
-              </div>
-            </div>
-          </div>
-          
-    
-
-          </div>
-
-
-    
-      <div  >
-        <% user.address.forEach(address=>{%>
-          <div id="userProfile" style=" border-radius: 5px; border: 2px solid gray; display: flex ; justify-content: space-between; margin-bottom: 10px; " >
-            <div style="text-align: start;">
-           <span> <span><strong><%=address.name%></strong> </span><strong><%=address.phonenumber%></strong> </span> <br>
-           <span><%=address.houseNumber%>,</span>
-           <span><%=address.city%>,</span>
-           <span><%=address.street%></span><br>
-           <span> <strong>PIN:<%=address.pincode%></strong></span>
-          </div>
-          
-          <div>
-    
-             <a href="/editAddress/<%=address._id%>" ><i class="bi bi-pencil-square"></i></a> 
-            <!-- Edit Address Modal -->
-            <form action="/deleteAddress/<%=address._id%>" method="post">
-              <button type="submit" style="background: none; border: none;">
-                <i class="bi bi-trash3" style="color: red;"></i>
-              </button>
-          </form>         
-          </div>
-        </div>
-       <%})%>
-      </div>
-    
-    
-        </div>
-
-        <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab" tabindex="0"  >
-          <div class="container my-5 d-sm-flex" style="height: 55vh; border: 2px solid rgb(191, 175, 206);" >
-            <div style="overflow-y: scroll;  scrollbar-width: none; -ms-overflow-style: none;">
-              <% orders.forEach((order, orderIndex) => { %>
-                <% order.products.forEach((product, productIndex) => { %>
-                    <div class="col-sm-12 col-lg-12 col-md-12">
-                        <div class="card px-2 my-3">
-                            <div class="card-header bg-white">
-                                <div class="row justify-content-between">
-                                    <div class="col">
-                                        <p class="text-muted"> Order ID <span class="font-weight-bold text-dark"><%= order._id %></span></p>
-                                        <p class="text-muted"> Place On <span class="font-weight-bold text-dark"><%= new Date(order.orderDate).toLocaleDateString()  %></span> </p>
-                                    </div>
-                                    <div class="flex-col my-auto">
-                                        <h6 class="ml-auto mr-3">
-                                            <!-- <a href="#">View Details</a> -->
-                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= orderIndex %>-<%= productIndex %>">
-                                                View
-                                            </button>
-                                            
-                                            <div class="modal fade" id="exampleModal<%= orderIndex %>-<%= productIndex %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 9999;">
-                                                <div class="modal-dialog" style="max-width: 600px; ">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body" style="padding: 20px;background-color:#beccea ;">
-                                                            <% if (product.orderStatus !== 'cancelled' && product.orderStatus !== 'delivered') { %>
-                                                                <div style="margin-bottom: 20px;">
-                                                                    <form action="/cancelOrder" method="post">
-                                                                        <input type="hidden" value="<%= product._id %>" name="productId">
-                                                                        <input type="hidden" value="<%= order._id %>" name="orderId">
-                                                                        <select style="width: 100%; font-size: 18px; padding: 5px;" name="cancelReason" id="cancelReason">
-                                                                            <option selected disabled value="changeMyMind">Reason for cancel</option>
-                                                                            <option value="changeMyMind">change my mind</option>
-                                                                            <option value="over priced">over priced</option>
-                                                                            <option value="damaged product">damaged product</option>
-                                                                        </select>
-                                                                        <button class="btn-sm bg-danger" style="border: none; color: white; margin-top: 10px;">cancel order</button>
-                                                                    </form>
-                                                                </div>
-                                                            <% } %>
-                                                            
-                                                        
-                                                            <p style="margin-bottom: 10px;"><strong>Order ID:</strong> <%= order._id %></p>
-                                                            <p style="margin-bottom: 10px;"><strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString()  %></p>
-                                                            <p style="margin-bottom: 10px;"><strong>Delivery Date:</strong> <%= new Date(order.expectedDelivery).toLocaleDateString()  %></p>
-                                                            
-                                                            <% if (product.orderStatus !== 'cancelled') { %>
-                                                                <p style="margin-bottom: 10px;"><strong>Discounted:</strong> <%= order.totalAmount %></p>
-                                                            <% } %>
-                                                            
-                                                            <p style="margin-bottom: 10px;"><strong>Order Total:</strong> <%= order.wihtOutDiscount %></p>
-                                                            
-                                                            <hr style="margin-top: 20px; margin-bottom: 20px;">
-                                                        
-                                                            <% if (order.shippingAddress) { %>
-                                                                <h3 style="margin-bottom: 10px;">Shipping Address</h3>
-                                                                <p><strong>Name:</strong> <%= order.shippingAddress.name %></p>
-                                                                <p><strong>House Number:</strong> <%= order.shippingAddress.houseNumber %></p>
-                                                                <p><strong>Street:</strong> <%= order.shippingAddress.street %></p>
-                                                                <p><strong>City:</strong> <%= order.shippingAddress.city %></p>
-                                                                <p><strong>PIN:</strong> <%= order.shippingAddress.pincode %></p>
-                                                            <% } %>
-                                                        
-                                                            <h3 style="margin-top: 20px; margin-bottom: 10px;">Product Details</h3>
-                                                            <p><strong>Name:</strong> <%= product.productName %></p>
-                                                            <p><strong>Price:</strong> <%= product.productPrice %></p>
-                                                            <p><strong>Order Status:</strong> <%= product.orderStatus %></p>
-                                                            <p><strong>Product ID:</strong> <%= product._id %></p>
-                                                        </div>
-                                                        
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </h6>
-                                    </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="https://www.freeiconspng.com/thumbs/profile-icon-png/user-icon-png-person-user-profile-icon-20.png" alt="Admin"
+                                    class="rounded-circle p-1 bg-warning" width="110">
+                                <div class="mt-3">
+                                    <h4><%=user.username%></h4>
+                                    <p class="text-secondary mb-1"><%=user.phonenumber%></p>
+                                    <!-- <p class="text-muted font-size-sm">Delhi, NCR</p> -->
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="media flex-column flex-sm-row">
-                                    <div class="media-body ">
-                                        <h5 class="bold"><%= product.productName %></h5>
-                                        <p class="text-muted">Quantity: <%= product.quantity %></p>
-                                        <h4 class="mt-3 mb-4 bold"> <span class="mt-5">&#x20B9;</span>Price: <%= product.productPrice %><span class="small text-muted"> paymentMethod: <%= order.paymentMethod %></span></h4>
-                                        <h5 class="
-                                        <% if (product.orderStatus === 'cancelled') { %>
-                                            text-danger
-                                        <% } else if (product.orderStatus === 'pending') { %>
-                                            text-warning
-                                        <% } else if (product.orderStatus === 'delivered') { %>
-                                            text-success
-                                        <% } %>"
-                                    >
-                                        <%= product.orderStatus %>
-                                    </h5>
-                                                                    <% if (product.cancelReason) { %>
-                                            <p><strong>Cancel Reason:</strong> <%= product.cancelReason %></p>
-                                        <% } %>
-                                    </div>
-                                    <img class="align-self-center img-fluid" src="<%= product.productImage[0] %>" width="180" height="180">
-                                </div>
+                            <div class="list-group list-group-flush text-center mt-4">
+                                <a href="#" class="list-group-item list-group-item-action border-0 " onclick="showProfileDetails()">
+                                    Profile Informaton
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action border-0" onclick="showOrderDetails()">Orders</a>
+                                
+                                <a href="#" class="list-group-item list-group-item-action border-0 active"
+                                    onclick="showAddressBook()">
+                                    Address Book
+                                </a>
+                                <a href="/logout" class="list-group-item list-group-item-action border-0">Logout</a>
                             </div>
                         </div>
                     </div>
-                <% }); %>
-            <% }); %>
-            </div>
-          </div>
-          
-          </div>
-          
-      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0"></div>
-      <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
+                </div>
+                <div class="col-lg-8">
+                    <div  id="orderDetails" class="order_card">
+                    <div class="card">
+                        <div class="card-body">
+                           
+                        </div>
+                    </div>
+                    <div class="card mt-4" style="max-height: 65vh;">
+                        <h4 class="p-3 mb-0">Order history</h4>
+
+                        <div class="card-body p-0 table-responsive">
+                            <div style="overflow-y: scroll;  scrollbar-width: none; -ms-overflow-style: none;">
+                                <% orders.forEach((order, orderIndex) => { %>
+                                  <% order.products.forEach((product, productIndex) => { %>
+                                      <div class="col-sm-12 col-lg-12 col-md-12">
+                                          <div class="card px-2 my-3">
+                                              <div class="card-header bg-white">
+                                                  <div class="row justify-content-between">
+                                                      <div class="col">
+                                                        <% if (product.orderStatus === 'delivered') { %>
+                                                            <button class="btn btn-primary" onclick="getInvoice('<%= order._id %>', '<%= product.productId %>')">Get Invoice</button>
+                                                        <% } %>
+                                                          <p class="text-muted"> Order ID <span class="font-weight-bold text-dark"><%= order._id %></span></p>
+                                                          <p class="text-muted"> Place On <span class="font-weight-bold text-dark"><%= new Date(order.orderDate).toLocaleDateString()  %></span> </p>
+                                                      </div>
+                                                      <div class="flex-col my-auto">
+                                                          <h6 class="ml-auto mr-3">
+                                                              <!-- <a href="#">View Details</a> -->
+                                                              <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= orderIndex %>-<%= productIndex %>">
+                                                                  View
+                                                              </button>
+                                                              
+                                                              <div class="modal fade" id="exampleModal<%= orderIndex %>-<%= productIndex %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 9999;">
+                                                                  <div class="modal-dialog" style="max-width: 600px; ">
+                                                                      <div class="modal-content">
+                                                                          <div class="modal-header">
+                                                                              <h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
+                                                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                          </div>
+                                                                          <div class="modal-body" style="padding: 20px;background-color:#beccea ;">
+                                                                              <% if (product.orderStatus !== 'cancelled' && product.orderStatus !== 'delivered') { %>
+                                                                                  <div style="margin-bottom: 20px;">
+                                                                                      <form action="/cancelOrder" method="post">
+                                                                                          <input type="hidden" value="<%= product._id %>" name="productId">
+                                                                                          <input type="hidden" value="<%= order._id %>" name="orderId">
+                                                                                          <select style="width: 100%; font-size: 18px; padding: 5px;" name="cancelReason" id="cancelReason">
+                                                                                              <option selected disabled value="changeMyMind">Reason for cancel</option>
+                                                                                              <option value="changeMyMind">change my mind</option>
+                                                                                              <option value="over priced">over priced</option>
+                                                                                              <option value="damaged product">damaged product</option>
+                                                                                          </select>
+                                                                                          <button class="btn-sm bg-danger" style="border: none; color: white; margin-top: 10px;">cancel order</button>
+                                                                                      </form>
+                                                                                  </div>
+                                                                              <% } %>
+                                                                              
+                                                                          
+                                                                              <p style="margin-bottom: 10px;"><strong>Order ID:</strong> <%= order._id %></p>
+                                                                              <p style="margin-bottom: 10px;"><strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString()  %></p>
+                                                                              <p style="margin-bottom: 10px;"><strong>Delivery Date:</strong> <%= new Date(order.expectedDelivery).toLocaleDateString()  %></p>
+                                                                              
+                                                                              <% if (product.orderStatus !== 'cancelled') { %>
+                                                                                  <p style="margin-bottom: 10px;"><strong>Discounted:</strong> <%= order.totalAmount %></p>
+                                                                              <% } %>
+                                                                              
+                                                                              <p style="margin-bottom: 10px;"><strong>Order Total:</strong> <%= order.wihtOutDiscount %></p>
+                                                                              
+                                                                              <hr style="margin-top: 20px; margin-bottom: 20px;">
+                                                                          
+                                                                              <% if (order.shippingAddress) { %>
+                                                                                  <h3 style="margin-bottom: 10px;">Shipping Address</h3>
+                                                                                  <p><strong>Name:</strong> <%= order.shippingAddress.name %></p>
+                                                                                  <p><strong>House Number:</strong> <%= order.shippingAddress.houseNumber %></p>
+                                                                                  <p><strong>Street:</strong> <%= order.shippingAddress.street %></p>
+                                                                                  <p><strong>City:</strong> <%= order.shippingAddress.city %></p>
+                                                                                  <p><strong>PIN:</strong> <%= order.shippingAddress.pincode %></p>
+                                                                              <% } %>
+                                                                          
+                                                                              <h3 style="margin-top: 20px; margin-bottom: 10px;">Product Details</h3>
+                                                                              <p><strong>Name:</strong> <%= product.productName %></p>
+                                                                              <p><strong>Price:</strong> <%= product.productPrice %></p>
+                                                                              <p><strong>Order Status:</strong> <%= product.orderStatus %></p>
+                                                                              <p><strong>Product ID:</strong> <%= product._id %></p>
+                                                                          </div>
+                                                                          
+                                                                          <div class="modal-footer">
+                                                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                  
+                                                          </h6>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="card-body">
+                                                  <div class="media flex-column flex-sm-row">
+                                                      <div class="media-body ">
+                                                          <h5 class="bold"><%= product.productName %></h5>
+                                                          <p class="text-muted">Quantity: <%= product.quantity %></p>
+                                                          <h4 class="mt-3 mb-4 bold"> <span class="mt-5">&#x20B9;</span>Price: <%= product.productPrice %><span class="small text-muted"> paymentMethod: <%= order.paymentMethod %></span></h4>
+                                                          <h5 class="
+                                                          <% if (product.orderStatus === 'cancelled') { %>
+                                                              text-danger
+                                                          <% } else if (product.orderStatus === 'pending') { %>
+                                                              text-warning
+                                                          <% } else if (product.orderStatus === 'delivered') { %>
+                                                              text-success
+                                                          <% } %>"
+                                                      >
+                                                          <%= product.orderStatus %>
+                                                      </h5>
+                                                                                      <% if (product.cancelReason) { %>
+                                                              <p><strong>Cancel Reason:</strong> <%= product.cancelReason %></p>
+                                                          <% } %>
+                                                      </div>
+                                                      <img class="align-self-center img-fluid" src="<%= product.productImage[0] %>" width="180" height="180">
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  <% }); %>
+                              <% }); %>
+                              </div>
+                           
+                        </div>
+                        
+                    </div>
+                   
+                    </div>
+                    
+                     <div id="profileDetails" class="card" style="display: none;">
+                    <div class="card-body">
+                        <div class="profile-info">
+                            <h3>personal Information</h3>
+                            <p><strong>Name:</strong> <%=user.username%></p>
+                            <p><strong>Email Address:</strong><%=user.email%> </p>
+                            <p><strong>Contact:</strong><%=user.phonenumber%></p>
+                           <!-- <button style="border: none;"> <i class="fas fa-edit"></i> </button>  -->
+                           <!-- Button trigger modal -->
+<button style="border: none;" type="button" class="btn " data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <i class="fas fa-edit"></i> 
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Edit user details</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editform" action="" method="">
+            <label for="editname">Name</label>
+            <input type="text" id="editname" name="editname" value="<%=user.username%>">
+            <label for="editemail">Email</label>
+            <input type="email" id="editemail" name="editemail" value="<%=user.email%>">
+            <label for="editnumber">Phonenumber</label>
+            <input type="number" id="editnumber" name="editnumber" value="<%=user.phonenumber%>">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="editProfile()" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-  
+                            <!-- <p><strong>Date of Birth:</strong> 02-03-1999</p>
+                            <p><strong>Gender:</strong> Female</p>
+                            <p><strong>City:</strong> Delhi, NCR</p>
+                            <p><strong>Height:</strong> 5.4</p>
+                            <p><strong>Weight:</strong> 50</p>
+                            <p><strong>Goal:</strong> Hair & Skin</p>
+                            <p><strong>Preference:</strong> Pure Vegitarian</p>
+                            <p><strong>Role:</strong> User</p> -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="addressBook" class="card" style="display: none;">
+                    <div class="card-body">
+                        <h5>Address Book</h5>
+                        <button class="add_address_button" onclick="showAddAddressModal()">Add Address</button>
+                        
+                        <div id="addressList">
+                            <div  >
+                                <% user.address.forEach(address=>{%>
+                                  <div id="userProfile" style=" border-radius: 5px; border: 2px solid gray; display: flex ; justify-content: space-between; margin-bottom: 10px; " >
+                                    <div style="text-align: start;">
+                                   <span> <span><strong><%=address.name%></strong> </span><strong><%=address.phonenumber%></strong> </span> <br>
+                                   <span><%=address.houseNumber%>,</span>
+                                   <span><%=address.city%>,</span>
+                                   <span><%=address.street%></span><br>
+                                   <span> <strong>PIN:<%=address.pincode%></strong></span>
+                                  </div>
+                                  
+                                  <div>
+                            
+                                     <a href="/editAddress/<%=address._id%>" ><i class="bi bi-pencil-square"></i></a> 
+                                    <!-- Edit Address Modal -->
+                                    <form action="/deleteAddress/<%=address._id%>" method="post">
+                                      <button type="submit" style="background: none; border: none;">
+                                        <i class="bi bi-trash3" style="color: red;"></i>
+                                      </button>
+                                  </form>         
+                                  </div>
+                                </div>
+                               <%})%>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="addAddressModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAddAddressModal()">&times;</span>
+    <h2>Add Address</h2>
+    <form id="addAddressForm" action="/addAddress" method="post" onsubmit="saveAddress(event)">
+        
+        <div class="col-12 d-flex main_flex_div">
+        <div class="col-4 d-flex flex-column inner_flex_div">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="col-4 d-flex flex-column inner_flex_div">
+            <label for="phoneNumber">Mobile No.:</label>
+            <input type="number" class="form-control" id="phoneNumber" name="phoneNumber">
+        </div>
+        <div class="col-4 d-flex flex-column inner_flex_div">
+             <label for="pincode">Pin code:</label>
+             <input type="number" class="form-control" id="pincode" name="pincode">
 
+        </div>
+        </div>
+        
+        
+         <div class="col-12 d-flex main_flex_div">
+        
+        <div class="col-4 d-flex flex-column inner_flex_div">
+            <label for="houseNumber">houseNumber:</label>
+            <input type="text" class="form-control" id="houseNumber" name="houseNumber">
+        </div>
+
+        <div class="col-4 d-flex flex-column inner_flex_div">
+           <label for="city">City/District/Town:</label>
+           <input type="text" class="form-control" id="city" name="city">
+
+        </div>
+        
+        
+        
+        </div>
+        
+        
+        
+        
+         <div class="col-12 d-flex main_flex_div">
+        <div class="col-6 d-flex flex-column inner_flex_div">
+              <label for="street">Street Name:</label>
+              <input type="text" class="form-control" id="street" name="street">
+
+        </div>
+      
+
+        
+        </div>
+        
+         <div class="col-12 d-flex button_div">
+         <button type="submit">Save</button>
+        <button type="button" onclick="closeAddAddressModal()">Cancel</button>
+        </div>
+        
+        
+    </form>
+</div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+   function editProfile() {
+    let editname = document.getElementById('editname').value;
+    let editemail = document.getElementById('editemail').value;
+    let editnumber = document.getElementById('editnumber').value;
+
+    axios.post('/editProfile', {
+        editname: editname,
+        editemail: editemail,
+        editnumber: editnumber
+    })
+    .then(response => {
+        console.log(response)
+        if(response.status===200){
+            Toastify({
+            text: 'profile updated successfully',
+            duration: 3000,
+            gravity: 'top',
+            position: 'center',
+            backgroundColor: 'green'
+        }).showToast();
+        setTimeout(()=>{
+            window.location.reload()
+        },1500)
+        }
+    })
+    .catch(error => {
+        console.log(error)
+    })
+}
+
+
+function getInvoice(orderId,productId){
+    const data={orderId,productId};
+
+    axios.post('/getInvoice',data, { responseType: 'blob' })
+    .then(response=>{
+        console.log(response)
+        const url=window.URL.createObjectURL(new Blob([response.data]));
+        const link=document.createElement('a');
+        console.log('url',url)
+        console.log('link',link)
+        link.href=url;
+        link.setAttribute('download','order_summary.pdf');
+        document.body.appendChild(link);
+        link.click();
+    }).catch(error=>{
+        console.log('here also have errors',error)
+    })
+}
+
+</script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+    
+      <script>
+      
+       function showAddAddressModal() {
+    const modal = document.getElementById('addAddressModal');
+    modal.style.display = 'block';
+    isFormVisible = true;
+}
+
+function closeAddAddressModal() {
+    const modal = document.getElementById('addAddressModal');
+    modal.style.display = 'none';
+    isFormVisible = false;
+}
+      
+    function showProfileDetails() {
+        hideAllSections();
+        document.getElementById('profileDetails').style.display = 'block';
+        setActiveLink(0);
+    }
+
+    function showOrderDetails() {
+        hideAllSections();
+        document.getElementById('orderDetails').style.display = 'block';
+        setActiveLink(1);
+    }
+
+    function showAddressBook() {
+        hideAllSections();
+        document.getElementById('addressBook').style.display = 'block';
+        setActiveLink(2);
+    }
+
+    function hideAllSections() {
+        document.getElementById('orderDetails').style.display = 'none';
+        document.getElementById('profileDetails').style.display = 'none';
+        document.getElementById('addressBook').style.display = 'none';
+    }
+
+    function setActiveLink(index) {
+        document.querySelector('.list-group-item.active').classList.remove('active');
+        document.querySelectorAll('.list-group-item')[index].classList.add('active');
+    }
+
+    showProfileDetails();
+</script>
+    
 
 <!-- JS
 ============================================ -->
@@ -457,5 +770,4 @@
 </body>
 
 
-<!-- Mirrored from demo.hasthemes.com/flone-preview/flone/checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 06 Mar 2024 06:11:45 GMT -->
 </html>
