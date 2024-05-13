@@ -232,7 +232,7 @@ small{
             <div class="row">
                 <div class="col-xl-2 col-lg-2 col-md-6 col-4">
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="/">
                         </a>
                     </div>
                 </div>
@@ -248,7 +248,7 @@ small{
                                 </li>
                                
                                
-                                <li><a href="about.html"> About </a></li>
+                                <li><a href="/about"> About </a></li>
                                 <li><a href="contact.html"> Contact</a></li>
                             </ul>
                         </nav>
@@ -441,106 +441,6 @@ small{
 </div>
 
 
-<!-- 
-<div class="login-register-area pt-100 pb-100">
-    <div class="container">
-        <h3>ORDERS</h3>
-        <div class="row " >
-            <% orders.forEach((order, orderIndex) => { %>
-
-            <div class="col-lg-7 col-md-12 ml-auto mr-auto ">
-                <div class="login-register-wrapper " >
-                   
-                    <div class="tab-content" style="border: 1px solid yellow;">
-                                <div class="login-form-container">
-                                    <div class="login-register-form">
-                                        <table style="border: 1px solid grey; width: 100%;">
-                                            <thead>
-                                                <tr>
-                                                    <th>Image</th>
-                                                    <th>Name</th>
-                                                    <th>Price</th>
-                                                    <th>status</th>
-                                                    <th>View</th>
-                                                    
-                                                </tr>
-                                            </thead>
-                                            <tbody style="border: 1px solid grey;">
-                                                <% order.products.forEach((product, productIndex) => { %>
-                                                    <tr style="border: 1px solid grey;">
-                                                        <td>
-                                                            <img style="width: 100px; height: 100px;" src="<%= product.productImage[0] %>" alt="">
-                                                        </td>
-                                                        <td><%= product.productName %></td>
-                                                        <td><%= product.productPrice %></td>
-                                                        <td><%=product.orderStatus%></td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= orderIndex %>-<%= productIndex %>">
-                                                                View
-                                                            </button>
-                                                            
-                                                            <div class="modal fade" id="exampleModal<%= orderIndex %>-<%= productIndex %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <form action="/cancelOrder" method="post">
-                                                                                <input type="hidden" value="<%=product._id%>" name="productId">
-                                                                                <input type="hidden" value="<%=order._id%>" name="orderId">
-                                                                                <select style="width: 50%;" name="cancelReason" id="cancelReason">
-                                                                                    <option disabled value="changeMyMind">Reason for cancel</option>
-                                                                                    <option value="changeMyMind">change my mind</option>
-                                                                                    <option value="changeMyMind">change my mind</option>
-                                                                                    <option value="changeMyMind">change my mind</option>
-                                                                                </select>
-                                                                                <button >cancel order</button>
-                                                                            </form>
-                                                                            <p><strong>Order ID:</strong> <%= order._id %></p>
-                                                                            <p><strong>Order Date:</strong> <%= order.orderDate %></p>
-                                                                            <p><strong>Delivery Date:</strong> <%= order.expectedDelivery %></p>
-                                                                            <p><strong>Total Price:</strong> <%= order.totalAmount %></p>
-                                                                            <p><strong>withOutDiscount:</strong> <%= order.wihtOutDiscount %></p>
-                                                                            <hr>
-                                                                            <% if (order.shippingAddress) { %>
-                                                                                <h3>Shipping Address</h3>
-                                                                                <p><strong>Name:</strong> <%= order.shippingAddress.name %></p>
-                                                                                <p><strong>House Number:</strong> <%= order.shippingAddress.houseNumber %></p>
-                                                                                <p><strong>Street:</strong> <%= order.shippingAddress.street %></p>
-                                                                                <p><strong>City:</strong> <%= order.shippingAddress.city %></p>
-                                                                                <p><strong>PIN:</strong> <%= order.shippingAddress.pincode %></p>
-                                                                            <% } %>
-                                                                            <h3>Product Details</h3>
-                                                                            <p><strong>Name:</strong> <%= product.productName %></p>
-                                                                            <p><strong>Price:</strong> <%= product.productPrice %></p>
-                                                                            <p><strong>orderStatus:</strong><%=product.orderStatus%></p>
-                                                                            <p><strong>productId:</strong><%=product._id%></p>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        
-                                                    </tr>
-                                                <% }) %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            
-                    </div>
-                    
-                </div>
-            </div>
-            <% }) %>
-        </div>
-    </div>
-</div> -->
 
 <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
 

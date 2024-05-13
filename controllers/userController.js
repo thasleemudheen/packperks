@@ -43,10 +43,12 @@ let homePage = async (req, res) => {
             wishlist = await User.findById(userId, 'wishlist').populate('wishlist');
         //  console.log("wii",wishlist)
         // console.log(products)
+        cartLength = user.cart ? user.cart.product.length : 0;
+        // console.log(cartLength)
 
         }
 
-        res.render('user/index', { isAuthenticated, products, user: req.user, wishlist,categoryName,product });
+        res.render('user/index', { isAuthenticated, products, user: req.user, wishlist,categoryName,product,cartLength });
                 //   console.log(req.user)
     } catch (error) {
         console.log('Home page is not found');
@@ -485,33 +487,36 @@ let verifyOtp = async (req, res) => {
     }
 }
 
+let shopPage = async (req, res) => {
+    try {
+        let token = req.cookies.user_jwt;
+        let user = null;
+        if (token) {
+            let decoded = jwt.verify(token, process.env.JWT_SECRET);
+            let userId = decoded.id;
+            user = await User.findById(userId);
+        }
 
-let shopPage=async(req,res)=>{
-    
-    try{
-    let token=req.cookies.user_jwt
-    let user=null
-    if(token){
-        let decoded=jwt.verify(token,process.env.JWT_SECRET)
-        let userId=decoded.id
-        user=await User.findById(userId)
+        const PAGE_SIZE = 9;
+        let page = parseInt(req.query.page) || 1;
+        let skip = (page - 1) * PAGE_SIZE;
+
+        let products = await Products.find().skip(skip).limit(PAGE_SIZE);
+        let totalProducts = await Products.countDocuments();
+        let totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+
+        let categoryName = await Products.distinct('categoryName');
+        let brands = await Products.distinct('brand');
+
+        let sortBy = req.query.sortBy || 'select';
+
+
+        res.render('user/shop', { products, user, categoryName, brands, currentPage: page, totalPages,sortBy });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
-   
-    let products=await Products.find()
-    let categoryName=await Products.distinct('categoryName')
-    let brands=await Products.distinct('brand')
-    // console.log(brands)
-    // console.log(categoryName)
-
-        res.render('user/shop',{products,user,categoryName,brands})
-    }catch(error){
-        console.error(error)
-        res.status(500).send('internal server error')
-    }
-   
-
-}
-
+};
 
 let singleProductPage=async(req,res)=>{
     let productId=req.params.id
@@ -848,8 +853,6 @@ let productAddedToWishlist=async(req,res)=>{
 
         let address=user.address
         // console.log(address);
-        // let shippingCharge=45
-        // let cart=user.cart.product
         let cart = user.cart.product
         // console.log(cart)
          let productId=cart.map(item=>item.productId)
@@ -915,16 +918,6 @@ let productAddedToWishlist=async(req,res)=>{
 
  }
 
- let showProductBasedOnCategory=async(req,res)=>{
-    const categoryName=req.params.categoryName
-    try{
-          const product=await Products.find({categoryName:categoryName})
-    }catch(error){
-        console.error(error)
-        res.status(500).send('internal server error')
-    }
-    
- }
 
  let applyCouponCode=async(req,res)=>{
            const {couponId,totalValue}=req.body
@@ -1092,89 +1085,97 @@ try {
  
     res.render('user/orders',{orders})
  }
-
- let cancelOrder=async(req,res)=>{
-    const {orderId,productId,cancelReason}=req.body
-    // console.log(req.body)
-    let token=req.cookies.user_jwt
-    let decoded=jwt.verify(token,process.env.JWT_SECRET)
-    let userId=decoded.id
+ let cancelOrder = async (req, res) => {
+    const { orderId, productId, cancelReason } = req.body;
+    let token = req.cookies.user_jwt;
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let userId = decoded.id;
 
     try {
-        let user=await User.findById(userId)
-    // console.log(user)
+        let user = await User.findById(userId);
+        let order = user.orders.id(orderId);
+        if (!order) {
+            return res.status(400).send('Order not found');
+        }
 
-    let order=user.orders.id(orderId)
-    if(!order){
-        return res.status(400).send('order not found')
-    }
-        
-    // console.log(order)
-   let product=order.products.id(productId)
-   order.totalAmount -= product.productPrice
-   order.wihtOutDiscount -=product.productPrice
-   product.orderStatus='cancelled'
-   product.cancelReason=cancelReason
+        let product = order.products.id(productId);
+        if (!product) {
+            return res.status(400).send('Product not found in order');
+        }
 
-   let prdId=product.productId
-//    console.log(prdId)
-   let findProduct=await Products.findById(prdId)
-//    console.log(findProduct)
-   findProduct.stockQuantity +=product.quantity
-   await findProduct.save()
+        order.totalAmount -= product.productPrice;
+        order.wihtOutDiscount -= product.productPrice;
+        product.orderStatus = 'cancelled';
+        product.cancelReason = cancelReason;
 
-    await user.save()
-    console.log('order cancelled successfully')
-    // console.log(product)
-    res.status(200).redirect('/ordersGet')
-        
+        let prdId = product.productId;
+        let findProduct = await Products.findById(prdId);
+        findProduct.stockQuantity += product.quantity;
+        await findProduct.save();
+
+        await user.save();
+        console.log('Order cancelled successfully');
+
+        // Redirect based on the referer
+        if (req.headers.referer) {
+            const refererUrl = new URL(req.headers.referer);
+            const pathName = refererUrl.pathname;
+
+            if (pathName === '/profile') {
+                return res.redirect('/profile');
+            } else if (pathName === '/ordersGet') {
+                return res.redirect('/ordersGet');
+            }
+        }
+
+        // Default redirection if referer is unknown or not provided
+        res.redirect('/');
+
     } catch (error) {
-        console.error(error)
-        res.status(500).send('order not cancelled')
+        console.error(error);
+        res.status(500).send('Order not cancelled');
     }
-    
+}
 
- }
+let productSorting = async (req, res) => {
+    let sortBy = req.query.sortBy || 'select';
+    let page = parseInt(req.query.page) || 1;
+    const PAGE_SIZE = 11;
+    let skip = (page - 1) * PAGE_SIZE;
 
- let productSorting=async(req,res)=>{
-    let sortBy=req.query.sortBy || 'select'
+    let sortQuery = {};
 
-    let sortQuery={}
-
-    switch(sortBy){
+    switch (sortBy) {
         case 'priceLowToHigh':
-            sortQuery={productPrice:1};
+            sortQuery = { productPrice: 1 };
             break;
         case 'priceHighToLow':
-            sortQuery={productPrice:-1};
+            sortQuery = { productPrice: -1 };
             break;
         case 'nameAtoZ':
-            sortQuery={productName:1}
+            sortQuery = { productName: 1 };
             break;
         case 'nameZtoA':
-            sortQuery={productName:-1}
+            sortQuery = { productName: -1 };
             break;
         default:
-            sortQuery={}            
+            sortQuery = {};
     }
     try {
-        const token=req.cookies.user_jwt
-        const decoded=jwt.verify(token,process.env.JWT_SECRET)
-        const userId=decoded.id
-        const user=await User.findById(userId)
-        let products=await Products.find({}).sort(sortQuery)
-        // console.log(products)
-        // console.log(user)
-        res.json({products,user})
+        const token = req.cookies.user_jwt;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+        const user = await User.findById(userId);
+        let products = await Products.find({}).sort(sortQuery).skip(skip).limit(PAGE_SIZE);
+        let totalProducts = await Products.countDocuments();
+        let totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+        res.json({ products, user, currentPage: page, totalPages });
     } catch (error) {
-        console.error(error)
-        res.status(500).send('internal server error')
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
- }
+};
 
- let orderInvoice=async(req,res)=>{
-    // res.render('user/invoice')
- }
 
  let getOrderInvoice = async (req, res) => {
     const { orderId, productId } = req.body;
@@ -1247,6 +1248,10 @@ let editProfilePost=async(req,res)=>{
         res.status(500).send('failed to update the user detials')
     }
 }
+
+let aboutPage=async(req,res)=>{
+    res.render('user/about')
+}
 module.exports={
     homePage,
     signUpPage,
@@ -1278,15 +1283,14 @@ module.exports={
     editAddressPost,
     deleteAddress,
     searchForProducts,
-    showProductBasedOnCategory,
     applyCouponCode,
     orderProduct,
     ordersGetPage,
     cancelOrder,
     productSorting,
     razorpayPayment,
-    orderInvoice,
     getOrderInvoice,
-    editProfilePost
+    editProfilePost,
+    aboutPage
 
 }

@@ -68,15 +68,15 @@ let adminDashBoard=async(req,res)=>{
     const totalUser = await User.countDocuments()
     // console.log('total users',totalUser)
     const totalOrders = await User.aggregate([
-        { $match: { orders: { $exists: true, $ne: [] } } },
-        { $project: { totalOrders: { $size: '$orders' } } },
-        { $group: { _id: null, total: { $sum: '$totalOrders' } } }
+        { $unwind: '$orders' }, // Deconstruct the orders array
+        { $group: { _id: null, total: { $sum: 1 } } } // Count the total orders
     ]);
     
     // Extract the total count from the result
     const totalOrder = totalOrders.length > 0 ? totalOrders[0].total : 0;
     
-    // console.log('Total orders:', totalOrder);
+    console.log('Total orders by all users:', totalOrder);
+    
 
     const totalOrderedProducts = await User.aggregate([
         { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
@@ -166,8 +166,7 @@ let adminDashBoard=async(req,res)=>{
         statusCounts[status._id] = status.totalCount;
     });
     
-    // Now, statusCounts will contain the count of each status
-    console.log(statusCounts);
+  
     
     
     res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders,statusCounts})

@@ -67,7 +67,6 @@ router.post('/quantityMinus/:id',userController.quantityMinus)
 
 router.get('/checkOutPage',userController.checkOutGetPage)
 
-router.get('/product/category/:categoryName',userController.showProductBasedOnCategory)
 
 router.post('/couponApply',userController.applyCouponCode)
 
@@ -79,10 +78,10 @@ router.get('/sortedProducts',userController.productSorting)
 
 router.post('/razorPay/order',userController.razorpayPayment)
 
-router.get('/orderInvoice',userController.orderInvoice)
-
 router.post('/getInvoice',userController.getOrderInvoice)
 router.post('/editProfile',userController.editProfilePost)
+
+router.get('/about',userController.aboutPage)
 
 
 

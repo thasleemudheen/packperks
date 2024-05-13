@@ -668,6 +668,30 @@ ul.timeline > li.active:before {
 }
 
 
+// Add an event listener to the select element
+const cancelReasonSelect = document.getElementById('cancelReason');
+
+cancelReasonSelect.addEventListener('change', async (event) => {
+    const selectedReason = event.target.value;
+
+    // Update the UI to display the selected reason
+    const selectedReasonElement = document.getElementById('selectedCancelReason');
+    selectedReasonElement.textContent = selectedReason;
+
+    // Send the selected reason to the backend for storage using Axios
+    try {
+        const response = await axios.post('/saveCancelReason', {
+            cancelReason: selectedReason
+        });
+        console.log('Cancel reason saved successfully');
+    } catch (error) {
+        console.error('Failed to save cancel reason:', error);
+    }
+});
+
+
+
+
 function getInvoice(orderId,productId){
     const data={orderId,productId};
 
