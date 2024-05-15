@@ -265,8 +265,7 @@
    
      <!-- File Button -->
 
-     <input type="hidden" id="existingImageUrls" name="existingImageUrls" value="<%= JSON.stringify(product.productImage) %>">
-     <div class="form-group">
+     <!-- <div class="form-group">
         <label class="col-md-4 control-label" for="existingImages">Existing Images</label>
         <div class="col-md-4">
             <div id="existingImages">
@@ -275,7 +274,12 @@
                 <% }); %>
             </div>
         </div>
-    </div>
+    </div> -->
+    <input type="hidden" id="existingImageUrls" name="existingImageUrls" value="<%= JSON.stringify(product.productImage) %>">
+     <!-- <input type="file" name="productImage" value="<%=product.productImage[0]%>">
+     <input type="file" name="productImage" value="<%=product.productImage[1]%>">
+     <input type="file" name="productImage" value="<%=product.productImage[2]%>">
+     <input type="file" name="productImage" value="<%=product.productImage[3]%>"> -->
 
    <div class="form-group">
     <label class="col-md-4 control-label" for="newProductImage">Upload New Images</label>

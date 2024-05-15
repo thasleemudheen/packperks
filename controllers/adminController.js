@@ -66,36 +66,31 @@ let adminLogoutpage=async(req,res)=>{
 let adminDashBoard=async(req,res)=>{
 
     const totalUser = await User.countDocuments()
-    // console.log('total users',totalUser)
     const totalOrders = await User.aggregate([
-        { $unwind: '$orders' }, // Deconstruct the orders array
-        { $group: { _id: null, total: { $sum: 1 } } } // Count the total orders
+        { $unwind: '$orders' }, 
+        { $group: { _id: null, total: { $sum: 1 } } } 
     ]);
     
-    // Extract the total count from the result
     const totalOrder = totalOrders.length > 0 ? totalOrders[0].total : 0;
     
-    console.log('Total orders by all users:', totalOrder);
     
 
     const totalOrderedProducts = await User.aggregate([
-        { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
-        { $unwind: '$orders' }, // Deconstruct the orders array
-        { $unwind: '$orders.products' }, // Deconstruct the products array within each order
-        { $group: { _id: '$orders.products', total: { $sum: 1 } } } // Count the total number of products for each productId
+        { $match: { 'orders.0': { $exists: true } } }, 
+        { $unwind: '$orders' }, 
+        { $unwind: '$orders.products' }, 
+        { $group: { _id: '$orders.products', total: { $sum: 1 } } } 
     ]);
     
-    // Extract the total count from the result
     const totalOrderedProduct = totalOrderedProducts.reduce((total, product) => total + product.total, 0);
     
-    // console.log('Total ordered products:', totalOrderedProduct);
     
     const categoryOrders = await User.aggregate([
-        { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
-        { $unwind: '$orders' }, // Deconstruct the orders array
-        { $unwind: '$orders.products' }, // Deconstruct the products array within each order
-        { $group: { _id: '$orders.products.categoryName', count: { $sum: 1 } } }, // Group by category name and count orders
-        { $match: { _id: { $ne: null } } } // Exclude null categories
+        { $match: { 'orders.0': { $exists: true } } }, 
+        { $unwind: '$orders' },
+        { $unwind: '$orders.products' }, 
+        { $group: { _id: '$orders.products.categoryName', count: { $sum: 1 } } },
+        { $match: { _id: { $ne: null } } }
     ]);
     
     const latestOrders = await User.aggregate([
@@ -115,16 +110,13 @@ let adminDashBoard=async(req,res)=>{
         { $limit: 10  }
     ]);
     
-    // console.log(latestOrders.length)
     const totalOrderValue = await User.aggregate([
-        { $match: { orders: { $exists: true, $ne: null } } }, // Match documents with non-empty orders array
-        { $unwind: "$orders" }, // Deconstruct the orders array
-        { $group: { _id: null, total: { $sum: "$orders.totalAmount" } } } // Group by null to calculate total across all documents
+        { $match: { orders: { $exists: true, $ne: null } } }, 
+        { $unwind: "$orders" }, 
+        { $group: { _id: null, total: { $sum: "$orders.totalAmount" } } } 
     ]);
     
-    // Extract the total value from the result
     const totalValue = totalOrderValue.length > 0 ? totalOrderValue[0].total : 0;
-    // console.log('Total Order Value:', totalValue);
 
     const monthlyOrders = await User.aggregate([
         {$unwind: '$orders' },
@@ -141,34 +133,28 @@ let adminDashBoard=async(req,res)=>{
         }
       ]);
       
-    //   console.log(monthlyOrders);
     const orderStatusCounts = await User.aggregate([
-        { $match: { 'orders.0': { $exists: true } } }, // Match users with orders
-        { $unwind: '$orders' }, // Deconstruct the orders array
-        { $unwind: '$orders.products' }, // Deconstruct the products array within each order
+        { $match: { 'orders.0': { $exists: true } } }, 
+        { $unwind: '$orders' }, 
+        { $unwind: '$orders.products' }, 
         { 
             $group: { 
                 _id: { productId: '$orders.products.productId', status: '$orders.products.orderStatus' }, 
                 count: { $sum: 1 } 
             } 
-        }, // Group by productId and orderStatus, and count the number of products for each status
+        }, 
         { 
             $group: { 
                 _id: '$_id.status', 
                 totalCount: { $sum: '$count' } 
             } 
-        } // Group by status and calculate the total count for each status
+        }
     ]);
     
-    // Construct the result object
     const statusCounts = {};
     orderStatusCounts.forEach(status => {
         statusCounts[status._id] = status.totalCount;
     });
-    
-  
-    
-    
     res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders,statusCounts})
 }
 
@@ -183,11 +169,9 @@ let userBlock=async(req,res)=>{
     const userId=req.body.userId
     try{
         const user=await User.findOne({_id:userId})
-        // console.log(user);
         if(user){
             user.blocked=!user.blocked
             await user.save()
-            // console.log("block status :",user.blocked);
         }
         res.redirect('/admin/user')
     }catch(error){
@@ -197,7 +181,6 @@ let userBlock=async(req,res)=>{
 
 let categoryListPage=async(req,res)=>{
     let admin=await Admin.findOne()
-    // console.log(admin);
     if(!admin){
        return res.status(400).send('user not found')
     }
@@ -210,10 +193,8 @@ let addCategoryPage=async(req,res)=>{
 }
 
 let addCategoryPostPage=async(req,res)=>{
-
     try {
         let {categoryName}=req.body
-        // console.log(categoryName);
         if(!categoryName){
             return res.status(400).send('category name required')
         }
@@ -228,7 +209,6 @@ let addCategoryPostPage=async(req,res)=>{
        
        return res.redirect('/admin/categorylist')
     } catch (error) {
-        // console.log(error);
        return res.status(500).send('internal server error')
     }
 }
@@ -244,19 +224,15 @@ let deleteCategory=async(req,res)=>{
         products.save()
             res.redirect('/admin/categorylist')
         }catch(error){
-            // console.log('not deleting the category');
             res.status(500).send('internal server error')
         }
 }
 let editCategoryGetPage=async(req,res)=>{
    try{
         let categoryId=req.params.id
-        // console.log(categoryId);
         let products=await Admin.findOne({'category._id':categoryId})
-        // console.log(products);
         
         let category=products.category.id(categoryId)
-        // console.log(category);
         res.render('admin/editcategory',{category})
    }catch(error){
        console.log('category dont get for editing');
@@ -282,7 +258,6 @@ let editCategoryPostPage=async(req,res)=>{
 let addProductsGetPage=async(req,res)=>{
     try{
         let category=await Admin.distinct('category.categoryName')
-        // console.log(category);
      res.render('admin/addproduct',{category})
     }catch(error){
         console.log('the category is not founded');
@@ -296,19 +271,12 @@ let addProductPostPage=async(req,res)=>{
     
       const{productId,productName,discription,productPrice,stockQuantity,categoryName,brand}=req.body
       const productImage=req.files
-    //   console.log(req.files);
-    //   console.log("prdct :",productImage);
-    //   console.log(req.body);
     const imageUrls = [];
 
     const result = await Promise.all(productImage.map(async (image) => {
         const result = await cloudinary.uploader.upload(image.path);
         imageUrls.push(result.secure_url);
     }));
-    //    console.log("result ::",result);
-
-
-
       const newProduct= new Products({
         productId,
         productName,
@@ -320,7 +288,6 @@ let addProductPostPage=async(req,res)=>{
         productImage:imageUrls,
 
       })
-    //   console.log(newProduct);
 
       await newProduct.save()
       res.redirect('/admin/productlist')
@@ -348,10 +315,8 @@ let productListPage=async(req,res)=>{
 
 let productDisable=async(req,res)=>{
       let productId=req.body.productId
-    //   console.log(productId);
       try {
         const product=await Products.findOne({_id:productId})
-        // console.log(product);
         if(product){
             product.isDisabled=!product.isDisabled
             await product.save()
@@ -378,6 +343,7 @@ let editProductGetPage=async(req,res)=>{
             res.status(400).send('internal server error')
     }   
 }
+
 // let editProductPostPage = async (req, res) => {
 //     try {
 //         let productId = req.params.id;
@@ -396,7 +362,7 @@ let editProductGetPage=async(req,res)=>{
 //         product.stockQuantity = req.body.stockQuantity;
 
 //         if (req.files && req.files.length > 0) {
-//             const newProductImages = req.files;
+//        const newProductImages = req.files;
 //             console.log(req.files);
 //             const imageUrls = [];
 //             for (const image of newProductImages) {
@@ -424,7 +390,6 @@ let editProductPostPage=async(req,res)=>{
             res.send('product not found')
             return 
         }
-       
         product.productId=req.body.productId
         product.productName=req.body.productName
         product.productPrice=req.body.productPrice
@@ -434,12 +399,6 @@ let editProductPostPage=async(req,res)=>{
         product.stockQuantity=req.body.stockQuantity
 
         const newProductImage = req.files;
-
-        // console.log(newProductImage);
-
-        // const existingImageUrls=JSON.parse(req.body.existingImageUrls)
-        // console.log(existingImageUrls)
-        // if(newProductImage.length>0){
             const imageUrls = [];
             for (const image of newProductImage) {
                 const result = await cloudinary.uploader.upload(image.path);
@@ -447,10 +406,6 @@ let editProductPostPage=async(req,res)=>{
                 imageUrls.push(result.secure_url);
             }
             product.productImage = imageUrls;
-        // }else{
-            // product.productImage=existingImageUrls
-        // }
-        
 
         await product.save()
         res.redirect('/admin/productlist')
@@ -464,9 +419,7 @@ let editProductPostPage=async(req,res)=>{
 let addCoupon=async(req,res)=>{
     const {couponCode,couponType,discountValue,endDate,couponStatus}=req.body
     try{
-        let admin=await Admin.findOne()
-        // console.log(admin);
-    
+        let admin=await Admin.findOne()    
         admin.coupon.push({
             couponCode,
             couponType,
@@ -486,9 +439,7 @@ let addCoupon=async(req,res)=>{
 let couponPageGet=async(req,res)=>{
 
     let admin=await Admin.findOne()
-    // console.log(admin)
     let coupon=admin.coupon
-    // console.log(coupon)
     res.render('admin/coupon',{coupon})
 }
 
@@ -496,7 +447,6 @@ let deleteCoupon=async(req,res)=>{
     let deletedId=req.params.id
 try{
     let admin=await Admin.findOne()
-    // console.log(admin);
     admin.coupon=admin.coupon.filter(coupon=>coupon.id != deletedId)
     admin.save()
     console.log('coupon deleted successfully')
@@ -511,9 +461,7 @@ let couponEditGetPage=async(req,res)=>{
     let couponEditId=req.params.id
 
     let admin=await Admin.findOne()
-    // console.log(admin);
     let coupon= admin.coupon.find(coupon=>coupon.id===couponEditId)
-    //   console.log(coupon)
     res.render('admin/editCoupon',{coupon})
 }
 
@@ -525,7 +473,6 @@ let couponEditPostPage = async (req, res) => {
         if (!coupon) {
             return res.status(404).send('Coupon not found');
         }
- 
         coupon.couponCode = req.body.couponCode;
         coupon.couponType = req.body.couponType;
         coupon.discountValue = req.body.discountValue;
@@ -543,7 +490,6 @@ let couponEditPostPage = async (req, res) => {
 
 let orderManagement=async(req,res)=>{
     const usersWithOrders = await User.find({ 'orders.0': { $exists: true } }).sort({'orders.orderDate':-1})
-    // console.log(usersWithOrders)
     res.render('admin/orders',{usersWithOrders})
 }
 
@@ -573,8 +519,6 @@ let orderReport = async (req, res) => {
         {header:'paymentMethod',key:'paymentMethod',width:20},
         {header:'productName',key:'productName',width:20},
         {header:'productPrice',key:'productPrice',width:15}
-
-        // Add more columns as needed
     ];
 
     orderDetails.forEach(order => {
@@ -586,7 +530,6 @@ let orderReport = async (req, res) => {
                 paymentMethod:order.paymentMethod,
                 productName:product.productName,
                 productPrice:product.productPrice,
-                // Add more data as needed
             });
         })
         
@@ -608,16 +551,12 @@ let orderReport = async (req, res) => {
 let updateOrderStatus=async(req,res)=>{
             let {productId,orderId}=req.params
             let {status}=req.body
-            // console.log(productId,orderId)
-            // console.log(req.body)
 try {
     let user=await User.findOne({'orders._id':orderId})
-    // console.log(user)
     if(!user){
         return res.status(400).send('user not found')
     }
     let orderIndex=user.orders.findIndex(order=>order._id.toString()===orderId)
-    // console.log(orderIndex)
     if(orderIndex === -1){
         return res.status(400).send('order not found')
     }
@@ -629,7 +568,6 @@ try {
     let product = user.orders[orderIndex].products[productIndex];
     if (status === 'cancelled' && product.orderStatus !== 'cancelled') {
         let findProduct = await Products.findById(productId);
-        // console.log(findProduct);
         if (findProduct) {
             findProduct.stockQuantity += product.quantity;
             await findProduct.save();

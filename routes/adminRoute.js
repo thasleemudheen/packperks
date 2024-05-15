@@ -28,7 +28,7 @@ router.post('/admin/addProduct',adminAuth, upload.array('productImage',4),adminC
 router.get('/admin/productlist',adminAuth,adminController.productListPage)
 router.post('/admin/disableProduct/:id',adminController.productDisable)
 router.get('/admin/editProduct/:id',adminController.editProductGetPage)
-router.post('/admin/editProduct/:id',upload.array('newProductImage',4),adminController.editProductPostPage)
+router.post('/admin/editProduct/:id',upload.array('newProductImage',5),adminController.editProductPostPage)
 //coupon
 router.get('/admin/coupon',adminController.couponPageGet)
 router.post('/addCoupon',adminController.addCoupon)

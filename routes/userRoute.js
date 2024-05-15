@@ -74,7 +74,9 @@ router.post('/order',userController.orderProduct)
 
 router.get('/ordersGet',userController.ordersGetPage)
 router.post('/cancelOrder',userController.cancelOrder)
-router.get('/sortedProducts',userController.productSorting)
+// router.get('/sortedProducts',userController.productSorting)
+// router.get('/filter',userController.filterProducts)
+router.get('/sortAndFilter',userController.sortAndFilter)
 
 router.post('/razorPay/order',userController.razorpayPayment)
 
@@ -82,7 +84,8 @@ router.post('/getInvoice',userController.getOrderInvoice)
 router.post('/editProfile',userController.editProfilePost)
 
 router.get('/about',userController.aboutPage)
-
+router.get('/contact',userController.contactPage)
+router.post('/contactSubmit',userController.contactFormSubmitted)
 
 
 module.exports=router

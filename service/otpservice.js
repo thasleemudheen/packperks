@@ -13,13 +13,13 @@ const otpService = {
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'thasleemtrk@gmail.com', // Your Gmail email address
-                    pass: 'cryghzzjjembkqbo' // Your Gmail password
+                    user: 'packperks45@gmail.com', // Your Gmail email address
+                    pass: 'shwe ksot eoqy kluv' // Your Gmail password
                 }
             });
 
             const mailOptions = {
-                from: 'thasleemtrk@gmail.com',
+                from: 'packperks45@gmail.com',
                 to: email,
                 subject: 'Login OTP',
                 text:`Your OTP for login is:${otp}`

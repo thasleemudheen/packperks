@@ -137,7 +137,7 @@
             <div class="row">
                 <div class="col-xl-2 col-lg-2 col-md-6 col-4">
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="/">
                             <img style="max-width: 200px;" alt="" src="/assets/img/logo/logos.png">
                         </a>
                     </div>
@@ -149,14 +149,14 @@
                                 <li><a href="/">Home <i class=""></i></a>
                                    
                                 </li>
-                                <li><a href="shop.html"> Shop <i class=""></i> </a>
+                                <li><a href="/shop"> Shop <i class=""></i> </a>
                                     
                                 </li>
                                
                               
                                 </li>
                                 <li><a href="/about"> About </a></li>
-                                <li><a href="contact.html"> Contact</a></li>
+                                <li><a href="/contact"> Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -174,14 +174,14 @@
                         </div>
                         <div class="same-style account-satting">
                             <a class="account-satting-active" href="#"><i class="pe-7s-user-female"></i></a>
-                            <div class="account-dropdown">
+                            <!-- <div class="account-dropdown">
                                 <ul>
                                     <li><a href="login-register.html">Login</a></li>
                                     <li><a href="login-register.html">Register</a></li>
                                     <li><a href="wishlist.html">Wishlist  </a></li>
                                     <li><a href="my-account.html">my account</a></li>
                                 </ul>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="same-style header-wishlist">
                             <a href="/wishlist"><i class="pe-7s-like"></i></a>
@@ -213,7 +213,7 @@
                           
                             
                             <li><a href="/about">About us</a></li>
-                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="/contact">Contact</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -277,7 +277,7 @@
                                         <div class="product-img">
                                             <a href="/singleProduct/<%=product._id%>">
                                                 <img class="default-img <%= product.isDisabled ? 'disabled' : '' %> " src="<%=product.productImage[0]%>" alt="">
-                                                <img class="hover-img" src="<%=product.productImage[1]%>" alt="">
+                                                <img  class="hover-img" src="<%=product.productImage[1]%>" alt="">
                                             </a>
                                             <% if (product.isDisabled || product.stockQuantity===0) { %>
                                                 <div class="error-message">Out of Stock</div>
@@ -370,7 +370,7 @@
                     <div class="sidebar-widget">
                         <h4 class="pro-sidebar-title">Refine By </h4>
                         <div class="sidebar-widget-list mt-30">
-                            <select name="refineBy" id="refineBy" onchange="sortProducts()">
+                            <select name="refineBy" id="refineBy" onchange="">
                                 <option  selected disabled value="select">select</option>
                                 <option value="priceLowToHigh">price low high</option>
                                 <option value="priceHighToLow">price high low</option>
@@ -397,71 +397,11 @@
                         </div>
                     </div>
 
+                   
+
+
                     <script>
 
-
-// const productsIn = document.querySelectorAll('.product-category');
-// const itemsPerPage = 9;
-// let currentPage = 1;
-// let totalProducts = productsIn.length;
-
-// function updateProductRange() {
-//     const startIndex = (currentPage - 1) * itemsPerPage;
-//     let endIndex = startIndex + itemsPerPage - 1;
-//     endIndex = endIndex > totalProducts ? totalProducts : endIndex;
-// }
-
-// function displayPage(products) {
-//     const startIndex = (currentPage - 1) * itemsPerPage;
-//     const endIndex = startIndex + itemsPerPage;
-
-//     productsIn.forEach((product, index) => {
-//         if (index >= startIndex && index < endIndex) {
-//             product.style.display = 'block';
-//         } else {
-//             product.style.display = 'none';
-//         }
-//     });
-
-//     setupPagination();
-// }
-
-// function setupPagination() {
-//     const totalPages = Math.ceil(productsIn.length / itemsPerPage);
-//     const paginationElement = document.getElementById('pagination');
-//     let html = '';
-
-//     html += `<li class="page-item"><a class="page-link prev" href="#"><i class="fa fa-angle-left"></i></a></li>`;
-
-//     for (let i = 1; i <= totalPages; i++) {
-//         html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-//     }
-
-//     html += `<li class="page-item"><a class="page-link next" href="#"><i class="fa fa-angle-right"></i></a></li>`;
-
-//     paginationElement.innerHTML = html;
-
-//     const pageLinks = document.querySelectorAll('.page-link');
-//     pageLinks.forEach((link) => {
-//         link.addEventListener('click', (e) => {
-//             e.preventDefault();
-//             const selectedPage = parseInt(e.target.getAttribute('data-page'));
-//             if (!isNaN(selectedPage)) {
-//                 currentPage = selectedPage;
-//             } else if (link.classList.contains('prev')) {
-//                 currentPage = currentPage > 1 ? currentPage - 1 : 1;
-//             } else if (link.classList.contains('next')) {
-//                 currentPage = currentPage < totalPages ? currentPage + 1 : totalPages;
-//             }
-//             displayPage(productsIn);
-//         });
-//     });
-// }
-
-// // Initial setup
-// updateProductRange();
-// displayPage(productsIn);
-// setupPagination();
 
 
               //-------------//wish list prt------------------------//
@@ -510,90 +450,6 @@
 
 
 
-function sortProducts() {
-    const sortBy = document.getElementById('refineBy').value;
-
-    fetch(`/sortedProducts?sortBy=${sortBy}`)
-        .then(response => response.json())
-        .then(data => {
-            const products = data.products;
-            const user = data.user;
-            const productDisplay = document.getElementById('productDisplay');
-            productDisplay.innerHTML = '';
-
-            products.forEach(product => {
-                const productElement = document.createElement('div');
-                productElement.classList.add('col-xl-4', 'col-md-6', 'col-lg-6', 'col-sm-6', 'product-category');
-                productElement.dataset.brand = product.brand;
-                productElement.dataset.category = product.categoryName;
-
-                productElement.innerHTML = `
-                    <div class="product-wrap mb-25 scroll-zoom">
-                        <div class="product-img">
-                            <a href="/singleProduct/${product._id}">
-                                <img class="default-img ${product.isDisabled ? 'disabled' : ''}" src="${product.productImage[0]}" alt="">
-                                <img class="hover-img" src="${product.productImage[1]}" alt="">
-                            </a>
-                            ${product.isDisabled ? '<div class="error-message">Out of Stock</div>' : ''}
-                            <div class="product-action">
-                                <div class=""></div>
-                                <div class=""></div>
-                                <div class=""></div>
-                            </div>
-                        </div>
-                        <div class="product-content text-center">
-                            <h3><a href="/singleProduct/${product._id}">${product.productName}</a></h3>
-                            <div class="product-price">
-                                <span>₹: ${product.productPrice}</span>
-                            </div>
-                            <div id="wishlist_${product._id}" class="pro-details-wishlist">
-                                <button onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" style="border: none; background-color: white;">
-                                    ${user && user.wishlist.some(prd => prd.productId.toString() === product._id.toString()) ?
-                                        `<i id="red_heart_${product._id}" class="fa fa-heart fa-2x" style="color: red;"></i>` :
-                                        `<i id="plain_heart_${product._id}" class="fa fa-heart-o fa-2x"></i>`}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                productDisplay.appendChild(productElement);
-            });
-             
-
-            applyFilters(); 
-            // setupPagination(); // Update pagination after sorting
-            const paginationElement = document.getElementById('pagination');
-            paginationElement.style.display = 'none'; 
-
-        })
-        .catch(error => {
-            console.error(error);
-        });
-}
-
-function applyFilters() {
-    const selectedBrand = document.getElementById('brandFilter').value;
-    const selectedCategory = document.getElementById('categoryFilter').value;
-
-    const products = document.querySelectorAll('.product-category');
-
-    products.forEach(product => {
-        product.style.display = 'block'; 
-
-        const brand = product.getAttribute('data-brand');
-        const category = product.getAttribute('data-category');
-
-        if ((selectedBrand !== '' && selectedBrand !== brand) ||
-            (selectedCategory !== '' && selectedCategory !== category)) {
-            product.style.display = 'none'; 
-        }
-    });
-    // setupPagination(); // Update pagination after applying filters
-
-}
-
-document.getElementById('brandFilter').addEventListener('change', applyFilters);
-document.getElementById('categoryFilter').addEventListener('change', applyFilters);
 
                     </script>
                     
@@ -606,6 +462,85 @@ document.getElementById('categoryFilter').addEventListener('change', applyFilter
 </div>
 
 <script>
+document.getElementById('categoryFilter').addEventListener('change', filterAndSortProducts);
+document.getElementById('brandFilter').addEventListener('change', filterAndSortProducts);
+document.getElementById('refineBy').addEventListener('change', filterAndSortProducts);
+
+function filterAndSortProducts(page = 1) {
+    const category = document.getElementById('categoryFilter').value;
+    const brand = document.getElementById('brandFilter').value;
+    const sortBy = document.getElementById('refineBy').value;
+
+    let query = `page=${page}&`;
+    if (category) query += `category=${category}&`;
+    if (brand) query += `brand=${brand}&`;
+    if (sortBy) query += `sortBy=${sortBy}`;
+
+    axios.get(`/sortAndFilter?${query}`)
+        .then(response => {
+            const { products, user, currentPage, totalPages } = response.data;
+            const productDisplay = document.getElementById('productDisplay');
+            productDisplay.innerHTML = '';
+
+            products.forEach(product => {
+                const productHTML = `
+                    <div class="col-xl-4 col-md-6 col-lg-6 col-sm-6 product-category" data-brand="${product.brand}" data-category="${product.categoryName}">
+                      <div class="product-wrap mb-25 scroll-zoom">
+                        <div class="product-img">
+                          <a href="/singleProduct/${product._id}">
+                            <img class="default-img ${product.isDisabled ? 'disabled' : ''}" src="${product.productImage[0]}" alt="">
+                            <img class="hover-img" src="${product.productImage[1]}" alt="">
+                          </a>
+                          ${product.isDisabled || product.stockQuantity === 0 ? '<div class="error-message">Out of Stock</div>' : ''}
+                          <div class="product-action">
+                            <div class=""></div>
+                            <div class=""></div>
+                            <div class=""></div>
+                          </div>
+                        </div>
+                        <div class="product-content text-center">
+                          <h3><a href="/singleProduct/${product._id}">${product.productName}</a></h3>
+                          <div class="product-price">
+                            <span>₹: ${product.productPrice}</span>
+                          </div>
+                          <div id="wishlist_${product._id}" class="pro-details-wishlist">
+                            <button onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" style="border: none; background-color: white;">
+                              ${user && user.wishlist.some(prd => prd.productId.toString() === product._id.toString()) ? '<i id="red_heart_${product._id}" class="fa fa-heart fa-2x" style="color: red;"></i>' : '<i id="plain_heart_${product._id}" class="fa fa-heart-o fa-2x"></i>'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                `;
+                productDisplay.insertAdjacentHTML('beforeend', productHTML);
+            });
+
+            // Update pagination
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="filterAndSortProducts(${currentPage - 1})"><i class="fa fa-angle-left"></i></a>
+                </li>
+                ${Array.from({ length: totalPages }, (_, i) => `
+                    <li class="page-item ${currentPage === i + 1 ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0);" onclick="filterAndSortProducts(${i + 1})">${i + 1}</a>
+                    </li>
+                `).join('')}
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0);" onclick="filterAndSortProducts(${currentPage + 1})"><i class="fa fa-angle-right"></i></a>
+                </li>
+            `;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+
+
+
+
+
     document.getElementById('searchButton').addEventListener('click',function(event){
         event.preventDefault()
         const inputValue=document.getElementById('searchInput').value;
@@ -669,6 +604,9 @@ document.getElementById('categoryFilter').addEventListener('change', applyFilter
 
 </script>
 
+<script>
+
+               </script>
 
 <footer class="footer-area bg-gray pt-100 pb-70">
     <div class="container">
