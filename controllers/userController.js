@@ -27,7 +27,7 @@ let homePage = async (req, res) => {
         let isAuthenticated = false;
         let wishlist;
         const products = await Products.find().sort({ createdAt: -1 }).limit(8);
-
+             let cartLength;
         let categoryName=await Products.distinct('categoryName')
         let product=await Products.find()
 
@@ -40,7 +40,7 @@ let homePage = async (req, res) => {
 
             wishlist = await User.findById(userId, 'wishlist').populate('wishlist');
 
-        cartLength = user.cart ? user.cart.product.length : 0;
+         cartLength = user.cart ? user.cart.product.length : 0;
     
         }
 
