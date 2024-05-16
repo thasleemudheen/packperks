@@ -26,13 +26,17 @@ const userRouter = require('./routes/userRoute')
 const adminRouter = require('./routes/adminRoute')
 
 // connecting to mongodb
-mongoose.connect(process.env.MONGOID)
-    .then(() => {
-        console.log('connected to mongodb');
-    })
-    .catch(() => {
-        console.error('an error occured');
-    })
+mongoose.connect(process.env.MONGOID, {
+    connectTimeoutMS: 30000, // 30 seconds timeout
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => {
+    console.log('connected to mongodb');
+})
+.catch(() => {
+    console.error('an error occured');
+});
 
 
 app.use(session({
