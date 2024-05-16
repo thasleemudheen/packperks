@@ -29,7 +29,7 @@ let homePage = async (req, res) => {
         const products = await Products.find().sort({ createdAt: -1 }).limit(8);
 
         let categoryName=await Products.distinct('categoryName')
-        let product=await Products.find().maxTimeMS(30000);
+        let product=await Products.find()
 
         if (req.cookies.user_jwt) {
             isAuthenticated = true;
