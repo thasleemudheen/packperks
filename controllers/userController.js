@@ -46,7 +46,7 @@ let homePage = async (req, res) => {
 
         res.render('user/index', { isAuthenticated, products, user: req.user, wishlist,categoryName,product,cartLength });
     } catch (error) {
-        console.log('Home page is not found');
+        console.error('Home page is not found' , error);
         res.status(400).send('Home page not found');
     }
 }

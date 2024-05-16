@@ -51,5 +51,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(3000, () => {
-    console.log('server running in port 2001');
+    console.log('server running in port 3000');
 });
