@@ -9,7 +9,8 @@ require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 const mongoose=require('mongoose')
-const pdf=require('html-pdf')
+// const pdf=require('html-pdf')
+const puppeteer = require('puppeteer');
 const razorpay=require('../helpers/razorpay')
 const ejs=require('ejs')
 
@@ -1056,27 +1057,48 @@ let sortAndFilter = async (req, res) => {
         }
         console.error(product)
 
-        ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
+        // ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return res.status(500).send('Error rendering the invoice');
+        //     }
+        //     pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
+        //         if (err) {
+        //             console.error(err);
+        //             return res.status(500).send('Error generating PDF');
+        //         }
+
+        //         res.setHeader('Content-Type', 'application/pdf');
+        //         res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
+        //         res.send(buffer);
+        //     });
+        // });
+        ejs.renderFile('views/user/invoice.ejs', { order, product }, async (err, html) => {
             if (err) {
                 console.error(err);
                 return res.status(500).send('Error rendering the invoice');
             }
-            pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).send('Error generating PDF');
-                }
+            try {
+                const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+                await page.setContent(html);
+                const pdfBuffer = await page.pdf();
+                await browser.close();
 
                 res.setHeader('Content-Type', 'application/pdf');
                 res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
-                res.send(buffer);
-            });
+                res.send(pdfBuffer);
+            } catch (error) {
+                console.error(error);
+                return res.status(500).send('Error generating PDF');
+            }
         });
     } catch (error) {
         console.error(error);
         res.status(400).send('Failed to download PDF');
     }
 };
+
 
 
 let editProfilePost=async(req,res)=>{

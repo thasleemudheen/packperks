@@ -26,7 +26,7 @@ const userRouter = require('./routes/userRoute')
 const adminRouter = require('./routes/adminRoute')
 
 // connecting to mongodb
-mongoose.connect("mongodb://localhost:27017/PackPerks")
+mongoose.connect(process.env.MONGOID)
     .then(() => {
         console.log('connected to mongodb');
     })
