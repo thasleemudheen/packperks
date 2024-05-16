@@ -168,7 +168,9 @@
                     <div class="same-style cart-wrap">
                       <a href="/cart">  <button class="icon-cart">
                             <i class="pe-7s-shopbag"></i>
-                            <span class="count-style"><%=cartLength%></span>
+                            <% if (isAuthenticated) { %>
+                                <span class="count-style"><%= cartLength %></span>
+                            <% } %>
                         </button></a>
                         <div class="shopping-cart-content">
                           

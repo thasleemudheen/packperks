@@ -29,7 +29,7 @@ let homePage = async (req, res) => {
         const products = await Products.find().sort({ createdAt: -1 }).limit(8);
 
         let categoryName=await Products.distinct('categoryName')
-        let product=await Products.find()
+        let product=await Products.find().maxTimeMS(30000);
 
         if (req.cookies.user_jwt) {
             isAuthenticated = true;
@@ -41,7 +41,7 @@ let homePage = async (req, res) => {
             wishlist = await User.findById(userId, 'wishlist').populate('wishlist');
 
         cartLength = user.cart ? user.cart.product.length : 0;
-
+    
         }
 
         res.render('user/index', { isAuthenticated, products, user: req.user, wishlist,categoryName,product,cartLength });
@@ -1032,7 +1032,7 @@ let sortAndFilter = async (req, res) => {
 
  let getOrderInvoice = async (req, res) => {
     const { orderId, productId } = req.body;
-    console.log(productId)
+    // console.log(productId)
     try {
         const token = req.cookies.user_jwt;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -1055,34 +1055,25 @@ let sortAndFilter = async (req, res) => {
         if (product.orderStatus !== 'delivered') {
             return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
         }
-        console.error(product)
-
-        // ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
-        //     if (err) {
-        //         console.error(err);
-        //         return res.status(500).send('Error rendering the invoice');
-        //     }
-        //     pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
-        //         if (err) {
-        //             console.error(err);
-        //             return res.status(500).send('Error generating PDF');
-        //         }
-
-        //         res.setHeader('Content-Type', 'application/pdf');
-        //         res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
-        //         res.send(buffer);
-        //     });
-        // });
         ejs.renderFile('views/user/invoice.ejs', { order, product }, async (err, html) => {
             if (err) {
-                console.error(err);
+                console.error(html);
                 return res.status(500).send('Error rendering the invoice');
             }
             try {
-                const browser = await puppeteer.launch();
+                const browser = await puppeteer.launch({ timeout: 60000 });
+                console.log(browser)
+                console.log('Browser launched.');
+
                 const page = await browser.newPage();
+                console.log(page)
+                console.log('Page created.');
+
                 await page.setContent(html);
+                await page.waitForNavigation({ timeout: 60000 });
+          console.log('pdf buffer is here')
                 const pdfBuffer = await page.pdf();
+                console.log(pdfBuffer)
                 await browser.close();
 
                 res.setHeader('Content-Type', 'application/pdf');
@@ -1099,7 +1090,22 @@ let sortAndFilter = async (req, res) => {
     }
 };
 
+ // ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return res.status(500).send('Error rendering the invoice');
+        //     }
+        //     pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
+        //         if (err) {
+        //             console.error(err);
+        //             return res.status(500).send('Error generating PDF');
+        //         }
 
+        //         res.setHeader('Content-Type', 'application/pdf');
+        //         res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
+        //         res.send(buffer);
+        //     });
+        // });
 
 let editProfilePost=async(req,res)=>{
     console.log(req.body)

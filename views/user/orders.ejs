@@ -447,25 +447,25 @@ small{
 
 <script>
 
-
-function getInvoice(orderId,productId){
-    const data={orderId,productId};
-
-    axios.post('/getInvoice',data, { responseType: 'blob' })
-    .then(response=>{
-        console.log(response)
-        const url=window.URL.createObjectURL(new Blob([response.data]));
-        const link=document.createElement('a');
-        console.log('url',url)
-        console.log('link',link)
-        link.href=url;
-        link.setAttribute('download','order_summary.pdf');
+function getInvoice(orderId, productId) {
+    const data = { orderId, productId };
+    axios.post('/getInvoice', data, { responseType: 'blob' })
+    .then(response => {
+        console.log(response.data)
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'order_summary.pdf');
         document.body.appendChild(link);
         link.click();
-    }).catch(error=>{
-        console.log('here also have errors',error)
-    })
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    }).catch(error => {
+        console.error('Error downloading PDF:', error);
+    });
 }
+
  // Assuming you have already included Axios in your project
 
 // Add an event listener to the select element
