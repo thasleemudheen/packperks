@@ -31,7 +31,7 @@ mongoose.connect(process.env.MONGOID)
         console.log('connected to mongodb');
     })
     .catch(() => {
-        console.error( error,'an error occured');
+        console.error('an error occured');
     })
 
 
