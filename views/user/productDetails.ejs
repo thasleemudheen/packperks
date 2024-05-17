@@ -76,38 +76,7 @@
 <header class="header-area header-in-container clearfix">
     <div class="header-top-area">
         <div class="container">
-            <div class="header-top-wap">
-                <div class="language-currency-wrap">
-                    <div class="same-language-currency language-style">
-                        <a href="#">English <i class="fa fa-angle-down"></i></a>
-                        <div class="lang-car-dropdown">
-                            <ul>
-                                <li><a href="#">Arabic </a></li>
-                                <li><a href="#">Bangla </a></li>
-                                <li><a href="#">Hindi  </a></li>
-                                <li><a href="#">Spanish </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="same-language-currency use-style">
-                        <a href="#">USD  <i class="fa fa-angle-down"></i></a>
-                        <div class="lang-car-dropdown">
-                            <ul>
-                                <li><a href="#">Taka (BDT) </a></li>
-                                <li><a href="#">Riyal (SAR) </a></li>
-                                <li><a href="#">Rupee (INR)  </a></li>
-                                <li><a href="#">Dirham (AED) </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="same-language-currency">
-                        <p>Call Us 3965410</p>
-                    </div>
-                </div>
-                <div class="header-offer">
-                    <p>Free delivery on order over <span>$200</span></p>
-                </div>
-            </div>
+            
         </div>
     </div>
     <div class="header-bottom sticky-bar header-res-padding">
@@ -116,7 +85,7 @@
                 <div class="col-xl-2 col-lg-2 col-md-6 col-4">
                     <div class="logo">
                         <a href="/">
-                            <!-- <img alt="" src="assets/img/logo/logo.png"> -->
+                            <img style="max-width: 160px;" alt="" src="/assets/img/logo/logos.png">
                         </a>
                     </div>
                 </div>
@@ -142,16 +111,19 @@
                 <div class="col-xl-2 col-lg-2 col-md-6 col-8">
                        <div class="header-right-wrap">
                         <div class="same-style account-satting">
-                           
+                            <a class="account-satting" href="/profile"><i class="pe-7s-user-female"></i></a>
+
                         </div>
+                       
                         <div class="same-style header-wishlist">
                             <a href="/wishlist"><i class="pe-7s-like"></i></a>
                         </div>
                         <div class="same-style cart-wrap">
                            <a href="/cart"> <button class="icon-cart">
                                 <i class="pe-7s-shopbag"></i>
-                                <!-- <span class="count-style">02</span> -->
-                            </button></a>
+                                <% if (user) { %>
+                                    <span class="count-style"><%= cartLength %></span>
+                                <% } %>                            </button></a>
                           
                         </div>
                     </div>
@@ -165,14 +137,7 @@
                                
                             </li>
                             <li><a href="/shop">Shop</a>
-                                <ul>
-                                    <li><a href="#">shop layout</a>
-                                       
-                                    </li>
-                                    <li><a href="#">product details</a>
-                                        
-                                    </li>
-                                </ul>
+                              
                             </li>
                            
                             <li><a href="/about">About us</a></li>
@@ -269,11 +234,14 @@
                     </form>
                     <div class="<%= product.isDisabled ? 'disabled' : '' %>">
                         <a href="#">
-                            <button onclick="addToCart('<%=product._id%>')" style="background-color: rgb(137, 137, 216); height: 50px; width: 150px; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; border-radius: 5px;">
-                                Buy Now
-                            </button>
+                            <% if (!product.isDisabled && product.stockQuantity > 0) { %>
+                                <button onclick="addToCart('<%=product._id%>')" style="background-color: rgb(137, 137, 216); height: 50px; width: 150px; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; border-radius: 5px;">
+                                    Buy Now
+                                </button>
+                            <% } %>
                         </a>
                     </div>
+                    
                        
                         
 

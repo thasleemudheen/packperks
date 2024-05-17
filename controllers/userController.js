@@ -408,9 +408,11 @@ let shopPage = async (req, res) => {
         let brands = await Products.distinct('brand');
 
         let sortBy = req.query.sortBy || 'select';
+        let cartLength = user.cart ? user.cart.product.length : 0;
 
 
-        res.render('user/shop', { products, user, categoryName, brands, currentPage: page, totalPages,sortBy });
+
+        res.render('user/shop', { products, user, categoryName, brands, currentPage: page, totalPages,sortBy,cartLength });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -419,9 +421,21 @@ let shopPage = async (req, res) => {
 
 let singleProductPage=async(req,res)=>{
     let productId=req.params.id
-    let singleProduct=await Products.findById(productId)
-    let wishlist=await User.find(singleProduct)
-    res.render('user/productDetails',{product:singleProduct,wishlist:wishlist})
+    try {
+        let token=req.cookies.user_jwt
+        let decoded=jwt.verify(token,process.env.JWT_SECRET)
+        let userId=decoded.id
+        let user=await User.findById(userId)
+        let cartLength = user.cart ? user.cart.product.length : 0;
+
+        let singleProduct=await Products.findById(productId)
+        let wishlist=await User.find(singleProduct)
+        
+        res.render('user/productDetails',{product:singleProduct,wishlist:wishlist,cartLength,user})
+    } catch (error) {
+        console.log(error)
+        res.status(500).send('internal server error')
+    }
 }
 
 let cartPage=async(req,res)=>{

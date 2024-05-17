@@ -42,38 +42,7 @@
 <header class="header-area header-in-container clearfix">
     <div class="header-top-area">
         <div class="container">
-            <div class="header-top-wap">
-                <div class="language-currency-wrap">
-                    <div class="same-language-currency language-style">
-                        <a href="#">English <i class="fa fa-angle-down"></i></a>
-                        <div class="lang-car-dropdown">
-                            <ul>
-                                <li><a href="#">Arabic </a></li>
-                                <li><a href="#">Bangla </a></li>
-                                <li><a href="#">Hindi  </a></li>
-                                <li><a href="#">Spanish </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="same-language-currency use-style">
-                        <a href="#">USD  <i class="fa fa-angle-down"></i></a>
-                        <div class="lang-car-dropdown">
-                            <ul>
-                                <li><a href="#">Taka (BDT) </a></li>
-                                <li><a href="#">Riyal (SAR) </a></li>
-                                <li><a href="#">Rupee (INR)  </a></li>
-                                <li><a href="#">Dirham (AED) </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="same-language-currency">
-                        <p>Call Us 3965410</p>
-                    </div>
-                </div>
-                <div class="header-offer">
-                    <p>Free delivery on order over <span>$200</span></p>
-                </div>
-            </div>
+           
         </div>
     </div>
     <div class="header-bottom sticky-bar header-res-padding">
@@ -98,25 +67,17 @@
                                 </li>
                                
                                
-                                <li><a href="about.html"> About </a></li>
-                                <li><a href="contact.html"> Contact</a></li>
+                                <li><a href="/about"> About </a></li>
+                                <li><a href="/contact"> Contact</a></li>
                             </ul>
                         </nav>
                     </div>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-6 col-8">
                        <div class="header-right-wrap">
-                        <div class="same-style header-search">
-                            <a class="search-active" href="#"><i class="pe-7s-search"></i></a>
-                            <div class="search-content">
-                                <form action="#">
-                                    <input type="text" placeholder="Search" />
-                                    <button class="button-search"><i class="pe-7s-search"></i></button>
-                                </form>
-                            </div> 
-                        </div>
+                        
                         <div class="same-style account-satting">
-                            <a class="account-satting-active" href="/profile"><i class="pe-7s-user-female"></i></a>
+                            <a class="account-satting" href="/profile"><i class="pe-7s-user-female"></i></a>
                            
                         </div>
                         <div class="same-style header-wishlist">
@@ -229,7 +190,7 @@
                             <div class="your-order-total">
                                 <ul>
                                     <li class="order-total">Total</li>
-                                    <li > <input style="text-align: end;" type="number" name="cartTotal" value="<%=cartTotal%>"> </li>
+                                    <li > <input style="text-align: end;" type="number" name="cartTotal" value="<%=cartTotal%>" readonly > </li>
                                 </ul>
                             </div>
                         </div>
@@ -269,7 +230,7 @@
 
                     <div class="your-order-total " style="display: flex; justify-content: space-between; margin-top: 10px;">    
                         <span><h4> order Total </h4></span>
-                         <span > <h4 id="totalAmount"> <input type="number" name="orderTotal" value="<%=cartTotal%>" style="text-align: right;" > </h4></span>
+                         <span > <h4 id="totalAmount"> <input type="number" name="orderTotal" value="<%=cartTotal%>" style="text-align: right;" readonly> </h4></span>
                     </div>
 
                     <div style="border-top: 1px solid lightgray;">

@@ -117,8 +117,8 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-2 col-lg-2 col-md-6 col-4">
-                <div class="logo">
-                    <a href="index.html">
+                <div class="logo " >
+                    <a href="/">
                         <img style="max-width: 160px;" alt="" src="/assets/img/logo/logos.png">
                     </a>
                 </div>
@@ -172,9 +172,7 @@
                                 <span class="count-style"><%= cartLength %></span>
                             <% } %>
                         </button></a>
-                        <div class="shopping-cart-content">
-                          
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -249,11 +247,7 @@
                     <div id="latestProducts" class="row" style="cursor: pointer;">
                         <h2 class="heading" style="display: inline-block;display: flex; justify-content: flex-start;">Latest products</h2>
                     </div>
-                    <div>
-                        <%categoryName.forEach(category=>{%>
-                            <h4 class="category-link" style="display: inline-block; margin: 10px 0 0 10px ; cursor: pointer;" data-category="<%=category%>"><%=category%></h4>
-                        <% })%>
-                    </div>
+                   
                 </div>
                 <div class="underline mb-5"></div>
                 
