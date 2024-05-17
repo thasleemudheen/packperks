@@ -671,25 +671,23 @@ cancelReasonSelect.addEventListener('change', async (event) => {
 
 
 
-function getInvoice(orderId, productId) {
-    const data = { orderId, productId };
-    axios.post('/getInvoice', data, { responseType: 'blob' })
-        .then(response => {
-            console.log('response is getting')
-            console.log(response)
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'order_summary.pdf');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error downloading PDF:', error);
-        });
+
+function getInvoice(orderId,productId){
+    const data={orderId,productId};
+
+    axios.post('/getInvoice',data, { responseType: 'blob' })
+    .then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice-${orderId}-${productId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    }).catch(error=>{
+        console.log('here also have errors',error)
+    })
 }
+
 </script>
 
 <!-- Optional JavaScript -->

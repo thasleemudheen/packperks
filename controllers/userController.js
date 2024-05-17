@@ -9,8 +9,7 @@ require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 const mongoose=require('mongoose')
-// const pdf=require('html-pdf')
-const puppeteer = require('puppeteer');
+const puppeteer = require('../helpers/invoice');
 const razorpay=require('../helpers/razorpay')
 const ejs=require('ejs')
 
@@ -1057,52 +1056,74 @@ let getOrderInvoice = async (req, res) => {
         }
 
         const order = user.orders.find(order => order._id.toString() === orderId);
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
+                if (!order) {
+                    return res.status(404).json({ message: "Order not found" });
+                }
+
+                const product = order.products.find(product => product.productId.toString() === productId);
+                if (!product) {
+                    return res.status(404).json({ message: "Product not found in the order" });
+                }
+
+                if (product.orderStatus !== 'delivered') {
+                    return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
+                }
+
+                // Create HTML content for the specified product details
+            const htmlContent = `
+            <html>
+            <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                .invoice-header { text-align: center; margin-bottom: 20px; }
+                .invoice-body { margin: 20px; }
+                .invoice-table { width: 100%; border-collapse: collapse; }
+                .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; }
+                .invoice-table th { background-color: #f2f2f2; }
+            </style>
+            </head>
+            <body>
+            <div class="invoice-header">
+                <h1>Product Invoice</h1>
+                <p>Order ID: ${orderId}</p>
+                <p>Product ID: ${productId}</p>
+            </div>
+            <div class="invoice-body">
+                <table class="invoice-table">
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <td>${product.name}</td>
+                    <td>${product.price}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.price * product.quantity}</td>
+                </tr>
+                </table>
+            </div>
+            </body>
+            </html>
+        `;
+
+        // Path to save the PDF
+        const outputPath = path.join(__dirname, `invoice-${orderId}-${productId}.pdf`);
+
+        // Generate the PDF
+        await generatePDF(htmlContent, outputPath);
+
+        // Send the PDF file as a download
+        res.download(outputPath, `invoice-${orderId}-${productId}.pdf`);
+        } catch (err) {
+        console.error('Error generating PDF:', err);
+        res.status(500).send('Error generating invoice');
         }
+        };
 
-        const product = order.products.find(product => product.productId.toString() === productId);
-        if (!product) {
-            return res.status(404).json({ message: "Product not found in the order" });
-        }
 
-        if (product.orderStatus !== 'delivered') {
-            return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
-        }
 
-        ejs.renderFile('views/user/invoice.ejs', { order, product }, async (err, html) => {
-            if (err) {
-                console.error(err);
-                
-                return res.status(500).send('Error rendering the invoice');
-            }
-
-            try {
-                const browser = await puppeteer.launch();
-                // console.log(browser)
-                const page = await browser.newPage();
-                // console.log(page)
-                await page.setContent(html, { waitUntil: 'networkidle0' });
-                
-                console.log('Generating PDF...');
-                const pdfBuffer = await page.pdf({ format: 'A4' });
-
-                console.log('PDF Buffer:', pdfBuffer.length); // Log the PDF buffer
-                await browser.close();
-
-                res.setHeader('Content-Type', 'application/pdf');
-                res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
-                res.send(pdfBuffer);
-            } catch (error) {
-                console.error('Error generating PDF with Puppeteer:', error);
-                res.status(500).send('Error generating PDF');
-            }
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(400).send('Failed to download PDF');
-    }
-};
 //  let getOrderInvoice = async (req, res) => {
 //     const { orderId, productId } = req.body;
 //     // console.log(productId)
@@ -1152,34 +1173,7 @@ let getOrderInvoice = async (req, res) => {
 //         res.status(400).send('Failed to download PDF');
 //     }
 // };
- // ejs.renderFile('views/user/invoice.ejs', { order, product }, async (err, html) => {
-        //     if (err) {
-        //         console.error(html);
-        //         return res.status(500).send('Error rendering the invoice');
-        //     }
-        //     try {
-        //         const browser = await puppeteer.launch({ timeout: 60000 });
-        //         console.log(browser)
-        //         console.log('Browser launched.');
 
-        //         const page = await browser.newPage();
-        //         console.log(page)
-        //         console.log('Page created.');
-
-        //         await page.setContent(html);
-        //   console.log('pdf buffer is here')
-        //         const pdfBuffer = await page.pdf();
-        //         console.log(pdfBuffer)
-        //         await browser.close();
-
-        //         res.setHeader('Content-Type', 'application/pdf');
-        //         res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
-        //         res.send(pdfBuffer);
-        //     } catch (error) {
-        //         console.error(error);
-        //         return res.status(500).send('Error generating PDF');
-        //     }
-        // });
 
 
 let editProfilePost=async(req,res)=>{
