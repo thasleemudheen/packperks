@@ -30,12 +30,12 @@ router.post('/deleteAddress/:id',userController.deleteAddress)
 
 //forget password 
 router.get('/loginWithOtp',disableCache,preventBack,userController.forgetPasswordGetPage)
-router.post('/sendOtp',preventBack,userController.sendOtp)
-router.post('/verifyOtp',preventBack,userController.verifyOtp)
+router.post('/sendOtp',preventBack,disableCache,userController.sendOtp)
+router.post('/verifyOtp',preventBack,disableCache,userController.verifyOtp)
 
 router.get('/verifyOtpForSign',disableCache,preventBack,userController.signUpverifyPage)
 
-router.post('/verify-otp',preventBack,userController.verifyOtpForSignup)
+router.post('/verify-otp',preventBack,disableCache,userController.verifyOtpForSignup)
 
 
 //google login authentication
