@@ -1043,15 +1043,14 @@ let sortAndFilter = async (req, res) => {
     }
 };
 
-
- let getOrderInvoice = async (req, res) => {
+let getOrderInvoice = async (req, res) => {
     const { orderId, productId } = req.body;
-    // console.log(productId)
+
     try {
         const token = req.cookies.user_jwt;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
-        
+
         const user = await User.findOne({ _id: userId, 'orders._id': orderId });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -1061,41 +1060,42 @@ let sortAndFilter = async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
-        // console.log(order)
+
         const product = order.products.find(product => product.productId.toString() === productId);
         if (!product) {
             return res.status(404).json({ message: "Product not found in the order" });
         }
+
         if (product.orderStatus !== 'delivered') {
             return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
         }
+
         ejs.renderFile('views/user/invoice.ejs', { order, product }, async (err, html) => {
             if (err) {
-                console.error(html);
+                console.error(err);
+                
                 return res.status(500).send('Error rendering the invoice');
             }
+
             try {
-                const browser = await puppeteer.launch({ timeout: 60000 });
-                console.log(browser)
-                console.log('Browser launched.');
-
+                const browser = await puppeteer.launch();
+                // console.log(browser)
                 const page = await browser.newPage();
-                console.log(page)
-                console.log('Page created.');
+                // console.log(page)
+                await page.setContent(html, { waitUntil: 'networkidle0' });
+                
+                console.log('Generating PDF...');
+                const pdfBuffer = await page.pdf({ format: 'A4' });
 
-                await page.setContent(html);
-                await page.waitForNavigation({ timeout: 60000 });
-          console.log('pdf buffer is here')
-                const pdfBuffer = await page.pdf();
-                console.log(pdfBuffer)
+                console.log('PDF Buffer:', pdfBuffer.length); // Log the PDF buffer
                 await browser.close();
 
                 res.setHeader('Content-Type', 'application/pdf');
                 res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
                 res.send(pdfBuffer);
             } catch (error) {
-                console.error(error);
-                return res.status(500).send('Error generating PDF');
+                console.error('Error generating PDF with Puppeteer:', error);
+                res.status(500).send('Error generating PDF');
             }
         });
     } catch (error) {
@@ -1103,23 +1103,84 @@ let sortAndFilter = async (req, res) => {
         res.status(400).send('Failed to download PDF');
     }
 };
+//  let getOrderInvoice = async (req, res) => {
+//     const { orderId, productId } = req.body;
+//     // console.log(productId)
+//     try {
+//         const token = req.cookies.user_jwt;
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         const userId = decoded.id;
+        
+//         const user = await User.findOne({ _id: userId, 'orders._id': orderId });
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
 
- // ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
+//         const order = user.orders.find(order => order._id.toString() === orderId);
+//         if (!order) {
+//             return res.status(404).json({ message: "Order not found" });
+//         }
+//         // console.log(order)
+//         const product = order.products.find(product => product.productId.toString() === productId);
+//         if (!product) {
+//             return res.status(404).json({ message: "Product not found in the order" });
+//         }
+//         if (product.orderStatus !== 'delivered') {
+//             return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
+//         }
+        
+//  ejs.renderFile('views/user/invoice.ejs', { order,product }, (err, html) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res.status(500).send('Error rendering the invoice');
+//             }
+//             pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
+//                 if (err) {
+//                     console.error(err);
+//                     return res.status(500).send('Error generating PDF');
+//                 }
+
+//                 res.setHeader('Content-Type', 'application/pdf');
+//                 res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
+//                 res.send(buffer);
+//             });
+//         });
+//         console.log('before')
+       
+//     } catch (error) {
+//         console.error(error);
+//         res.status(400).send('Failed to download PDF');
+//     }
+// };
+ // ejs.renderFile('views/user/invoice.ejs', { order, product }, async (err, html) => {
         //     if (err) {
-        //         console.error(err);
+        //         console.error(html);
         //         return res.status(500).send('Error rendering the invoice');
         //     }
-        //     pdf.create(html,{ timeout: 10000 }).toBuffer((err, buffer) => {
-        //         if (err) {
-        //             console.error(err);
-        //             return res.status(500).send('Error generating PDF');
-        //         }
+        //     try {
+        //         const browser = await puppeteer.launch({ timeout: 60000 });
+        //         console.log(browser)
+        //         console.log('Browser launched.');
+
+        //         const page = await browser.newPage();
+        //         console.log(page)
+        //         console.log('Page created.');
+
+        //         await page.setContent(html);
+        //   console.log('pdf buffer is here')
+        //         const pdfBuffer = await page.pdf();
+        //         console.log(pdfBuffer)
+        //         await browser.close();
 
         //         res.setHeader('Content-Type', 'application/pdf');
         //         res.setHeader('Content-Disposition', 'attachment; filename=order_summary.pdf');
-        //         res.send(buffer);
-        //     });
+        //         res.send(pdfBuffer);
+        //     } catch (error) {
+        //         console.error(error);
+        //         return res.status(500).send('Error generating PDF');
+        //     }
         // });
+
 
 let editProfilePost=async(req,res)=>{
     console.log(req.body)
