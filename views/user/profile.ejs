@@ -670,12 +670,10 @@ cancelReasonSelect.addEventListener('change', async (event) => {
 });
 
 
+function getInvoice(orderId, productId) {
+  const data = { orderId, productId };
 
-
-function getInvoice(orderId,productId){
-    const data={orderId,productId};
-
-    axios.post('/getInvoice',data, { responseType: 'blob' })
+  axios.post('/getInvoice', data, { responseType: 'blob' })
     .then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -683,10 +681,13 @@ function getInvoice(orderId,productId){
       link.setAttribute('download', `invoice-${orderId}-${productId}.pdf`);
       document.body.appendChild(link);
       link.click();
-    }).catch(error=>{
-        console.log('here also have errors',error)
+      document.body.removeChild(link);
     })
+    .catch(error => {
+      console.error('Error downloading the invoice:', error);
+    });
 }
+getInvoice(orderId, productId);
 
 </script>
 

@@ -9,7 +9,7 @@ require('dotenv').config()
 const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 const mongoose=require('mongoose')
-const puppeteer = require('../helpers/invoice');
+const generatePDF = require('../helpers/generatePDF');
 const razorpay=require('../helpers/razorpay')
 const ejs=require('ejs')
 
@@ -1041,87 +1041,86 @@ let sortAndFilter = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
 let getOrderInvoice = async (req, res) => {
     const { orderId, productId } = req.body;
-
+  
     try {
-        const token = req.cookies.user_jwt;
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.id;
-
-        const user = await User.findOne({ _id: userId, 'orders._id': orderId });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const order = user.orders.find(order => order._id.toString() === orderId);
-                if (!order) {
-                    return res.status(404).json({ message: "Order not found" });
-                }
-
-                const product = order.products.find(product => product.productId.toString() === productId);
-                if (!product) {
-                    return res.status(404).json({ message: "Product not found in the order" });
-                }
-
-                if (product.orderStatus !== 'delivered') {
-                    return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
-                }
-
-                // Create HTML content for the specified product details
-            const htmlContent = `
-            <html>
-            <head>
-            <style>
-                body { font-family: Arial, sans-serif; }
-                .invoice-header { text-align: center; margin-bottom: 20px; }
-                .invoice-body { margin: 20px; }
-                .invoice-table { width: 100%; border-collapse: collapse; }
-                .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; }
-                .invoice-table th { background-color: #f2f2f2; }
-            </style>
-            </head>
-            <body>
-            <div class="invoice-header">
-                <h1>Product Invoice</h1>
-                <p>Order ID: ${orderId}</p>
-                <p>Product ID: ${productId}</p>
-            </div>
-            <div class="invoice-body">
-                <table class="invoice-table">
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                </tr>
-                <tr>
-                    <td>${product.name}</td>
-                    <td>${product.price}</td>
-                    <td>${product.quantity}</td>
-                    <td>${product.price * product.quantity}</td>
-                </tr>
-                </table>
-            </div>
-            </body>
-            </html>
-        `;
-
-        // Path to save the PDF
-        const outputPath = path.join(__dirname, `invoice-${orderId}-${productId}.pdf`);
-
-        // Generate the PDF
-        await generatePDF(htmlContent, outputPath);
-
-        // Send the PDF file as a download
-        res.download(outputPath, `invoice-${orderId}-${productId}.pdf`);
-        } catch (err) {
-        console.error('Error generating PDF:', err);
-        res.status(500).send('Error generating invoice');
-        }
-        };
-
+      const token = req.cookies.user_jwt;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;
+  
+      const user = await User.findOne({ _id: userId, 'orders._id': orderId });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      const order = user.orders.find(order => order._id.toString() === orderId);
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+  
+      const product = order.products.find(product => product.productId.toString() === productId);
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found in the order' });
+      }
+  
+      if (product.orderStatus !== 'delivered') {
+        return res.status(400).send('Cannot download invoice for products with status other than "delivered"');
+      }
+  
+      // Create HTML content for the specified product details
+      const htmlContent = `
+        <html>
+        <head>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          .invoice-header { text-align: center; margin-bottom: 20px; }
+          .invoice-body { margin: 20px; }
+          .invoice-table { width: 100%; border-collapse: collapse; }
+          .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; }
+          .invoice-table th { background-color: #f2f2f2; }
+        </style>
+        </head>
+        <body>
+        <div class="invoice-header">
+          <h1>Product Invoice</h1>
+          <p>Order ID: ${orderId}</p>
+          <p>Product ID: ${productId}</p>
+        </div>
+        <div class="invoice-body">
+          <table class="invoice-table">
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+            </tr>
+            <tr>
+              <td>${product.name}</td>
+              <td>${product.price}</td>
+              <td>${product.quantity}</td>
+              <td>${product.price * product.quantity}</td>
+            </tr>
+          </table>
+        </div>
+        </body>
+        </html>
+      `;
+  
+      // Path to save the PDF
+      const outputPath = path.join(__dirname, `invoice-${orderId}-${productId}.pdf`);
+  
+      // Generate the PDF
+      await generatePDF(htmlContent, outputPath);
+  
+      // Send the PDF file as a download
+      res.download(outputPath, `invoice-${orderId}-${productId}.pdf`);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      res.status(500).send('Error generating invoice');
+    }
+  };
+  
 
 
 //  let getOrderInvoice = async (req, res) => {
