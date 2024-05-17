@@ -415,6 +415,7 @@ function getInvoice(orderId, productId) {
     const data = { orderId, productId };
     axios.post('/getInvoice', data, { responseType: 'blob' })
     .then(response => {
+        console.log('working')
         console.log(response.data)
         // const url = window.URL.createObjectURL(new Blob([response.data]));
         // const link = document.createElement('a');
