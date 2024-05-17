@@ -40,12 +40,11 @@ router.post('/verify-otp',preventBack,userController.verifyOtpForSignup)
 
 //google login authentication
 
-router.get('/auth/google',passport.authenticate('google',{scope:['email','profile']}))
+router.get('/auth/google',disableCache,preventBack,passport.authenticate('google',{scope:['email','profile']}))
 
-router.get('/google/callback',
-passport.authenticate('google',{successRedirect:'/success',failureRedirect:'/failure'}))
+router.get('/google/callback',disableCache,preventBack,passport.authenticate('google',{successRedirect:'/success',failureRedirect:'/failure'}))
 
-router.get('/success',userController.successGoogleLogin)
+router.get('/success',disableCache,preventBack,userController.successGoogleLogin)
 router.get('/failure',userController.failureGoogleLogin)
 
 
