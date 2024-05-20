@@ -385,14 +385,56 @@ let verifyOtp = async (req, res) => {
     }
 }
 
+// let shopPage = async (req, res) => {
+//     try {
+//         let token = req.cookies.user_jwt;
+//         let user = null;
+//         if (token) {
+//             let decoded = jwt.verify(token, process.env.JWT_SECRET);
+//             let userId = decoded.id;
+//             user = await User.findById(userId);
+//         }
+
+//         const PAGE_SIZE = 9;
+//         let page = parseInt(req.query.page) || 1;
+//         let skip = (page - 1) * PAGE_SIZE;
+
+//         let products = await Products.find().skip(skip).limit(PAGE_SIZE);
+//         let totalProducts = await Products.countDocuments();
+//         let totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+
+//         let categoryName = await Products.distinct('categoryName');
+//         let brands = await Products.distinct('brand');
+
+//         let sortBy = req.query.sortBy || 'select';
+//         let cartLength = user.cart ? user.cart.product.length : 0;
+
+
+
+//         res.render('user/shop', { products, user, categoryName, brands, currentPage: page, totalPages,sortBy,cartLength });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 let shopPage = async (req, res) => {
     try {
         let token = req.cookies.user_jwt;
         let user = null;
+        let cartLength = 0;
+
         if (token) {
-            let decoded = jwt.verify(token, process.env.JWT_SECRET);
-            let userId = decoded.id;
-            user = await User.findById(userId);
+            try {
+                let decoded = jwt.verify(token, process.env.JWT_SECRET);
+                let userId = decoded.id;
+                user = await User.findById(userId);
+
+                if (user && user.cart) {
+                    cartLength = user.cart.product.length;
+                }
+            } catch (err) {
+                console.error('JWT verification error:', err);
+            }
         }
 
         const PAGE_SIZE = 9;
@@ -407,11 +449,17 @@ let shopPage = async (req, res) => {
         let brands = await Products.distinct('brand');
 
         let sortBy = req.query.sortBy || 'select';
-        let cartLength = user.cart ? user.cart.product.length : 0;
 
-
-
-        res.render('user/shop', { products, user, categoryName, brands, currentPage: page, totalPages,sortBy,cartLength });
+        res.render('user/shop', { 
+            products, 
+            user, 
+            categoryName, 
+            brands, 
+            currentPage: page, 
+            totalPages, 
+            sortBy, 
+            cartLength 
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -1106,14 +1154,10 @@ let getOrderInvoice = async (req, res) => {
         </body>
         </html>
       `;
-  
-      // Path to save the PDF
       const outputPath = path.join(__dirname, `invoice-${orderId}-${productId}.pdf`);
-  
-      // Generate the PDF
+      console.log(outputPath)
       await generatePDF(htmlContent, outputPath);
-  
-      // Send the PDF file as a download
+     console.log(htmlContent)
       res.download(outputPath, `invoice-${orderId}-${productId}.pdf`);
     } catch (err) {
       console.error('Error generating PDF:', err);
