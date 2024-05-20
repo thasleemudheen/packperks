@@ -157,9 +157,35 @@ let adminDashBoard=async(req,res)=>{
         statusCounts[status._id] = status.totalCount;
     });
 
+
+    const userCountsOnEachMonth = await User.aggregate([
+        {
+          $match: {
+            cretedAt: { $exists: true, $ne: null } 
+          }
+        },
+        {
+          $group: {
+            _id: { $month: "$cretedAt" }, 
+            count: { $sum: 1 } 
+          }
+        },
+        {
+          $project: {
+            _id: 0, 
+            month: "$_id",
+            count: 1 
+          }
+        },
+        {
+          $sort: { month: 1 } 
+        }
+      ]);
+      
+      
    
       
-    res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders,statusCounts})
+    res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders,statusCounts,userCountsOnEachMonth})
 }
 
 
