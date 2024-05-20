@@ -385,38 +385,6 @@ let verifyOtp = async (req, res) => {
     }
 }
 
-// let shopPage = async (req, res) => {
-//     try {
-//         let token = req.cookies.user_jwt;
-//         let user = null;
-//         if (token) {
-//             let decoded = jwt.verify(token, process.env.JWT_SECRET);
-//             let userId = decoded.id;
-//             user = await User.findById(userId);
-//         }
-
-//         const PAGE_SIZE = 9;
-//         let page = parseInt(req.query.page) || 1;
-//         let skip = (page - 1) * PAGE_SIZE;
-
-//         let products = await Products.find().skip(skip).limit(PAGE_SIZE);
-//         let totalProducts = await Products.countDocuments();
-//         let totalPages = Math.ceil(totalProducts / PAGE_SIZE);
-
-//         let categoryName = await Products.distinct('categoryName');
-//         let brands = await Products.distinct('brand');
-
-//         let sortBy = req.query.sortBy || 'select';
-//         let cartLength = user.cart ? user.cart.product.length : 0;
-
-
-
-//         res.render('user/shop', { products, user, categoryName, brands, currentPage: page, totalPages,sortBy,cartLength });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
 let shopPage = async (req, res) => {
     try {
         let token = req.cookies.user_jwt;
@@ -1106,6 +1074,7 @@ let sortAndFilter = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 let getOrderInvoice = async (req, res) => {
     const { orderId, productId } = req.body;
   
