@@ -1111,16 +1111,20 @@ let getOrderInvoice = async (req, res) => {
     //   console.log(invoiceHtml)
 
         // Launch Puppeteer
-        const browser = await puppeteer.launch({
+        const options = {
+            format: 'A4',
+            printBackground: true,
+            executablePath: '/usr/bin/chromium-browser', 
             args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
+        };
+        const browser = await puppeteer.launch(options);
         // console.log(browser)
 
         const page = await browser.newPage();
         await page.setContent(invoiceHtml);
 
         // Generate PDF from HTML
-        const pdfBuffer = await page.pdf({ format: 'A4' });
+        const pdfBuffer = await page.pdf(options);
         // console.log(pdfBuffer)
 
         await browser.close();
