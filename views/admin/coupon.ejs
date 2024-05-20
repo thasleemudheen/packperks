@@ -71,6 +71,7 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
 
 
 
+
 </head>
 
 <body>
@@ -322,17 +323,13 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
         
          
         <script>
-       $(document).ready(function(){
-        $('#myTable').DataTable({
-            "paging": true
+        $(document).ready(function(){
+            $('#myTable').dataTable();
         });
-    });
         </script>
-
-        
       <script>
         document.addEventListener("DOMContentLoaded", function() {
-    let coupons = document.querySelectorAll("#myTableCoupon tbody tr");
+    let coupons = document.querySelectorAll("#myTable tbody tr");
     coupons.forEach(coupon => {
         let endDateStr = coupon.querySelector("td:nth-child(4)").innerText;
         let endDate = new Date(endDateStr);
