@@ -382,10 +382,17 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
                         <select name="status" id="" class="form-select" onchange="updateOrderStatus(event,'<%=orders._id%>','<%=product.productId%>','<%=orderIndex%>')">
                             <% if(product.orderStatus!=='cancelled'){%>
 
-                            
+                            <% if(product.orderStatus !=='delivered'){%>
+
+                           
                             <option value="Pending" <%= product.orderStatus === "Pending" ? "selected" : "" %> class="<%= product.orderStatus === 'Pending' ? 'text-warning' : '' %>"> Pending</option>
+                            <%}%>
+
                             <option value="delivered" <%= product.orderStatus === "delivered" ? "selected" : "" %> class="<%= product.orderStatus === 'delivered' ? 'text-success' : '' %>"> delivered</option>
+                                                        <% if(product.orderStatus !=='delivered'){%>
+
                             <option value="shipped" <%= product.orderStatus === "shipped" ? "selected" : "" %> class="<%= product.orderStatus === 'shipped' ? 'text-primary' : '' %>"> shipped</option>
+                            <%}%>
                             <%}%>
                             <% if (product.orderStatus !== 'delivered') { %>
                                 <option value="cancelled" <%= product.orderStatus === "cancelled" ? "selected" : "" %> class="<%= product.orderStatus === 'cancelled' ? 'text-danger' : '' %>"> cancelled</option>

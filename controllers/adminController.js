@@ -156,6 +156,9 @@ let adminDashBoard=async(req,res)=>{
     orderStatusCounts.forEach(status => {
         statusCounts[status._id] = status.totalCount;
     });
+
+   
+      
     res.render('admin/index',{categoryOrders,totalUser,totalOrderedProduct,totalOrder,latestOrders,totalValue,monthlyOrders,statusCounts})
 }
 
