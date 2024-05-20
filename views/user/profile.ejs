@@ -677,13 +677,14 @@ function getInvoice(orderId, productId) {
   axios.post('/getInvoice', data, { responseType: 'blob' })
     .then(response => {
         console.log(response)
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `invoice-${orderId}-${productId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice_${orderId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
     })
     .catch(error => {
       console.error('Error downloading the invoice:', error);

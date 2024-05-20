@@ -10,8 +10,11 @@ const nodemailer=require('nodemailer')
 const otpService=require('../service/otpservice')
 const mongoose=require('mongoose')
 const generatePDF = require('../helpers/generatePDF');
+const puppeteer=require('puppeteer')
 const razorpay=require('../helpers/razorpay')
 const ejs=require('ejs')
+const path = require('path'); // Make sure to import the path module
+const fs = require('fs');
 
 const Razorpay = require('razorpay');
 const instance = new Razorpay({
@@ -1103,48 +1106,29 @@ let getOrderInvoice = async (req, res) => {
       }
   
       // Create HTML content for the specified product details
-      const htmlContent = `
-        <html>
-        <head>
-        <style>
-          body { font-family: Arial, sans-serif; }
-          .invoice-header { text-align: center; margin-bottom: 20px; }
-          .invoice-body { margin: 20px; }
-          .invoice-table { width: 100%; border-collapse: collapse; }
-          .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; }
-          .invoice-table th { background-color: #f2f2f2; }
-        </style>
-        </head>
-        <body>
-        <div class="invoice-header">
-          <h1>Product Invoice</h1>
-          <p>Order ID: ${orderId}</p>
-          <p>Product ID: ${productId}</p>
-        </div>
-        <div class="invoice-body">
-          <table class="invoice-table">
-            <tr>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-            </tr>
-            <tr>
-              <td>${product.name}</td>
-              <td>${product.price}</td>
-              <td>${product.quantity}</td>
-              <td>${product.price * product.quantity}</td>
-            </tr>
-          </table>
-        </div>
-        </body>
-        </html>
-      `;
-      const outputPath = path.join(__dirname, `invoice-${orderId}-${productId}.pdf`);
-      console.log(outputPath)
-      await generatePDF(htmlContent, outputPath);
-     console.log(htmlContent)
-      res.download(outputPath, `invoice-${orderId}-${productId}.pdf`);
+      const templatePath = path.join(__dirname, '..', 'views', 'user', 'invoice.ejs');
+      const invoiceHtml = await ejs.renderFile(templatePath, { order, user,product });
+    //   console.log(invoiceHtml)
+
+        // Launch Puppeteer
+        const browser = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+        // console.log(browser)
+
+        const page = await browser.newPage();
+        await page.setContent(invoiceHtml);
+
+        // Generate PDF from HTML
+        const pdfBuffer = await page.pdf({ format: 'A4' });
+        // console.log(pdfBuffer)
+
+        await browser.close();
+
+        // Set response headers to trigger download
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
+        res.send(pdfBuffer);
     } catch (err) {
       console.error('Error generating PDF:', err);
       res.status(500).send('Error generating invoice');
