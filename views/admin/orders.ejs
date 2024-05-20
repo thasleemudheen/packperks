@@ -73,17 +73,6 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-
 <style>
     .modal-content {
         background-color: #f8f9fa; /* Set background color */
@@ -355,7 +344,7 @@ src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></scrip
 </script>
 
 
-<table id="myTableCoupon" class="table table-striped">
+<table id="myTable" class="table table-striped">
     <thead>
         <tr>
             <th>order:ID</th>
@@ -494,9 +483,9 @@ function updateOrderStatus(event,orderId,productId,index){
 
 
 
-    $(document).ready(function(){
-        $('#myTableCoupon').dataTable();
-    });
+           $(document).ready(function(){
+            $('#myTable').dataTable();
+        });
     </script>
   
 
