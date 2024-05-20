@@ -283,7 +283,7 @@ src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 
 
 
-    <table id="myTable" class="table table-striped">
+    <table id="couponTable" class="table table-striped">
         <thead>
             <tr>
                 <th>coupon code</th>
@@ -328,15 +328,20 @@ src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
         </div>
       
         
-         
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
         <script>
         $(document).ready(function(){
-            $('#myTable').dataTable();
+            $('#couponTable').DataTable();
         });
         </script>
       <script>
         document.addEventListener("DOMContentLoaded", function() {
-    let coupons = document.querySelectorAll("#myTable tbody tr");
+    let coupons = document.querySelectorAll("#couponTable tbody tr");
     coupons.forEach(coupon => {
         let endDateStr = coupon.querySelector("td:nth-child(4)").innerText;
         let endDate = new Date(endDateStr);
