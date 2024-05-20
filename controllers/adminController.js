@@ -165,8 +165,14 @@ let adminDashBoard=async(req,res)=>{
 
 
 let UserGetPage=async(req,res)=>{
-    let users =await User.find()
+    try {
+        let users =await User.find()
     res.render('admin/userlist',{users:users})
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('userlist is not getting ')
+    }
+    
 }
 
 let userBlock=async(req,res)=>{
