@@ -670,30 +670,42 @@ cancelReasonSelect.addEventListener('change', async (event) => {
     }
 });
 
-
 function getInvoice(orderId, productId) {
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  loadingIndicator.style.display = 'block'; // Show loading indicator
+
   const data = { orderId, productId };
 
-  axios.post('/getInvoice', data, { responseType: 'blob' })
-    .then(response => {
-        console.log(response)
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `invoice_${orderId}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(error => {
-      console.error('Error downloading the invoice:', error);
-    });
-}
+  fetch('/getInvoice', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.blob();
+  })
+  .then(blob => {
+    loadingIndicator.style.display = 'none'; // Hide loading indicator
 
-const orderId=document.getElementById('ordId').value;
-const productId=document.getElementById('proId').value;
-getInvoice(orderId, productId);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `invoice_${orderId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  })
+  .catch(error => {
+    console.error('Error downloading the invoice:', error);
+    loadingIndicator.style.display = 'none'; // Hide loading indicator on error
+  });
+}
 
 </script>
 
