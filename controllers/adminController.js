@@ -191,24 +191,12 @@ let adminDashBoard=async(req,res)=>{
 
 
 let UserGetPage=async(req,res)=>{
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
     try {
-        const users = await User.find()
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .exec();
-
-        const count = await User.countDocuments();
-
-        res.render('admin/Userlist', {
-            users: users,
-            currentPage: page,
-            totalPages: Math.ceil(count / limit)
-        });
-    } catch (err) {
-        res.status(500).send(err);
+        let users =await User.find()
+    res.render('admin/Userlist',{users:users})
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('userlist is not getting ')
     }
     
 }
