@@ -465,25 +465,42 @@ let shopPage = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+let singleProductPage = async (req, res) => {
+    let productId = req.params.id;
 
-let singleProductPage=async(req,res)=>{
-    let productId=req.params.id
     try {
-        let token=req.cookies.user_jwt
-        let decoded=jwt.verify(token,process.env.JWT_SECRET)
-        let userId=decoded.id
-        let user=await User.findById(userId)
-        let cartLength = user.cart ? user.cart.product.length : 0;
+        let token = req.cookies.user_jwt;
+        let user = null;
+        let cartLength = 0;
 
-        let singleProduct=await Products.findById(productId)
-        let wishlist=await User.find(singleProduct)
-        
-        res.render('user/productDetails',{product:singleProduct,wishlist:wishlist,cartLength,user})
+        if (token) {
+            try {
+                let decoded = jwt.verify(token, process.env.JWT_SECRET);
+                let userId = decoded.id;
+                user = await User.findById(userId);
+
+                if (user && user.cart) {
+                    cartLength = user.cart.product.length;
+                }
+            } catch (err) {
+                console.error('JWT verification error:', err);
+            }
+        }
+
+        let singleProduct = await Products.findById(productId);
+        let wishlist = user ? await User.find({ _id: user._id, "wishlist.product": productId }) : [];
+
+        res.render('user/productDetails', { 
+            product: singleProduct, 
+            wishlist: wishlist, 
+            cartLength: cartLength, 
+            user: user 
+        });
     } catch (error) {
-        console.log(error)
-        res.status(500).send('internal server error')
+        console.log(error);
+        res.status(500).send('Internal Server Error');
     }
-}
+};
 
 let cartPage=async(req,res)=>{
     try {
