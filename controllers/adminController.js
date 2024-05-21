@@ -474,9 +474,23 @@ let addCoupon=async(req,res)=>{
 }
 let couponPageGet=async(req,res)=>{
 
-    let admin=await Admin.findOne()
-    let coupon=admin.coupon
-    res.render('admin/coupon',{coupon})
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    try {
+        let admin = await Admin.findOne();
+        let coupon = admin.coupon.slice(skip, skip + limit);
+        const count = admin.coupon.length;
+
+        res.render('admin/coupon', {
+            coupon,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 }
 
 let deleteCoupon=async(req,res)=>{
