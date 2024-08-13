@@ -26,11 +26,7 @@ const userRouter = require('./routes/userRoute')
 const adminRouter = require('./routes/adminRoute')
 
 // connecting to mongodb
-mongoose.connect(process.env.MONGOID, {
-    connectTimeoutMS: 30000, // 30 seconds timeout
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGOID)
 .then(() => {
     console.log('connected to mongodb');
 })
@@ -55,5 +51,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(3001, () => {
-    console.log('server running in port 3000');
+    console.log('server running in port 3001');
 });

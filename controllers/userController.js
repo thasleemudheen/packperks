@@ -1068,8 +1068,11 @@ let sortAndFilter = async (req, res) => {
         }
 
         let products = await Products.find(query).sort(sortQuery).skip(skip).limit(PAGE_SIZE);
+        // console.log(products)
         let totalProducts = await Products.countDocuments(query);
+        // console.log(totalProducts)
         let totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+        // console.log(totalPages)
 
         res.status(200).json({ products, user, currentPage: page, totalPages });
     } catch (error) {
